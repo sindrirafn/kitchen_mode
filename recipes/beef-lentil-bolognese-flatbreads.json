@@ -1,0 +1,628 @@
+{
+  "schemaVersion": 1,
+  "id": "beef-lentil-bolognese-flatbreads",
+  "revision": 1,
+  "identity": {
+    "title": "Slow-simmered beef & green lentil Bolognese",
+    "subtitle": "A rich long-simmered ragù with farfalle and garlic-yogurt flatbreads",
+    "description": "A rich long-simmered ragù with farfalle and garlic-yogurt flatbreads"
+  },
+  "classification": {
+    "mealTypes": [
+      "dinner"
+    ],
+    "tags": [
+      "family-rotation",
+      "budget-friendly"
+    ],
+    "dietary": {
+      "vegetarian": false,
+      "vegan": false
+    }
+  },
+  "history": {
+    "approvedForRotation": true,
+    "currentVersionStatus": "tested",
+    "source": "Family Recipe Rotation — Tested & To Try / Recipe Bank",
+    "testedDate": "2026-10-15",
+    "verdicts": {
+      "user": "Very successful, could not taste lentils. Rakel ate enthusiastically; flatbreads amazing.",
+      "steffi": "Liked dinner, but lentil flavor too prominent."
+    },
+    "proposedChanges": [
+      {
+        "status": "untested",
+        "text": "Untested: replace 100–125 g green lentils with 60–75 g red split lentils and simmer with extra water in the sauce."
+      }
+    ]
+  },
+  "yield": {
+    "baseServings": 6,
+    "servingDescription": "6+ portions including leftovers",
+    "scaling": {
+      "enabled": true,
+      "reviewRequired": true
+    }
+  },
+  "timing": {
+    "totalMinutes": 150
+  },
+  "media": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "path": "/images/beef-lentil-bolognese-flatbreads.webp",
+      "thumbnailPath": "/images/beef-lentil-bolognese-flatbreads-thumb.webp",
+      "alt": "Slow-simmered beef & green lentil Bolognese",
+      "license": {
+        "type": "pending",
+        "creator": null,
+        "sourceUrl": null
+      },
+      "status": "asset-required"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-1",
+      "name": "Large pot"
+    },
+    {
+      "id": "equipment-2",
+      "name": "Second saucepan"
+    },
+    {
+      "id": "equipment-3",
+      "name": "Skillet"
+    },
+    {
+      "id": "equipment-4",
+      "name": "Mixing bowls"
+    },
+    {
+      "id": "equipment-5",
+      "name": "Rolling pin"
+    },
+    {
+      "id": "equipment-6",
+      "name": "Knife"
+    },
+    {
+      "id": "equipment-7",
+      "name": "Cutting board"
+    },
+    {
+      "id": "equipment-8",
+      "name": "Colander"
+    }
+  ],
+  "components": [
+    {
+      "id": "ragu",
+      "name": "Bolognese sauce"
+    },
+    {
+      "id": "pasta",
+      "name": "Pasta and cheese"
+    },
+    {
+      "id": "flatbread",
+      "name": "Garlic yogurt flatbreads"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "beef",
+      "foodId": "beef",
+      "name": "Minced beef",
+      "quantity": {
+        "min": 250,
+        "max": 300,
+        "unit": "g"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "lentils",
+      "foodId": "lentils",
+      "name": "Dry green lentils",
+      "quantity": {
+        "min": 100,
+        "max": 125,
+        "unit": "g"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "onion",
+      "foodId": "onion",
+      "name": "Onion",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "carrot",
+      "foodId": "carrot",
+      "name": "Carrot",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "celery",
+      "foodId": "celery",
+      "name": "Celery stalks",
+      "quantity": {
+        "value": 2,
+        "unit": "whole"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "fresh-tomatoes",
+      "foodId": "fresh-tomatoes",
+      "name": "Fresh tomatoes",
+      "quantity": {
+        "value": 3,
+        "unit": "whole"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "chopped-tomatoes",
+      "foodId": "chopped-tomatoes",
+      "name": "Chopped tomatoes",
+      "quantity": {
+        "value": 400,
+        "unit": "g"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "tomato-paste",
+      "foodId": "tomato-paste",
+      "name": "Tomato paste",
+      "quantity": {
+        "value": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "stock-cube",
+      "foodId": "stock-cube",
+      "name": "Beef stock cube",
+      "quantity": {
+        "value": 0.5,
+        "unit": "cube"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "stock-water",
+      "foodId": "water",
+      "name": "Water for stock",
+      "quantity": {
+        "value": 150,
+        "unit": "ml"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "milk",
+      "foodId": "milk",
+      "name": "Milk",
+      "quantity": {
+        "min": 100,
+        "max": 150,
+        "unit": "ml"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "oil",
+      "foodId": "oil",
+      "name": "Oil",
+      "quantity": {
+        "min": 1,
+        "max": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "oregano",
+      "foodId": "oregano",
+      "name": "Oregano",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "ragu",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "thyme",
+      "foodId": "thyme",
+      "name": "Thyme",
+      "quantity": {
+        "text": "to taste"
+      },
+      "componentId": "ragu",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "bay",
+      "foodId": "bay",
+      "name": "Bay leaf",
+      "quantity": {
+        "text": "optional"
+      },
+      "componentId": "ragu",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "worcestershire",
+      "foodId": "worcestershire",
+      "name": "Worcestershire sauce",
+      "quantity": {
+        "text": "to taste"
+      },
+      "componentId": "ragu",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "farfalle",
+      "foodId": "farfalle",
+      "name": "Farfalle pasta",
+      "quantity": {
+        "min": 350,
+        "max": 400,
+        "unit": "g"
+      },
+      "componentId": "pasta",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "parmesan",
+      "foodId": "parmesan",
+      "name": "Parmigiano Reggiano",
+      "quantity": {
+        "text": "to serve"
+      },
+      "componentId": "pasta",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "flour",
+      "foodId": "flour",
+      "name": "Flour",
+      "quantity": {
+        "value": 300,
+        "unit": "g"
+      },
+      "componentId": "flatbread",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "yogurt",
+      "foodId": "yogurt",
+      "name": "Plain Greek yogurt",
+      "quantity": {
+        "value": 225,
+        "unit": "g"
+      },
+      "componentId": "flatbread",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "baking-powder",
+      "foodId": "baking-powder",
+      "name": "Baking powder",
+      "quantity": {
+        "value": 2.25,
+        "unit": "tsp"
+      },
+      "componentId": "flatbread",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "bread-salt",
+      "foodId": "salt",
+      "name": "Salt for flatbreads",
+      "quantity": {
+        "value": 0.75,
+        "unit": "tsp"
+      },
+      "componentId": "flatbread",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "bread-oil",
+      "foodId": "bread-oil",
+      "name": "Oil for dough",
+      "quantity": {
+        "text": "optional"
+      },
+      "componentId": "flatbread",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "bread-milk",
+      "foodId": "milk",
+      "name": "Milk for dough",
+      "quantity": {
+        "text": "if needed"
+      },
+      "componentId": "flatbread",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "garlic-butter",
+      "foodId": "butter",
+      "name": "Butter for garlic flatbreads",
+      "quantity": {
+        "min": 50,
+        "max": 60,
+        "unit": "g"
+      },
+      "componentId": "flatbread",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "bread-garlic",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder for butter",
+      "quantity": {
+        "min": 1.5,
+        "max": 2,
+        "unit": "tsp"
+      },
+      "componentId": "flatbread",
+      "optional": false,
+      "scaling": "linear"
+    }
+  ],
+  "quantityUsages": [],
+  "preparation": [
+    {
+      "id": "prep-vegetables",
+      "title": "Prepare the ragù ingredients",
+      "items": [
+        {
+          "id": "prep-vegetables-1",
+          "text": "Finely dice 1 onion, 1 carrot and 2 celery stalks.",
+          "checkable": true
+        },
+        {
+          "id": "prep-vegetables-2",
+          "text": "Chop 3 fresh tomatoes.",
+          "checkable": true
+        },
+        {
+          "id": "prep-vegetables-3",
+          "text": "Measure 100–125 g dry green lentils and prepare ½ beef stock cube in 150 ml water.",
+          "checkable": true
+        },
+        {
+          "id": "prep-vegetables-4",
+          "text": "Have minced beef, tomato paste, canned tomatoes, herbs and 100–150 ml milk ready.",
+          "checkable": true
+        }
+      ]
+    },
+    {
+      "id": "prep-flatbread",
+      "title": "Measure flatbread ingredients",
+      "items": [
+        {
+          "id": "prep-flatbread-1",
+          "text": "Measure 300 g flour, 225 g Greek yogurt, 2¼ tsp baking powder and ¾ tsp salt.",
+          "checkable": true
+        },
+        {
+          "id": "prep-flatbread-2",
+          "text": "Reserve 50–60 g butter and 1½–2 tsp garlic powder for finishing.",
+          "checkable": true
+        },
+        {
+          "id": "prep-flatbread-3",
+          "text": "Prepare rolling pin and dry skillet for later; do not preheat the skillet yet.",
+          "checkable": true
+        }
+      ]
+    }
+  ],
+  "cooking": [
+    {
+      "id": "cook-1",
+      "title": "Brown the beef",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Heat 1–2 tbsp oil in a pot. Brown 250–300 g minced beef, then transfer it to a plate."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-2",
+      "title": "Build the vegetable base",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "In the same pot, sweat the onion, carrot and celery for 12–15 minutes, until softened."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-2-timer-1",
+          "label": "Soften vegetables",
+          "durationSeconds": 720
+        }
+      ]
+    },
+    {
+      "id": "cook-3",
+      "title": "Develop the tomato flavor",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Fry 2 tbsp tomato paste for about 2 minutes, then add 3 chopped fresh tomatoes and cook them down for another 5–10 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-3-timer-1",
+          "label": "Cook fresh tomatoes",
+          "durationSeconds": 300
+        }
+      ]
+    },
+    {
+      "id": "cook-4",
+      "title": "Simmer the ragù",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Return beef. Add 400 g chopped tomatoes, ½ stock cube dissolved in 150 ml water, 100–150 ml milk and 1 tsp oregano. Add optional thyme, bay leaf or Worcestershire sauce if using. Simmer very gently for around 2 hours, stirring occasionally; loosen with water if needed."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-4-timer-1",
+          "label": "Long ragù simmer",
+          "durationSeconds": 7200
+        }
+      ]
+    },
+    {
+      "id": "cook-5",
+      "title": "Cook the lentils",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "While the ragù simmers, boil 100–125 g dry green lentils separately until tender, roughly 20–35 minutes. Drain, then add them to the ragù for the final 15–20 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-5-timer-1",
+          "label": "Check lentils",
+          "durationSeconds": 1200
+        }
+      ],
+      "tip": "Cooking green lentils separately was part of the tested version; the red-lentil alternative is not tested."
+    },
+    {
+      "id": "cook-6",
+      "title": "Mix the flatbread dough",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Mix 300 g flour, 225 g Greek yogurt, 2¼ tsp baking powder and ¾ tsp salt into a dough. Add only a little optional oil or milk if needed. Knead briefly, rest 5–10 minutes, then divide into 6 pieces."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-6-timer-1",
+          "label": "Dough rest",
+          "durationSeconds": 600
+        }
+      ]
+    },
+    {
+      "id": "cook-7",
+      "title": "Cook the garlic flatbreads",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Roll the 6 pieces into approximately 15–18 cm rounds. Heat a dry skillet and cook each for about 1½–2 minutes per side. Melt 50–60 g butter with 1½–2 tsp garlic powder and brush the breads."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-7-timer-1",
+          "label": "Flatbread side",
+          "durationSeconds": 90
+        }
+      ]
+    },
+    {
+      "id": "cook-8",
+      "title": "Cook the pasta and serve",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Cook 350–400 g farfalle according to the package until al dente. Combine with ragù, adding a little pasta water as needed, and serve with Parmigiano and warm garlic flatbreads."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    }
+  ],
+  "serving": {
+    "instructions": "Serve the farfalle with Parmigiano and garlic-butter flatbreads."
+  },
+  "storage": {
+    "refrigeratorDays": null,
+    "freezerSuitable": null,
+    "reheatingInstructions": null
+  },
+  "notes": [
+    {
+      "id": "note-2",
+      "type": "feedback",
+      "text": "Tested green lentil version preserved. Original source does not specify amounts for optional herbs or optional dough milk/oil."
+    }
+  ]
+}

@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "id": "smoky-beef-bean-taco-bowls",
+  "revision": 1,
+  "identity": {
+    "title": "Smoky beef & bean taco bowls",
+    "subtitle": "Rice bowls with black beans, kidney beans, sweetcorn and lime-yogurt sauce",
+    "description": "Rice bowls with black beans, kidney beans, sweetcorn and lime-yogurt sauce"
+  },
+  "classification": {
+    "mealTypes": [
+      "dinner"
+    ],
+    "tags": [
+      "family-rotation",
+      "budget-friendly"
+    ],
+    "dietary": {
+      "vegetarian": false,
+      "vegan": false
+    }
+  },
+  "history": {
+    "approvedForRotation": true,
+    "currentVersionStatus": "tested",
+    "source": "Family Recipe Rotation — Tested & To Try / Recipe Bank",
+    "testedDate": "2026-10-17",
+    "verdicts": {
+      "user": "Wonderful, huge win. Lime-yogurt sauce amazing. Very large batch.",
+      "steffi": "Wonderful; loved it."
+    },
+    "proposedChanges": [
+      {
+        "status": "untested",
+        "text": "Untested smaller batch: 200–225 g dry rice rather than 300 g and one can sweetcorn instead of two."
+      }
+    ]
+  },
+  "yield": {
+    "baseServings": 6,
+    "servingDescription": "6–8 generous portions",
+    "scaling": {
+      "enabled": true,
+      "reviewRequired": true
+    }
+  },
+  "timing": {
+    "totalMinutes": 50
+  },
+  "media": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "path": "/images/smoky-beef-bean-taco-bowls.webp",
+      "thumbnailPath": "/images/smoky-beef-bean-taco-bowls-thumb.webp",
+      "alt": "Smoky beef & bean taco bowls",
+      "license": {
+        "type": "pending",
+        "creator": null,
+        "sourceUrl": null
+      },
+      "status": "asset-required"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-1",
+      "name": "Large skillet"
+    },
+    {
+      "id": "equipment-2",
+      "name": "Saucepan or rice cooker"
+    },
+    {
+      "id": "equipment-3",
+      "name": "Small mixing bowl"
+    },
+    {
+      "id": "equipment-4",
+      "name": "Knife"
+    },
+    {
+      "id": "equipment-5",
+      "name": "Cutting board"
+    }
+  ],
+  "components": [
+    {
+      "id": "filling",
+      "name": "Smoky beef and bean filling"
+    },
+    {
+      "id": "rice",
+      "name": "Rice"
+    },
+    {
+      "id": "sauce",
+      "name": "Lime-yogurt sauce"
+    },
+    {
+      "id": "toppings",
+      "name": "Serving"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "beef",
+      "foodId": "beef",
+      "name": "Minced beef",
+      "quantity": {
+        "value": 275,
+        "unit": "g"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "black-beans",
+      "foodId": "black-beans",
+      "name": "Black beans",
+      "quantity": {
+        "value": 1,
+        "unit": "can"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "rinsed and drained"
+    },
+    {
+      "id": "kidney-beans",
+      "foodId": "kidney-beans",
+      "name": "Kidney beans",
+      "quantity": {
+        "value": 1,
+        "unit": "can"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "rinsed and drained"
+    },
+    {
+      "id": "corn",
+      "foodId": "corn",
+      "name": "Sweetcorn",
+      "quantity": {
+        "value": 2,
+        "unit": "can"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "drained"
+    },
+    {
+      "id": "tomatoes",
+      "foodId": "tomatoes",
+      "name": "Chopped tomatoes",
+      "quantity": {
+        "value": 400,
+        "unit": "g"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "pepper",
+      "foodId": "pepper",
+      "name": "Bell pepper",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "onion",
+      "foodId": "onion",
+      "name": "Onion",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "tomato-paste",
+      "foodId": "tomato-paste",
+      "name": "Tomato paste",
+      "quantity": {
+        "value": 1,
+        "unit": "tbsp"
+      },
+      "componentId": "filling",
+      "optional": true,
+      "scaling": "linear"
+    },
+    {
+      "id": "oil",
+      "foodId": "oil",
+      "name": "Oil",
+      "quantity": {
+        "value": 1,
+        "unit": "tbsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "cumin",
+      "foodId": "cumin",
+      "name": "Ground cumin",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "paprika",
+      "foodId": "paprika",
+      "name": "Paprika",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "garlic-powder",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder",
+      "quantity": {
+        "value": 1.5,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "chili",
+      "foodId": "chili",
+      "name": "Chili powder",
+      "quantity": {
+        "min": 0.25,
+        "max": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": true,
+      "scaling": "linear"
+    },
+    {
+      "id": "oregano",
+      "foodId": "oregano",
+      "name": "Oregano",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "salt",
+      "foodId": "salt",
+      "name": "Fine salt",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear",
+      "notes": "initial amount; adjust to taste"
+    },
+    {
+      "id": "pepper-black",
+      "foodId": "pepper-black",
+      "name": "Black pepper",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "filling",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "rice",
+      "foodId": "rice",
+      "name": "Dry rice",
+      "quantity": {
+        "value": 300,
+        "unit": "g"
+      },
+      "componentId": "rice",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "yogurt",
+      "foodId": "yogurt",
+      "name": "Greek yogurt",
+      "quantity": {
+        "value": 125,
+        "unit": "g"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "lime-juice",
+      "foodId": "lime-juice",
+      "name": "Lime juice",
+      "quantity": {
+        "min": 1,
+        "max": 2,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "lime-zest",
+      "foodId": "lime-zest",
+      "name": "Lime zest",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": true,
+      "scaling": "linear"
+    },
+    {
+      "id": "sauce-garlic",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder for sauce",
+      "quantity": {
+        "value": 0.25,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "sauce-oregano",
+      "foodId": "oregano",
+      "name": "Oregano for sauce",
+      "quantity": {
+        "value": 0.25,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "sauce-salt",
+      "foodId": "salt",
+      "name": "Salt for sauce",
+      "quantity": {
+        "value": 0.25,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "water",
+      "foodId": "water",
+      "name": "Cold water to thin sauce",
+      "quantity": {
+        "text": "as needed"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "sauce-sugar",
+      "foodId": "sauce-sugar",
+      "name": "Sugar for sauce",
+      "quantity": {
+        "text": "optional pinch"
+      },
+      "componentId": "sauce",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "nachos",
+      "foodId": "nachos",
+      "name": "Nachos",
+      "quantity": {
+        "text": "to serve"
+      },
+      "componentId": "toppings",
+      "optional": true,
+      "scaling": "manual"
+    }
+  ],
+  "quantityUsages": [],
+  "preparation": [
+    {
+      "id": "prep-rice",
+      "title": "Start and organize",
+      "items": [
+        {
+          "id": "prep-rice-1",
+          "text": "Measure 300 g dry rice and start cooking according to the package, timing it to finish near serving.",
+          "checkable": true
+        },
+        {
+          "id": "prep-rice-2",
+          "text": "Dice 1 onion and 1 bell pepper.",
+          "checkable": true
+        },
+        {
+          "id": "prep-rice-3",
+          "text": "Rinse and drain the black beans and kidney beans; drain 2 cans sweetcorn.",
+          "checkable": true
+        }
+      ]
+    },
+    {
+      "id": "prep-spices",
+      "title": "Measure spices and sauce",
+      "items": [
+        {
+          "id": "prep-spices-1",
+          "text": "Mix 2 tsp cumin, 2 tsp paprika, 1½ tsp garlic powder, 1 tsp oregano, ½ tsp black pepper and optional ¼–½ tsp chili.",
+          "checkable": true
+        },
+        {
+          "id": "prep-spices-2",
+          "text": "For the sauce, measure 125 g Greek yogurt, 1–2 tsp lime juice, optional ½ tsp zest, ¼ tsp garlic powder, ¼ tsp oregano and ¼ tsp salt.",
+          "checkable": true
+        }
+      ]
+    }
+  ],
+  "cooking": [
+    {
+      "id": "cook-1",
+      "title": "Brown the beef",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Heat 1 tbsp oil in a skillet. Brown 275 g minced beef, then transfer it to a plate."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-2",
+      "title": "Soften the vegetables",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Cook the diced onion and bell pepper in the same pan for 6–8 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-2-timer-1",
+          "label": "Sauté vegetables",
+          "durationSeconds": 360
+        }
+      ]
+    },
+    {
+      "id": "cook-3",
+      "title": "Bloom the seasoning",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Stir in the prepared cumin-paprika seasoning and optional 1 tbsp tomato paste. Cook for about 1 minute."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-3-timer-1",
+          "label": "Bloom seasoning",
+          "durationSeconds": 60
+        }
+      ],
+      "tip": "Briefly heating spices in oil releases their aromas."
+    },
+    {
+      "id": "cook-4",
+      "title": "Simmer the filling",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Return the beef; add 400 g chopped tomatoes, the drained black and kidney beans and initially ½ tsp salt. Simmer uncovered for 12–15 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-4-timer-1",
+          "label": "Simmer filling",
+          "durationSeconds": 720
+        }
+      ]
+    },
+    {
+      "id": "cook-5",
+      "title": "Add the corn",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Stir in both drained cans of sweetcorn for the final 5 minutes of cooking. Taste and adjust salt."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-5-timer-1",
+          "label": "Warm sweetcorn",
+          "durationSeconds": 300
+        }
+      ]
+    },
+    {
+      "id": "cook-6",
+      "title": "Mix the lime-yogurt sauce",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Combine 125 g Greek yogurt, 1–2 tsp lime juice, optional zest, ¼ tsp garlic powder, ¼ tsp oregano and ¼ tsp salt. Thin with cold water if needed; add an optional pinch of sugar if desired. Chill 10–15 minutes when practical."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-6-timer-1",
+          "label": "Chill sauce",
+          "durationSeconds": 600
+        }
+      ]
+    },
+    {
+      "id": "cook-7",
+      "title": "Build the bowls",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Spoon rice into bowls. Add the smoky beef, beans and corn, then finish with the lime-yogurt sauce and optional nachos. The sauce is an essential part of the tested favorite."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    }
+  ],
+  "serving": {
+    "instructions": "Serve rice bowls with the lime-yogurt sauce and optional nachos."
+  },
+  "storage": {
+    "refrigeratorDays": null,
+    "freezerSuitable": null,
+    "reheatingInstructions": null
+  },
+  "notes": [
+    {
+      "id": "note-2",
+      "type": "feedback",
+      "text": "No lentils used. Original yields six to eight portions and substantial leftovers."
+    }
+  ]
+}

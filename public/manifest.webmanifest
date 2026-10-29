@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Kitchen Mode — The family cookbook",
+  "short_name": "Kitchen Mode",
+  "description": "A little less rush. A little more joy in the kitchen.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F3EB",
+  "theme_color": "#F7F3EB",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,660 @@
+{
+  "schemaVersion": 1,
+  "id": "chicken-chickpea-coconut-curry",
+  "revision": 1,
+  "identity": {
+    "title": "Chicken & chickpea coconut curry",
+    "subtitle": "A mild creamy curry with rice and homemade garlic-butter yeast naan",
+    "description": "A mild creamy curry with rice and homemade garlic-butter yeast naan"
+  },
+  "classification": {
+    "mealTypes": [
+      "dinner"
+    ],
+    "tags": [
+      "family-rotation",
+      "budget-friendly"
+    ],
+    "dietary": {
+      "vegetarian": false,
+      "vegan": false
+    }
+  },
+  "history": {
+    "approvedForRotation": true,
+    "currentVersionStatus": "tested",
+    "source": "Family Recipe Rotation — Tested & To Try / Recipe Bank",
+    "testedDate": "2026-10-19",
+    "verdicts": {
+      "user": "Great success; tasty, generous and reheated very well.",
+      "steffi": "Loved it, including leftovers the next day."
+    },
+    "proposedChanges": [
+      {
+        "status": "untested",
+        "text": "Optional 1–2 tbsp tomato paste for more color/depth, not tested."
+      },
+      {
+        "status": "untested",
+        "text": "Toddler serving idea: dilute some sauce with coconut milk or serve less sauce; not a change to tested recipe."
+      }
+    ]
+  },
+  "yield": {
+    "baseServings": 6,
+    "servingDescription": "6 servings plus leftovers",
+    "scaling": {
+      "enabled": true,
+      "reviewRequired": true
+    }
+  },
+  "timing": {
+    "totalMinutes": 90
+  },
+  "media": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "path": "/images/chicken-chickpea-coconut-curry.webp",
+      "thumbnailPath": "/images/chicken-chickpea-coconut-curry-thumb.webp",
+      "alt": "Chicken & chickpea coconut curry",
+      "license": {
+        "type": "pending",
+        "creator": null,
+        "sourceUrl": null
+      },
+      "status": "asset-required"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-1",
+      "name": "Large curry pot"
+    },
+    {
+      "id": "equipment-2",
+      "name": "Saucepan or rice cooker"
+    },
+    {
+      "id": "equipment-3",
+      "name": "Dry skillet for naan"
+    },
+    {
+      "id": "equipment-4",
+      "name": "Mixing bowl"
+    },
+    {
+      "id": "equipment-5",
+      "name": "Rolling pin"
+    },
+    {
+      "id": "equipment-6",
+      "name": "Knife"
+    },
+    {
+      "id": "equipment-7",
+      "name": "Cutting board"
+    },
+    {
+      "id": "equipment-8",
+      "name": "Meat thermometer"
+    }
+  ],
+  "components": [
+    {
+      "id": "curry",
+      "name": "Curry"
+    },
+    {
+      "id": "rice",
+      "name": "Rice"
+    },
+    {
+      "id": "naan",
+      "name": "Homemade yeast naan"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "chicken",
+      "foodId": "chicken",
+      "name": "Boneless chicken thighs",
+      "quantity": {
+        "value": 450,
+        "unit": "g"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "chickpeas",
+      "foodId": "chickpeas",
+      "name": "Chickpeas",
+      "quantity": {
+        "value": 3,
+        "unit": "can",
+        "package": {
+          "value": 400,
+          "unit": "g"
+        }
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "drained"
+    },
+    {
+      "id": "coconut-milk",
+      "foodId": "coconut-milk",
+      "name": "Coconut milk",
+      "quantity": {
+        "value": 2,
+        "unit": "can",
+        "package": {
+          "value": 400,
+          "unit": "ml"
+        }
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "onion",
+      "foodId": "onion",
+      "name": "Large onion",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "palermo",
+      "foodId": "palermo",
+      "name": "Sweet Palermo pepper",
+      "quantity": {
+        "min": 100,
+        "max": 150,
+        "unit": "g"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "oil",
+      "foodId": "oil",
+      "name": "Cooking oil",
+      "quantity": {
+        "value": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "curry-powder",
+      "foodId": "curry-powder",
+      "name": "Mild curry powder",
+      "quantity": {
+        "value": 3,
+        "unit": "tbsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "cumin",
+      "foodId": "cumin",
+      "name": "Ground cumin",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "garlic-powder",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder",
+      "quantity": {
+        "value": 1.5,
+        "unit": "tsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ginger",
+      "foodId": "ginger",
+      "name": "Ground ginger",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "mustard-seeds",
+      "foodId": "mustard-seeds",
+      "name": "Mustard seeds",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "salt",
+      "foodId": "salt",
+      "name": "Fine salt",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "linear",
+      "notes": "approximate; adjust to taste"
+    },
+    {
+      "id": "pepper",
+      "foodId": "pepper",
+      "name": "Black pepper",
+      "quantity": {
+        "text": "to taste"
+      },
+      "componentId": "curry",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "garam-masala",
+      "foodId": "garam-masala",
+      "name": "Garam masala",
+      "quantity": {
+        "min": 0.5,
+        "max": 1,
+        "unit": "tsp"
+      },
+      "componentId": "curry",
+      "optional": true,
+      "scaling": "linear"
+    },
+    {
+      "id": "acid",
+      "foodId": "acid",
+      "name": "Lime or lemon juice",
+      "quantity": {
+        "text": "to taste"
+      },
+      "componentId": "curry",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "sugar",
+      "foodId": "sugar",
+      "name": "Sugar",
+      "quantity": {
+        "text": "optional, to taste"
+      },
+      "componentId": "curry",
+      "optional": true,
+      "scaling": "manual"
+    },
+    {
+      "id": "rice",
+      "foodId": "rice",
+      "name": "Dry rice",
+      "quantity": {
+        "min": 350,
+        "max": 400,
+        "unit": "g"
+      },
+      "componentId": "rice",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "flour",
+      "foodId": "flour",
+      "name": "Flour",
+      "quantity": {
+        "value": 450,
+        "unit": "g"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "yeast",
+      "foodId": "yeast",
+      "name": "Dry yeast",
+      "quantity": {
+        "value": 7,
+        "unit": "g"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "naan-sugar",
+      "foodId": "sugar",
+      "name": "Sugar for naan",
+      "quantity": {
+        "value": 1,
+        "unit": "tbsp"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "naan-salt",
+      "foodId": "salt",
+      "name": "Salt for naan",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "milk",
+      "foodId": "milk",
+      "name": "Milk for naan",
+      "quantity": {
+        "value": 250,
+        "unit": "ml"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "naan-oil",
+      "foodId": "oil",
+      "name": "Oil for naan",
+      "quantity": {
+        "value": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "naan-water",
+      "foodId": "water",
+      "name": "Water for naan dough",
+      "quantity": {
+        "text": "as needed"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "naan-butter",
+      "foodId": "butter",
+      "name": "Butter to finish naan",
+      "quantity": {
+        "text": "as needed"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "naan-garlic",
+      "foodId": "garlic",
+      "name": "Garlic to finish naan",
+      "quantity": {
+        "text": "as desired"
+      },
+      "componentId": "naan",
+      "optional": false,
+      "scaling": "manual"
+    }
+  ],
+  "quantityUsages": [],
+  "preparation": [
+    {
+      "id": "prep-naan",
+      "title": "Start the naan dough early",
+      "items": [
+        {
+          "id": "prep-naan-1",
+          "text": "Mix 450 g flour, 7 g dry yeast, 1 tbsp sugar and 1 tsp salt.",
+          "checkable": true
+        },
+        {
+          "id": "prep-naan-2",
+          "text": "Add 250 ml milk and 2 tbsp oil; add water only as needed for a workable dough. Knead 6–8 minutes.",
+          "checkable": true
+        },
+        {
+          "id": "prep-naan-3",
+          "text": "Cover and leave to rise 45–60 minutes. This long-lead step comes first.",
+          "checkable": true
+        }
+      ],
+      "tip": "Starting the dough before the curry gives the yeast time to work."
+    },
+    {
+      "id": "prep-curry",
+      "title": "Prepare the curry ingredients",
+      "items": [
+        {
+          "id": "prep-curry-1",
+          "text": "Dice 1 large onion and about 100–150 g sweet Palermo pepper.",
+          "checkable": true
+        },
+        {
+          "id": "prep-curry-2",
+          "text": "Open 2 cans coconut milk; drain 3 cans chickpeas.",
+          "checkable": true
+        },
+        {
+          "id": "prep-curry-3",
+          "text": "Measure ½ tsp mustard seeds separately. Combine 3 tbsp mild curry powder, 2 tsp cumin, 1½ tsp garlic powder and ½ tsp ground ginger.",
+          "checkable": true
+        },
+        {
+          "id": "prep-curry-4",
+          "text": "Have 450 g chicken thighs, rice, salt and optional finishing seasonings ready.",
+          "checkable": true
+        }
+      ]
+    },
+    {
+      "id": "prep-equipment",
+      "title": "Ready the cooking equipment",
+      "items": [
+        {
+          "id": "prep-equipment-1",
+          "text": "Set out a large pot for the curry, a rice pot and a dry skillet for naan.",
+          "checkable": true
+        },
+        {
+          "id": "prep-equipment-2",
+          "text": "Have butter and garlic available to brush onto the naan.",
+          "checkable": true
+        },
+        {
+          "id": "prep-equipment-3",
+          "text": "Do not preheat the dry naan skillet until the dough is ready to cook.",
+          "checkable": true
+        }
+      ]
+    }
+  ],
+  "cooking": [
+    {
+      "id": "cook-1",
+      "title": "Soften onion and pepper",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Heat the curry oil in a large pot. Sauté the diced onion 8–10 minutes; add the diced Palermo pepper for the final 4–5 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-1-timer-1",
+          "label": "Onion sauté",
+          "durationSeconds": 480
+        }
+      ]
+    },
+    {
+      "id": "cook-2",
+      "title": "Bloom the mustard and spices",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Add ½ tsp mustard seeds to the oil and cook around 45–60 seconds, then stir in the prepared curry powder, cumin, garlic powder and ginger for approximately 30 seconds."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-2-timer-1",
+          "label": "Spice bloom",
+          "durationSeconds": 30
+        }
+      ],
+      "tip": "Blooming the spices in fat builds aroma; keep them moving to avoid scorching."
+    },
+    {
+      "id": "cook-3",
+      "title": "Simmer the chicken",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Pour in 800 ml coconut milk. Add 450 g boneless chicken thighs, roughly 1 tsp salt and pepper. Simmer gently until the thickest chicken reaches at least 74°C. Frozen thighs can take 25–40 minutes or longer; measure temperature rather than relying on time."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-3-timer-1",
+          "label": "First chicken check",
+          "durationSeconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "cook-4",
+      "title": "Start the rice",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Cook 350–400 g dry rice according to package directions so that it finishes around the time of the curry."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-5",
+      "title": "Add chickpeas and finish curry",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Stir in the drained chickpeas for the final 10–15 minutes. Shred the fully cooked chicken and return it to the curry. Simmer uncovered or mash a few chickpeas if the sauce needs thickening. Taste, then add optional garam masala, citrus or a little sugar as desired."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-5-timer-1",
+          "label": "Chickpea simmer",
+          "durationSeconds": 600
+        }
+      ]
+    },
+    {
+      "id": "cook-6",
+      "title": "Shape the naan",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Once the dough has risen for 45–60 minutes, divide into six portions and rest 10 minutes. Roll each portion fairly thin."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-6-timer-1",
+          "label": "Naan rest",
+          "durationSeconds": 600
+        }
+      ]
+    },
+    {
+      "id": "cook-7",
+      "title": "Cook the naan",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Heat a dry skillet. Cook each naan approximately 1–2 minutes per side until blistered and cooked through; brush with butter and garlic. Work in batches as needed."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-7-timer-1",
+          "label": "Naan side",
+          "durationSeconds": 90
+        }
+      ]
+    },
+    {
+      "id": "cook-8",
+      "title": "Serve the full meal",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Serve the coconut chicken-and-chickpea curry with cooked rice and warm garlic-butter naan. Taste the curry before serving; it can still be mildly spicy without added chili."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    }
+  ],
+  "serving": {
+    "instructions": "Serve with rice and freshly cooked garlic-butter naan."
+  },
+  "storage": {
+    "refrigeratorDays": null,
+    "freezerSuitable": null,
+    "reheatingInstructions": null
+  },
+  "notes": [
+    {
+      "id": "note-2",
+      "type": "feedback",
+      "text": "Mild curry, but still perceptibly spicy. Original tested version does not contain added tomato paste. Naan dough made with yeast; six naan."
+    }
+  ]
+}

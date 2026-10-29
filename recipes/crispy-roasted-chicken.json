@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "id": "crispy-roasted-chicken",
+  "revision": 1,
+  "identity": {
+    "title": "Crispy roasted chicken with potatoes & carrots",
+    "subtitle": "Crisp cut-side-down potatoes and buttery carrots roasted beneath chicken",
+    "description": "Crisp cut-side-down potatoes and buttery carrots roasted beneath chicken"
+  },
+  "classification": {
+    "mealTypes": [
+      "dinner"
+    ],
+    "tags": [
+      "family-rotation",
+      "budget-friendly"
+    ],
+    "dietary": {
+      "vegetarian": false,
+      "vegan": false
+    }
+  },
+  "history": {
+    "approvedForRotation": true,
+    "currentVersionStatus": "tested",
+    "source": "Family Recipe Rotation — Tested & To Try / Recipe Bank",
+    "testedDate": "2026-10-14",
+    "verdicts": {
+      "user": "10/10 overall. Potatoes exceptionally crisp; vegetables phenomenal. Chicken nicely seasoned.",
+      "steffi": "10/10 overall, agreed."
+    },
+    "proposedChanges": []
+  },
+  "yield": {
+    "baseServings": 4,
+    "servingDescription": "4 servings",
+    "scaling": {
+      "enabled": true,
+      "reviewRequired": true
+    }
+  },
+  "timing": {
+    "totalMinutes": 75
+  },
+  "media": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "path": "/images/crispy-roasted-chicken.webp",
+      "thumbnailPath": "/images/crispy-roasted-chicken-thumb.webp",
+      "alt": "Crispy roasted chicken with potatoes & carrots",
+      "license": {
+        "type": "pending",
+        "creator": null,
+        "sourceUrl": null
+      },
+      "status": "asset-required"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-1",
+      "name": "Oven"
+    },
+    {
+      "id": "equipment-2",
+      "name": "Deep roasting pan"
+    },
+    {
+      "id": "equipment-3",
+      "name": "Wire rack"
+    },
+    {
+      "id": "equipment-4",
+      "name": "Separate metal baking tray"
+    },
+    {
+      "id": "equipment-5",
+      "name": "Knife"
+    },
+    {
+      "id": "equipment-6",
+      "name": "Cutting board"
+    },
+    {
+      "id": "equipment-7",
+      "name": "Mixing bowl"
+    },
+    {
+      "id": "equipment-8",
+      "name": "Meat thermometer"
+    }
+  ],
+  "components": [
+    {
+      "id": "chicken",
+      "name": "Chicken"
+    },
+    {
+      "id": "potatoes",
+      "name": "Potatoes"
+    },
+    {
+      "id": "vegetables",
+      "name": "Carrots and onions"
+    },
+    {
+      "id": "finish",
+      "name": "Finishing"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "chicken",
+      "foodId": "chicken",
+      "name": "Bone-in chicken thighs/drumsticks",
+      "quantity": {
+        "value": 1000,
+        "unit": "g"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "skin dried",
+      "notes": "Approximate source amount"
+    },
+    {
+      "id": "ch-oil",
+      "foodId": "oil",
+      "name": "Oil for chicken",
+      "quantity": {
+        "value": 1,
+        "unit": "tbsp"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ch-garlic",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder for chicken",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ch-thyme",
+      "foodId": "thyme",
+      "name": "Thyme for chicken",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ch-rosemary",
+      "foodId": "rosemary",
+      "name": "Rosemary for chicken",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ch-cumin",
+      "foodId": "cumin",
+      "name": "Cumin for chicken",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": true,
+      "scaling": "linear"
+    },
+    {
+      "id": "ch-pepper",
+      "foodId": "black-pepper",
+      "name": "Black pepper for chicken",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": true,
+      "scaling": "linear",
+      "notes": "Original says ½ tsp pepper, optional"
+    },
+    {
+      "id": "ch-salt",
+      "foodId": "salt",
+      "name": "Fine salt for chicken",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ch-onionpowder",
+      "foodId": "onion-powder",
+      "name": "Onion powder for chicken",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "chicken",
+      "optional": true,
+      "scaling": "linear"
+    },
+    {
+      "id": "potato",
+      "foodId": "potato",
+      "name": "Small thin-skinned potatoes",
+      "quantity": {
+        "min": 1000,
+        "max": 1200,
+        "unit": "g"
+      },
+      "componentId": "potatoes",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "washed, dried, halved lengthwise"
+    },
+    {
+      "id": "pot-oil",
+      "foodId": "oil",
+      "name": "Oil for potatoes",
+      "quantity": {
+        "min": 1.5,
+        "max": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "potatoes",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "pot-salt",
+      "foodId": "salt",
+      "name": "Salt for potatoes",
+      "quantity": {
+        "min": 0.5,
+        "max": 0.75,
+        "unit": "tsp"
+      },
+      "componentId": "potatoes",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "pot-garlic",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder for potatoes",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "potatoes",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "pot-rosemary",
+      "foodId": "rosemary",
+      "name": "Rosemary for potatoes",
+      "quantity": {
+        "text": "a pinch"
+      },
+      "componentId": "potatoes",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "pot-pepper",
+      "foodId": "black-pepper",
+      "name": "Pepper for potatoes",
+      "quantity": {
+        "text": "to taste"
+      },
+      "componentId": "potatoes",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "carrots",
+      "foodId": "carrots",
+      "name": "Carrots",
+      "quantity": {
+        "min": 500,
+        "max": 600,
+        "unit": "g"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "cut into 2–3 cm pieces"
+    },
+    {
+      "id": "veg-onion",
+      "foodId": "onion",
+      "name": "Onion",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "wedges"
+    },
+    {
+      "id": "veg-oil",
+      "foodId": "oil",
+      "name": "Oil for vegetables",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tbsp"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "veg-salt",
+      "foodId": "salt",
+      "name": "Salt for vegetables",
+      "quantity": {
+        "value": 0.25,
+        "unit": "tsp"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "veg-thyme",
+      "foodId": "thyme",
+      "name": "Thyme for vegetables",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "veg-pepper",
+      "foodId": "black-pepper",
+      "name": "Pepper for vegetables",
+      "quantity": {
+        "text": "to taste"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "butter",
+      "foodId": "butter",
+      "name": "Butter to finish vegetables",
+      "quantity": {
+        "min": 20,
+        "max": 25,
+        "unit": "g"
+      },
+      "componentId": "finish",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "finish-garlic",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder to finish",
+      "quantity": {
+        "text": "a pinch"
+      },
+      "componentId": "finish",
+      "optional": false,
+      "scaling": "manual"
+    },
+    {
+      "id": "lemon",
+      "foodId": "lemon",
+      "name": "Lemon juice",
+      "quantity": {
+        "text": "a little, to taste"
+      },
+      "componentId": "finish",
+      "optional": true,
+      "scaling": "manual"
+    }
+  ],
+  "quantityUsages": [],
+  "preparation": [
+    {
+      "id": "prep-oven",
+      "title": "Start the oven and equipment",
+      "items": [
+        {
+          "id": "prep-oven-1",
+          "text": "Preheat to 200°C fan (or 220°C conventional).",
+          "checkable": true
+        },
+        {
+          "id": "prep-oven-2",
+          "text": "Position a rack so chicken can roast above the carrots/onions in a deep pan.",
+          "checkable": true
+        },
+        {
+          "id": "prep-oven-3",
+          "text": "Get a separate metal tray ready for the potatoes.",
+          "checkable": true
+        }
+      ],
+      "tip": "Two separate trays let the potatoes get crisp while the vegetables catch the chicken drippings."
+    },
+    {
+      "id": "prep-potatoes",
+      "title": "Prepare the potatoes",
+      "items": [
+        {
+          "id": "prep-potatoes-1",
+          "text": "Wash and dry 1–1.2 kg small potatoes thoroughly. Halve lengthwise; do not peel or parboil.",
+          "checkable": true
+        },
+        {
+          "id": "prep-potatoes-2",
+          "text": "Toss with 1½–2 tbsp oil, ½–¾ tsp salt, 1 tsp garlic powder, a pinch of rosemary and pepper.",
+          "checkable": true
+        },
+        {
+          "id": "prep-potatoes-3",
+          "text": "Arrange cut-side down in one layer on a metal tray. Do not put the tray in yet.",
+          "checkable": true
+        }
+      ]
+    },
+    {
+      "id": "prep-chicken-veg",
+      "title": "Prepare chicken and vegetables",
+      "items": [
+        {
+          "id": "prep-chicken-veg-1",
+          "text": "Cut 500–600 g carrots into 2–3 cm pieces and 1 onion into wedges.",
+          "checkable": true
+        },
+        {
+          "id": "prep-chicken-veg-2",
+          "text": "Toss carrots and onion with ½ tbsp oil, ¼ tsp salt, ½ tsp thyme and pepper; place in the deep pan.",
+          "checkable": true
+        },
+        {
+          "id": "prep-chicken-veg-3",
+          "text": "Pat about 1 kg chicken pieces thoroughly dry. Rub with 1 tbsp oil, 2 tsp garlic powder, 1 tsp thyme, ½ tsp rosemary and 1 tsp salt; use optional cumin, pepper or onion powder as desired.",
+          "checkable": true
+        },
+        {
+          "id": "prep-chicken-veg-4",
+          "text": "Put chicken skin-side up on a wire rack above the carrots/onions.",
+          "checkable": true
+        }
+      ]
+    }
+  ],
+  "cooking": [
+    {
+      "id": "cook-1",
+      "title": "Start the chicken roast",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Put the chicken on its rack above the vegetables in the preheated oven. Roast for 10 minutes before adding the potatoes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-1-timer-1",
+          "label": "Head start for chicken",
+          "durationSeconds": 600
+        }
+      ]
+    },
+    {
+      "id": "cook-2",
+      "title": "Add the potato tray",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Slide the prepared potato tray into the oven, cut-side down. Leave the potatoes undisturbed—do not flip."
+        }
+      ],
+      "checklist": [],
+      "timers": [],
+      "tip": "Contact with the metal tray creates the deeply browned potato cut sides."
+    },
+    {
+      "id": "cook-3",
+      "title": "Check the roast",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "At about 35 minutes total for the chicken (25 minutes for the potatoes), inspect browning and use a thermometer in the thickest chicken piece, away from bone."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-3-timer-1",
+          "label": "First doneness check",
+          "durationSeconds": 1500
+        }
+      ],
+      "tip": "Chicken must reach at least 74°C; dark meat often tastes better around 80–85°C."
+    },
+    {
+      "id": "cook-4",
+      "title": "Finish cooking",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Continue roasting as needed. Chicken typically takes about 40–55 minutes total, and potatoes about 30–40 minutes; use temperature, tenderness and browning rather than the clock alone. If drippings start burning, add a splash of water beneath the vegetables only."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-5",
+      "title": "Butter the vegetables and rest",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Remove the chicken and rest uncovered 5–10 minutes. Toss the roasted carrots and onions with the chicken drippings, 20–25 g butter and a pinch of garlic powder. Add optional lemon juice to taste."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-5-timer-1",
+          "label": "Chicken rest",
+          "durationSeconds": 300
+        }
+      ]
+    },
+    {
+      "id": "cook-6",
+      "title": "Serve",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Serve chicken with the very crisp potatoes and buttery roasted vegetables. The original improvised sauce was not documented and is not included."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    }
+  ],
+  "serving": {
+    "instructions": "Plate chicken with crispy potatoes, carrots and onions."
+  },
+  "storage": {
+    "refrigeratorDays": null,
+    "freezerSuitable": null,
+    "reheatingInstructions": null
+  },
+  "notes": [
+    {
+      "id": "note-1",
+      "type": "feedback",
+      "text": "Exact original no-paprika recipe. Keep potatoes cut-side down, no parboiling or flipping."
+    }
+  ]
+}

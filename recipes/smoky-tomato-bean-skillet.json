@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "id": "smoky-tomato-bean-skillet",
+  "revision": 1,
+  "identity": {
+    "title": "Smoky tomato & bean skillet",
+    "subtitle": "Fast, filling, warmly spiced beans in a thick tomato sauce",
+    "description": "Fast, filling, warmly spiced beans in a thick tomato sauce"
+  },
+  "classification": {
+    "mealTypes": [
+      "dinner"
+    ],
+    "tags": [
+      "family-rotation",
+      "budget-friendly"
+    ],
+    "dietary": {
+      "vegetarian": false,
+      "vegan": false
+    }
+  },
+  "history": {
+    "approvedForRotation": true,
+    "currentVersionStatus": "tested",
+    "source": "Family Recipe Rotation — Tested & To Try / Recipe Bank",
+    "testedDate": "2026-10-13",
+    "verdicts": {
+      "user": "Delicious, extremely filling, with leftovers.",
+      "steffi": "Good, but too tomato-heavy."
+    },
+    "proposedChanges": [
+      {
+        "status": "untested",
+        "text": "Proposed V2 (not tested): 400 g tomatoes rather than 800 g, 100–200 ml water/stock as needed, and optional 1 tbsp butter."
+      }
+    ]
+  },
+  "yield": {
+    "baseServings": 4,
+    "servingDescription": "4 servings plus leftovers",
+    "scaling": {
+      "enabled": true,
+      "reviewRequired": true
+    }
+  },
+  "timing": {
+    "totalMinutes": 20
+  },
+  "media": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "path": "/images/smoky-tomato-bean-skillet.webp",
+      "thumbnailPath": "/images/smoky-tomato-bean-skillet-thumb.webp",
+      "alt": "Smoky tomato & bean skillet",
+      "license": {
+        "type": "pending",
+        "creator": null,
+        "sourceUrl": null
+      },
+      "status": "asset-required"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-1",
+      "name": "Skillet"
+    },
+    {
+      "id": "equipment-2",
+      "name": "Knife"
+    },
+    {
+      "id": "equipment-3",
+      "name": "Cutting board"
+    },
+    {
+      "id": "equipment-4",
+      "name": "Can opener"
+    },
+    {
+      "id": "equipment-5",
+      "name": "Wooden spoon"
+    }
+  ],
+  "components": [
+    {
+      "id": "skillet",
+      "name": "Tomato and bean skillet"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "kidney-beans",
+      "foodId": "kidney-beans",
+      "name": "Kidney beans",
+      "quantity": {
+        "value": 2,
+        "unit": "can",
+        "package": {
+          "value": 400,
+          "unit": "g"
+        }
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear",
+      "preparation": "drained"
+    },
+    {
+      "id": "tomatoes",
+      "foodId": "canned-tomatoes",
+      "name": "Chopped tomatoes",
+      "quantity": {
+        "value": 2,
+        "unit": "can",
+        "package": {
+          "value": 400,
+          "unit": "g"
+        }
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "onion",
+      "foodId": "onion",
+      "name": "Onion",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "oil",
+      "foodId": "oil",
+      "name": "Cooking oil",
+      "quantity": {
+        "value": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "paprika",
+      "foodId": "paprika",
+      "name": "Paprika",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "cumin",
+      "foodId": "cumin",
+      "name": "Ground cumin",
+      "quantity": {
+        "value": 1.5,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "curry-powder",
+      "foodId": "curry-powder",
+      "name": "Curry powder",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "garlic-powder",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "ginger",
+      "foodId": "ginger",
+      "name": "Ground ginger",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "garam-masala",
+      "foodId": "garam-masala",
+      "name": "Garam masala",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "salt",
+      "foodId": "salt",
+      "name": "Fine salt",
+      "quantity": {
+        "value": 0.75,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "sugar",
+      "foodId": "sugar",
+      "name": "Sugar",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "skillet",
+      "optional": true,
+      "scaling": "linear"
+    }
+  ],
+  "quantityUsages": [],
+  "preparation": [
+    {
+      "id": "prep-ingredients",
+      "title": "Get everything ready",
+      "items": [
+        {
+          "id": "prep-ingredients-1",
+          "text": "Finely dice 1 onion.",
+          "checkable": true
+        },
+        {
+          "id": "prep-ingredients-2",
+          "text": "Drain both cans of kidney beans.",
+          "checkable": true
+        },
+        {
+          "id": "prep-ingredients-3",
+          "text": "Measure paprika, cumin, curry powder, garlic powder and ground ginger together; keep the garam masala separate.",
+          "checkable": true
+        },
+        {
+          "id": "prep-ingredients-4",
+          "text": "Open both cans of chopped tomatoes.",
+          "checkable": true
+        },
+        {
+          "id": "prep-ingredients-5",
+          "text": "Have rice and/or naan ready to serve (accompaniments not quantified in the tested bank).",
+          "checkable": true
+        }
+      ]
+    }
+  ],
+  "cooking": [
+    {
+      "id": "cook-1",
+      "title": "Soften the onion",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Heat "
+        },
+        {
+          "type": "quantity",
+          "ingredientId": "oil"
+        },
+        {
+          "type": "text",
+          "text": " in a skillet over medium heat. Add the diced onion and sauté for about 4 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-1-timer-1",
+          "label": "Onion",
+          "durationSeconds": 240
+        }
+      ]
+    },
+    {
+      "id": "cook-2",
+      "title": "Bloom the spices",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Add 2 tsp paprika, 1½ tsp ground cumin, 1 tsp curry powder, ½ tsp garlic powder and ½ tsp ground ginger. Stir for 20–30 seconds."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-2-timer-1",
+          "label": "Bloom spices",
+          "durationSeconds": 30
+        }
+      ],
+      "tip": "Briefly warming the spices in oil helps release fat-soluble aromas."
+    },
+    {
+      "id": "cook-3",
+      "title": "Simmer the tomatoes",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Add "
+        },
+        {
+          "type": "quantity",
+          "ingredientId": "tomatoes"
+        },
+        {
+          "type": "text",
+          "text": " and "
+        },
+        {
+          "type": "quantity",
+          "ingredientId": "salt"
+        },
+        {
+          "type": "text",
+          "text": ". Simmer uncovered for 5 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-3-timer-1",
+          "label": "Tomato simmer",
+          "durationSeconds": 300
+        }
+      ]
+    },
+    {
+      "id": "cook-4",
+      "title": "Add the beans",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Stir in "
+        },
+        {
+          "type": "quantity",
+          "ingredientId": "kidney-beans"
+        },
+        {
+          "type": "text",
+          "text": ". Mash a few beans to thicken the mixture, then simmer for another 5 minutes."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-4-timer-1",
+          "label": "Bean simmer",
+          "durationSeconds": 300
+        }
+      ]
+    },
+    {
+      "id": "cook-5",
+      "title": "Finish and serve",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Stir in "
+        },
+        {
+          "type": "quantity",
+          "ingredientId": "garam-masala"
+        },
+        {
+          "type": "text",
+          "text": ". Taste for salt and add a little of the optional sugar only if the acidity needs balancing. Serve over rice with warm naan if desired."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    }
+  ],
+  "serving": {
+    "instructions": "Serve with rice and/or naan, separately prepared."
+  },
+  "storage": {
+    "refrigeratorDays": null,
+    "freezerSuitable": null,
+    "reheatingInstructions": null
+  },
+  "notes": [
+    {
+      "id": "note-2",
+      "type": "feedback",
+      "text": "Tested recipe stays unchanged despite a proposed less-tomato variation."
+    }
+  ]
+}

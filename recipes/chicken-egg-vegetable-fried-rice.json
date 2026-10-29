@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "id": "chicken-egg-vegetable-fried-rice",
+  "revision": 1,
+  "identity": {
+    "title": "Chicken, egg & vegetable fried rice",
+    "subtitle": "Big-batch fried rice with chicken, eggs, vegetables and sesame oil",
+    "description": "Big-batch fried rice with chicken, eggs, vegetables and sesame oil"
+  },
+  "classification": {
+    "mealTypes": [
+      "dinner"
+    ],
+    "tags": [
+      "family-rotation",
+      "budget-friendly"
+    ],
+    "dietary": {
+      "vegetarian": false,
+      "vegan": false
+    }
+  },
+  "history": {
+    "approvedForRotation": true,
+    "currentVersionStatus": "tested",
+    "source": "Family Recipe Rotation — Tested & To Try / Recipe Bank",
+    "testedDate": "2026-10-21",
+    "verdicts": {
+      "user": "Delicious with excellent rice texture; seasoning missing something; six very large portions made it slow.",
+      "steffi": "Agreed tasty, wanted extra soy sauce and fresh lime."
+    },
+    "proposedChanges": [
+      {
+        "status": "untested",
+        "text": "Untested smaller batch: 300–350 g dry rice, 300–350 g chicken, 4 eggs, 500–600 g vegetables."
+      },
+      {
+        "status": "untested",
+        "text": "Untested: reserve toddler plain rice before sauce; serve lime wedges; optionally ½ tsp MSG in original six servings, or substitute a little fish sauce for some soy sauce."
+      }
+    ]
+  },
+  "yield": {
+    "baseServings": 6,
+    "servingDescription": "6 very large portions plus leftovers",
+    "scaling": {
+      "enabled": true,
+      "reviewRequired": true
+    }
+  },
+  "timing": {
+    "totalMinutes": 110
+  },
+  "media": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "path": "/images/chicken-egg-vegetable-fried-rice.webp",
+      "thumbnailPath": "/images/chicken-egg-vegetable-fried-rice-thumb.webp",
+      "alt": "Chicken, egg & vegetable fried rice",
+      "license": {
+        "type": "pending",
+        "creator": null,
+        "sourceUrl": null
+      },
+      "status": "asset-required"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-1",
+      "name": "Wide stainless-steel skillet"
+    },
+    {
+      "id": "equipment-2",
+      "name": "Rice pot"
+    },
+    {
+      "id": "equipment-3",
+      "name": "Large mixing/receiving bowl"
+    },
+    {
+      "id": "equipment-4",
+      "name": "Spatula"
+    },
+    {
+      "id": "equipment-5",
+      "name": "Knife"
+    },
+    {
+      "id": "equipment-6",
+      "name": "Cutting board"
+    }
+  ],
+  "components": [
+    {
+      "id": "rice",
+      "name": "Rice"
+    },
+    {
+      "id": "chicken",
+      "name": "Chicken"
+    },
+    {
+      "id": "eggs",
+      "name": "Eggs"
+    },
+    {
+      "id": "vegetables",
+      "name": "Vegetables"
+    },
+    {
+      "id": "sauce",
+      "name": "Sauce and finishing"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "rice",
+      "foodId": "rice",
+      "name": "Dry rice",
+      "quantity": {
+        "min": 470,
+        "max": 510,
+        "unit": "g"
+      },
+      "componentId": "rice",
+      "optional": false,
+      "scaling": "linear",
+      "notes": "Tested amount: 6 dl dry rice, approximately 470–510 g depending on variety"
+    },
+    {
+      "id": "chicken",
+      "foodId": "chicken",
+      "name": "Boneless chicken thighs",
+      "quantity": {
+        "value": 450,
+        "unit": "g"
+      },
+      "componentId": "chicken",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "eggs",
+      "foodId": "eggs",
+      "name": "Eggs",
+      "quantity": {
+        "value": 6,
+        "unit": "whole"
+      },
+      "componentId": "eggs",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "wok-vegetables",
+      "foodId": "wok-vegetables",
+      "name": "Frozen wok vegetables",
+      "quantity": {
+        "min": 800,
+        "max": 1000,
+        "unit": "g"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "palermo",
+      "foodId": "palermo",
+      "name": "Sweet Palermo peppers",
+      "quantity": {
+        "min": 150,
+        "max": 200,
+        "unit": "g"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "onion",
+      "foodId": "onion",
+      "name": "Onion",
+      "quantity": {
+        "value": 1,
+        "unit": "whole"
+      },
+      "componentId": "vegetables",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "oil",
+      "foodId": "oil",
+      "name": "Neutral cooking oil",
+      "quantity": {
+        "min": 3,
+        "max": 4,
+        "unit": "tbsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear",
+      "notes": "Total across batches; approximate"
+    },
+    {
+      "id": "soy",
+      "foodId": "soy",
+      "name": "Light soy sauce",
+      "quantity": {
+        "value": 5,
+        "unit": "tbsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "oyster",
+      "foodId": "oyster",
+      "name": "Oyster sauce",
+      "quantity": {
+        "value": 2,
+        "unit": "tbsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "rice-vinegar",
+      "foodId": "rice-vinegar",
+      "name": "Rice vinegar",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "sugar",
+      "foodId": "sugar",
+      "name": "Sugar",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "garlic-powder",
+      "foodId": "garlic-powder",
+      "name": "Garlic powder",
+      "quantity": {
+        "value": 1,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "pepper",
+      "foodId": "pepper",
+      "name": "Black pepper",
+      "quantity": {
+        "value": 0.5,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    },
+    {
+      "id": "sesame-oil",
+      "foodId": "sesame-oil",
+      "name": "Toasted sesame oil",
+      "quantity": {
+        "value": 2,
+        "unit": "tsp"
+      },
+      "componentId": "sauce",
+      "optional": false,
+      "scaling": "linear"
+    }
+  ],
+  "quantityUsages": [],
+  "preparation": [
+    {
+      "id": "prep-rice",
+      "title": "Cook and chill the rice",
+      "items": [
+        {
+          "id": "prep-rice-1",
+          "text": "Cook 6 dl dry rice (roughly 470–510 g, depending on variety) ahead of time.",
+          "checkable": true
+        },
+        {
+          "id": "prep-rice-2",
+          "text": "Spread the cooked rice thinly to cool quickly, then refrigerate promptly until cold and dry. Do not leave cooked rice at room temperature for extended periods.",
+          "checkable": true
+        }
+      ],
+      "tip": "Cold, dry rice fries more cleanly; cool and refrigerate promptly for food safety."
+    },
+    {
+      "id": "prep-parts",
+      "title": "Prepare the individual components",
+      "items": [
+        {
+          "id": "prep-parts-1",
+          "text": "Dice 450 g boneless chicken thighs.",
+          "checkable": true
+        },
+        {
+          "id": "prep-parts-2",
+          "text": "Beat 6 eggs.",
+          "checkable": true
+        },
+        {
+          "id": "prep-parts-3",
+          "text": "Dice 1 onion and 150–200 g sweet Palermo peppers.",
+          "checkable": true
+        },
+        {
+          "id": "prep-parts-4",
+          "text": "Measure 800–1000 g frozen wok vegetables. Prepare a large receiving bowl for the cooked batches.",
+          "checkable": true
+        }
+      ]
+    },
+    {
+      "id": "prep-sauce",
+      "title": "Mix the cooking sauce",
+      "items": [
+        {
+          "id": "prep-sauce-1",
+          "text": "Mix 5 tbsp light soy sauce, 2 tbsp oyster sauce, 2 tsp rice vinegar, 1 tsp sugar, 1 tsp garlic powder and ½ tsp black pepper.",
+          "checkable": true
+        },
+        {
+          "id": "prep-sauce-2",
+          "text": "Reserve 2 tsp toasted sesame oil for the end; keep 3–4 tbsp neutral oil for batch frying.",
+          "checkable": true
+        },
+        {
+          "id": "prep-sauce-3",
+          "text": "Divide sauce mentally into roughly thirds for the rice batches.",
+          "checkable": true
+        }
+      ]
+    }
+  ],
+  "cooking": [
+    {
+      "id": "cook-1",
+      "title": "Brown the chicken",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Using some of the neutral oil, brown 450 g diced chicken thighs in batches in a hot wide pan until the chicken reaches at least 74°C. Transfer to the receiving bowl."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-2",
+      "title": "Soft-scramble the eggs",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Gently scramble 6 beaten eggs until softly set. Remove to the bowl with the chicken."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-3",
+      "title": "Cook the vegetables",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Sauté the diced onion and Palermo peppers for 4–5 minutes. Add 800–1000 g frozen wok vegetables and cook until their released moisture evaporates, then remove."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-3-timer-1",
+          "label": "Onion and pepper",
+          "durationSeconds": 240
+        }
+      ]
+    },
+    {
+      "id": "cook-4",
+      "title": "Fry the cold rice in batches",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Heat more neutral oil in the wide stainless pan. Fry the cold cooked rice in approximately 3 batches, letting the rice sit 20–30 seconds between stirs to encourage browning. Add approximately one-third of the prepared sauce to each batch; toss and transfer to the large bowl."
+        }
+      ],
+      "checklist": [],
+      "timers": [
+        {
+          "id": "cook-4-timer-1",
+          "label": "Undisturbed rice interval",
+          "durationSeconds": 25
+        }
+      ],
+      "tip": "Smaller batches prevent steaming and produced the excellent texture recorded in the tested version."
+    },
+    {
+      "id": "cook-5",
+      "title": "Combine and finish",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Combine the fried rice, cooked chicken, eggs and vegetables in the large bowl. Drizzle with 2 tsp toasted sesame oil and toss. Taste and adjust seasoning if needed."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    },
+    {
+      "id": "cook-6",
+      "title": "Serve promptly",
+      "instructions": [
+        {
+          "type": "text",
+          "text": "Serve hot and refrigerate leftovers promptly. Extra soy sauce and rice vinegar were added at the table in the tested meal, but their amounts were not recorded."
+        }
+      ],
+      "checklist": [],
+      "timers": []
+    }
+  ],
+  "serving": {
+    "instructions": "Serve hot; lime wedges are an untested future suggestion, not part of original tested recipe."
+  },
+  "storage": {
+    "refrigeratorDays": null,
+    "freezerSuitable": null,
+    "reheatingInstructions": null
+  },
+  "notes": [
+    {
+      "id": "note-2",
+      "type": "feedback",
+      "text": "Original V1 used 6 dl dry rice (5 dl planned plus 1 dl added). Larger batch required several frying rounds. Extra table seasonings not recorded."
+    }
+  ]
+}

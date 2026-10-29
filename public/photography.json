@@ -1,0 +1,44 @@
+{
+  "license": "Pexels License",
+  "licenseUrl": "https://www.pexels.com/license/",
+  "verifiedAt": "2026-10-29",
+  "usage": "Local cropped and compressed WebP images for editorial serving inspiration in a free family cookbook. These are not photographs of the tested recipes. Pictured ingredients and garnishes may differ.",
+  "assets": [
+    {
+      "file": "curry",
+      "creator": "Loren Castillo",
+      "sourceUrl": "https://www.pexels.com/photo/rice-and-chicken-dish-9218608/",
+      "downloadUrl": "https://images.pexels.com/photos/9218608/pexels-photo-9218608.jpeg"
+    },
+    {
+      "file": "roast",
+      "creator": "ArtHouse Studio",
+      "sourceUrl": "https://www.pexels.com/photo/cooked-chicken-with-potatoes-on-black-metal-tray-4589139/",
+      "downloadUrl": "https://images.pexels.com/photos/4589139/pexels-photo-4589139.jpeg"
+    },
+    {
+      "file": "pasta",
+      "creator": "ufuk iseloglu",
+      "sourceUrl": "https://www.pexels.com/photo/delicious-italian-pasta-bolognese-on-table-36223320/",
+      "downloadUrl": "https://images.pexels.com/photos/36223320/pexels-photo-36223320.jpeg"
+    },
+    {
+      "file": "rice",
+      "creator": "Studio D7",
+      "sourceUrl": "https://www.pexels.com/photo/vibrant-asian-fried-rice-with-eggs-and-vegetables-32845321/",
+      "downloadUrl": "https://images.pexels.com/photos/32845321/pexels-photo-32845321.jpeg"
+    },
+    {
+      "file": "bowl",
+      "creator": "Marvin Bayer",
+      "sourceUrl": "https://www.pexels.com/photo/avocado-and-beans-with-rice-13887558/",
+      "downloadUrl": "https://images.pexels.com/photos/13887558/pexels-photo-13887558.jpeg"
+    },
+    {
+      "file": "beans",
+      "creator": "Nic Wood",
+      "sourceUrl": "https://www.pexels.com/photo/vegan-mexican-bean-soup-28286253/",
+      "downloadUrl": "https://images.pexels.com/photos/28286253/pexels-photo-28286253.jpeg"
+    }
+  ]
+}
