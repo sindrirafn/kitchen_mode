@@ -23,6 +23,7 @@ export class RecipeRepository {
   private revisions: Revision[] = [];
   private sessions = new Map<string, Session>();
   private activeId: string | null = null;
+  private discardedIds = new Set<string>();
   private journalKey = "kitchen-mode-pending-session";
   recoveryWarning = "";
   persistent = true;
@@ -222,11 +223,15 @@ export class RecipeRepository {
     try {
       if (this.db) {
         const tx = this.db.transaction(["sessions", "meta"], "readwrite");
+        if (await tx.objectStore("meta").get(`discardedSession:${session.id}`))
+          throw new Error("This session was discarded.");
         await tx.objectStore("sessions").put(session);
         if (active)
           await tx.objectStore("meta").put(session.id, "activeSessionId");
         await tx.done;
       } else {
+        if (this.discardedIds.has(session.id))
+          throw new Error("This session was discarded.");
         this.sessions.set(session.id, structuredClone(session));
         if (active) this.activeId = session.id;
       }
@@ -245,6 +250,48 @@ export class RecipeRepository {
       ? await this.db.getAll("sessions")
       : [...this.sessions.values()];
     return sessions.sort((a, b) => b.updatedAt - a.updatedAt);
+  }
+  async discardSession(id: string) {
+    const tx = this.db?.transaction(["sessions", "meta"], "readwrite");
+    try {
+      const session: Session | undefined = tx
+        ? await tx.objectStore("sessions").get(id)
+        : this.sessions.get(id);
+      if (session?.phase === "completed")
+        throw new Error("Completed meals must remain in cooking history.");
+      if (tx) {
+        await tx.objectStore("sessions").delete(id);
+        if ((await tx.objectStore("meta").get("activeSessionId")) === id)
+          await tx.objectStore("meta").put(null, "activeSessionId");
+        // A stale recovery journal or late save must not revive a discarded
+        // session. Retain only its ID, never its recipe, progress or timers.
+        await tx.objectStore("meta").put(true, `discardedSession:${id}`);
+        await tx.done;
+      } else {
+        this.sessions.delete(id);
+        if (this.activeId === id) this.activeId = null;
+        this.discardedIds.add(id);
+      }
+      try {
+        const journal = localStorage.getItem(this.journalKey);
+        if (journal && JSON.parse(journal).id === id)
+          localStorage.removeItem(this.journalKey);
+      } catch {
+        /* The durable discarded-ID guard also protects recovery. */
+      }
+    } catch {
+      if (tx) {
+        try {
+          tx.abort();
+        } catch {
+          /* Already finished or aborted. */
+        }
+        await tx.done.catch(() => {});
+      }
+      throw new Error(
+        "Kitchen Mode could not discard this session. Your saved progress has been kept. Please try again.",
+      );
+    }
   }
   async activeSession(): Promise<Session | null> {
     const id = this.db
@@ -269,7 +316,10 @@ export class RecipeRepository {
           ["preparation", "cooking", "completed"].includes(candidate.phase) &&
           Array.isArray(candidate.checkedIds) &&
           candidate.timers &&
-          (!saved || candidate.updatedAt >= saved.updatedAt)
+          (!saved || candidate.updatedAt >= saved.updatedAt) &&
+          !(this.db
+            ? await this.db.get("meta", `discardedSession:${candidate.id}`)
+            : this.discardedIds.has(candidate.id))
         )
           recovery = candidate;
       }

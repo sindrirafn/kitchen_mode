@@ -20,14 +20,15 @@ import {
   quantity,
 } from "../src/model";
 const opened: RecipeRepository[] = [];
-async function repository() {
-  const r = await new RecipeRepository().open(`test-${Math.random()}`);
+async function repository(name = `test-${Math.random()}`) {
+  const r = await new RecipeRepository().open(name);
   opened.push(r);
   return r;
 }
 afterEach(() => {
   opened.splice(0).forEach((r) => r.close());
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 describe("authoritative recipes and imports", () => {
   it("has exactly six genuine schema-valid originals", () => {
@@ -227,5 +228,91 @@ describe("timestamp timing", () => {
     expect(timerAction(paused, d, "start", 50000).endAt).toBe(90000);
     expect(timerAction(t, d, "cancel").status).toBe("cancelled");
     expect(timerAction(t, d, "start", 70000).endAt).toBe(130000);
+  });
+});
+
+describe("save and discard session exits", () => {
+  it("saves an exited session's full progress and timers for resumption after reopening", async () => {
+    const name = `saved-exit-${Math.random()}`;
+    const repo = await repository(name);
+    const session = startSession(bundledRecipes[0]);
+    session.phase = "cooking";
+    session.currentStepId = session.recipeSnapshot.cooking[2].id;
+    session.checkedIds = [session.recipeSnapshot.preparation[0].items[0].id];
+    const def = { id: "simmer", label: "Simmer", durationSeconds: 600 };
+    session.timers[def.id] = timerAction(undefined, def, "start");
+    await repo.saveSession(session);
+    await repo.clearActive();
+    repo.close();
+    const reopened = await repository(name);
+    expect(await reopened.activeSession()).toBeNull();
+    expect(await reopened.listSessions()).toEqual([session]);
+    await reopened.saveSession(session);
+    expect(await reopened.activeSession()).toEqual(session);
+  });
+  it("discards only the chosen session and its timers while preserving completed history", async () => {
+    const name = `discard-exit-${Math.random()}`;
+    const repo = await repository(name);
+    const completed = finishSession(startSession(bundledRecipes[1]));
+    const other = startSession(bundledRecipes[2]);
+    await repo.saveSession(completed, false);
+    await repo.saveSession(other, false);
+    const session = startSession(bundledRecipes[0]);
+    session.checkedIds = [session.recipeSnapshot.preparation[0].items[0].id];
+    session.timers.test = timerAction(
+      undefined,
+      { id: "test", label: "Timer", durationSeconds: 60 },
+      "start",
+    );
+    await repo.saveSession(session);
+    await repo.discardSession(session.id);
+    repo.close();
+    const reopened = await repository(name);
+    expect(await reopened.activeSession()).toBeNull();
+    const remaining = await reopened.listSessions();
+    expect(remaining).toHaveLength(2);
+    expect(remaining.find((s) => s.id === completed.id)).toEqual(completed);
+    expect(remaining.find((s) => s.id === other.id)).toEqual(other);
+    expect(remaining.some((s) => s.id === session.id)).toBe(false);
+    expect(await reopened.list()).toEqual(bundledRecipes);
+  });
+  it("cannot resurrect discarded sessions from a stale recovery journal or a late save", async () => {
+    const memory = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string) => memory.get(key) ?? null,
+      setItem: (key: string, value: string) => memory.set(key, value),
+      // Model Safari leaving a readable stale journal after deletion fails.
+      removeItem: () => {
+        throw new Error("Storage denied");
+      },
+    });
+    const name = `discard-journal-${Math.random()}`;
+    const repo = await repository(name);
+    const session = startSession(bundledRecipes[0]);
+    await repo.saveSession(session);
+    expect(memory.size).toBe(1);
+    await repo.discardSession(session.id);
+    repo.close();
+    const reopened = await repository(name);
+    expect(await reopened.activeSession()).toBeNull();
+    expect(await reopened.listSessions()).toEqual([]);
+    await expect(reopened.saveSession(session)).rejects.toThrow();
+    expect(await reopened.activeSession()).toBeNull();
+    expect(await reopened.listSessions()).toEqual([]);
+  });
+  it("does not discard a completed meal or disturb a different active session", async () => {
+    const repo = await repository();
+    const completed = finishSession(startSession(bundledRecipes[0]));
+    const active = startSession(bundledRecipes[1]);
+    const aside = startSession(bundledRecipes[2]);
+    await repo.saveSession(completed, false);
+    await repo.saveSession(aside, false);
+    await repo.saveSession(active);
+    await expect(repo.discardSession(completed.id)).rejects.toThrow();
+    await repo.discardSession(aside.id);
+    expect(await repo.activeSession()).toEqual(active);
+    expect(
+      (await repo.listSessions()).find((s) => s.id === completed.id),
+    ).toEqual(completed);
   });
 });

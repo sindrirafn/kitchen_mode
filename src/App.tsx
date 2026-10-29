@@ -28,7 +28,14 @@ import {
 import { ImportRecipe } from "./ImportRecipe";
 import { photographs } from "./photography";
 type View = "library" | "intro" | "session" | "journal";
-type Dialog = "import" | "cookbook" | "ingredients" | "recovery" | null;
+type Dialog =
+  | "import"
+  | "cookbook"
+  | "ingredients"
+  | "recovery"
+  | "exit-session"
+  | "discard-session"
+  | null;
 export function App() {
   const [repo, setRepo] = useState<RecipeRepository | null>(null),
     [recipes, setRecipes] = useState<Recipe[]>([]),
@@ -45,7 +52,9 @@ export function App() {
     [online, setOnline] = useState(navigator.onLine),
     [recovery, setRecovery] = useState<Revision[]>([]),
     [recoveryCandidate, setRecoveryCandidate] = useState<Revision | null>(null),
-    [archiveCandidate, setArchiveCandidate] = useState(false);
+    [archiveCandidate, setArchiveCandidate] = useState(false),
+    [exiting, setExiting] = useState(false),
+    [exitError, setExitError] = useState("");
   const sessionRef = useRef<Session | null>(null),
     saveQueue = useRef(Promise.resolve()),
     pending = useRef<Session | null>(null),
@@ -236,6 +245,40 @@ export function App() {
       report(e);
     }
   }
+  function requestExit() {
+    if (view === "session" && sessionRef.current?.phase !== "completed") {
+      setExitError("");
+      setDialog("exit-session");
+    } else void library();
+  }
+  async function exitSession(discard: boolean) {
+    const current = sessionRef.current;
+    if (!repo || !current || exiting) return;
+    setExiting(true);
+    setExitError("");
+    try {
+      await saveQueue.current;
+      if (discard) {
+        await repo.discardSession(current.id);
+        pending.current = null;
+        sessionRef.current = null;
+        setSession(null);
+        setSessions((old) => old.filter((s) => s.id !== current.id));
+      } else {
+        // Retry any interrupted save before promising that the session is kept.
+        if (pending.current) await repo.saveSession(pending.current);
+        await repo.clearActive();
+        pending.current = null;
+      }
+      setError("");
+      setDialog(null);
+      setView("library");
+    } catch (e) {
+      setExitError((e as Error).message);
+    } finally {
+      setExiting(false);
+    }
+  }
   async function refresh() {
     if (repo) setRecipes(await repo.list());
   }
@@ -338,7 +381,7 @@ export function App() {
       <header className="site-header">
         <button
           className="brand"
-          onClick={() => void library()}
+          onClick={requestExit}
           aria-label="Kitchen Mode, back to recipes"
         >
           <span className="brand-symbol">
@@ -385,8 +428,8 @@ export function App() {
                 ? `In the kitchen · ${clockTime(elapsed(session, now))}`
                 : "Made for your kitchen"}
             </span>
-            <button className="text-button" onClick={() => void library()}>
-              Save & leave
+            <button className="text-button" onClick={requestExit}>
+              Exit recipe
               <Icon name="close" size={18} />
             </button>
           </div>
@@ -975,6 +1018,68 @@ export function App() {
           onSave={importValue}
         />
       )}
+      {(dialog === "exit-session" || dialog === "discard-session") &&
+        session && (
+          <Modal
+            title={
+              dialog === "discard-session"
+                ? "Discard this session?"
+                : "Leave this session?"
+            }
+            onClose={() => {
+              if (!exiting) setDialog(null);
+            }}
+          >
+            <p className="muted">{session.recipeSnapshot.identity.title}</p>
+            <p>
+              {dialog === "discard-session"
+                ? "Your preparation checks, cooking progress and timers will be cleared. This cannot be undone. This meal won’t be marked as finished or added to completed cooking history."
+                : "Save your place to pick up later, or discard this cooking session and its timers."}
+            </p>
+            {exitError && (
+              <p className="error" role="alert">
+                {exitError}
+              </p>
+            )}
+            <div className="modal-actions">
+              {dialog === "discard-session" ? (
+                <>
+                  <button
+                    className="secondary"
+                    disabled={exiting}
+                    onClick={() => setDialog(null)}
+                  >
+                    Keep cooking
+                  </button>
+                  <button
+                    className="primary"
+                    disabled={exiting}
+                    onClick={() => void exitSession(true)}
+                  >
+                    {exiting ? "Discarding…" : "Confirm Discard"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="secondary"
+                    onClick={() => setDialog("discard-session")}
+                    disabled={exiting}
+                  >
+                    Discard Session
+                  </button>
+                  <button
+                    className="primary"
+                    disabled={exiting}
+                    onClick={() => void exitSession(false)}
+                  >
+                    {exiting ? "Saving…" : "Save & Exit"}
+                  </button>
+                </>
+              )}
+            </div>
+          </Modal>
+        )}
       {dialog === "ingredients" && r && (
         <Modal title="Everything you’ll need" onClose={() => setDialog(null)}>
           <RecipeMeta recipe={r} />

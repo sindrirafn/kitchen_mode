@@ -62,7 +62,8 @@ async function importReview(page: Page, value: unknown) {
     .click();
 }
 async function leave(page: Page) {
-  await page.getByRole("button", { name: "Save & leave", exact: true }).click();
+  await page.getByRole("button", { name: "Exit recipe", exact: true }).click();
+  await page.getByRole("button", { name: "Save & Exit", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "The recipe collection" }),
   ).toBeVisible();
@@ -531,3 +532,127 @@ test("elapsed time begins deliberately, freezes at finish and resumes after undo
     s.startedAt,
   );
 });
+
+test("Save & Exit preserves progress and running timers for resumption after reload", async ({
+  page,
+}) => {
+  await ready(page);
+  await start(page);
+  await page.getByRole("checkbox").first().check();
+  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page
+    .getByRole("button", { name: /Start .* timer/ })
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Next step", exact: true }).click();
+  await leave(page);
+  const saved = (await store<Session>(page, "sessions"))[0];
+  expect(saved.phase).toBe("cooking");
+  expect(saved.completedAt).toBeNull();
+  expect(saved.checkedIds).toContain(skillet.preparation[0].items[0].id);
+  expect(saved.timers[skillet.cooking[0].timers[0].id].status).toBe("running");
+  await page.reload();
+  await expect(page.locator(".resume-banner")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Ready to serve!", exact: true }),
+  ).toHaveCount(0);
+  await page.locator(".resume-banner").click();
+  await expect(page.locator(".stage-panel h1")).toHaveText(
+    skillet.cooking[1].title,
+  );
+  expect((await store<Session>(page, "sessions"))[0]).toMatchObject({
+    startedAt: saved.startedAt,
+    currentStepId: saved.currentStepId,
+    checkedIds: saved.checkedIds,
+    timers: saved.timers,
+  });
+  await page.getByRole("button", { name: "Previous", exact: true }).click();
+  await page.getByRole("button", { name: "Preparation", exact: true }).click();
+  await expect(page.getByRole("checkbox").first()).toBeChecked();
+});
+
+for (const phase of ["preparation", "cooking"] as const) {
+  test(`Discard Session confirms then removes ${phase} progress and timers across reload`, async ({
+    page,
+  }) => {
+    await ready(page);
+    await start(page);
+    await page.getByRole("checkbox").first().check();
+    if (phase === "cooking") {
+      await page.getByRole("button", { name: "Let’s start cooking" }).click();
+      await page
+        .getByRole("button", { name: /Start .* timer/ })
+        .first()
+        .click();
+      await page
+        .getByRole("button", { name: "Next step", exact: true })
+        .click();
+    }
+    await page
+      .getByRole("button", { name: "Exit recipe", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Discard Session", exact: true })
+      .click();
+    await expect(
+      page.getByRole("dialog", { name: "Discard this session?", exact: true }),
+    ).toBeVisible();
+    expect(await store(page, "sessions")).toHaveLength(1);
+    await page
+      .getByRole("button", { name: "Keep cooking", exact: true })
+      .click();
+    if (phase === "preparation")
+      await expect(page.getByRole("checkbox").first()).toBeChecked();
+    else
+      await expect(page.locator(".stage-panel h1")).toHaveText(
+        skillet.cooking[1].title,
+      );
+    await page
+      .getByRole("button", { name: "Exit recipe", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Discard Session", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Confirm Discard", exact: true })
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "The recipe collection", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Ready to serve!", exact: true }),
+    ).toHaveCount(0);
+    await expect(page.locator(".resume-banner")).toHaveCount(0);
+    expect(await store(page, "sessions")).toEqual([]);
+    expect(
+      await page.evaluate(() =>
+        Object.keys(localStorage).some((key) =>
+          key.includes(":pending-session:"),
+        ),
+      ),
+    ).toBe(false);
+    await page.reload();
+    await expect(page.locator(".recipe-card")).toHaveCount(6);
+    await expect(page.locator(".resume-banner")).toHaveCount(0);
+    await page
+      .getByRole("button", { name: "Cooking journal", exact: true })
+      .click();
+    await expect(page.locator(".journal-item")).toHaveCount(0);
+    await page.getByRole("button", { name: "Recipes", exact: true }).click();
+    await start(page);
+    await expect(page.getByRole("checkbox").first()).not.toBeChecked();
+    await page.getByRole("button", { name: "Let’s start cooking" }).click();
+    await expect(page.locator(".stage-panel h1")).toHaveText(
+      skillet.cooking[0].title,
+    );
+    await expect(
+      page.getByRole("button", { name: /Start .* timer/ }).first(),
+    ).toBeVisible();
+    expect((await store<Session>(page, "sessions"))[0].timers).toEqual({});
+    await page.reload();
+    await expect(page.locator(".stage-panel h1")).toHaveText(
+      skillet.cooking[0].title,
+    );
+    expect(await store(page, "sessions")).toHaveLength(1);
+  });
+}
