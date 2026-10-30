@@ -14,4 +14,4 @@ Notes for Codex:
 6. Ingredient units like can, whole and tbsp need conversion/mapping rules for cross-recipe shopping aggregation. Canonical foodId is an initial hint, not a complete ingredient catalog.
 7. Imported recipe with same id replaces the active version only after validation/confirmation; keep older revision and running session snapshot.
 8. Food safety: Use thermometer guidance where present. Promptly cool and refrigerate cooked rice.
-9. This is the recipe-content package, not the actual app and not a claim of verified photography assets or device testing.
+9. This is the recipe-content package, not the actual app and not a claim of verified photography assets or device testing..
