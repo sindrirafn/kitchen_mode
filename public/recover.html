@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#F7F3EB" />
+    <meta name="kitchen-mode-recovery" content="1" />
+    <base href="/" />
+    <title>Repair Kitchen Mode</title>
+    <style>
+      :root {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f7f3eb;
+        color: #292a24;
+      }
+      body {
+        max-width: 570px;
+        margin: 50px auto;
+        padding: 25px;
+        line-height: 1.65;
+      }
+      h1 {
+        font:
+          40px/1.15 Georgia,
+          serif;
+        color: #344b3c;
+      }
+      p {
+        margin: 20px 0;
+      }
+      .panel {
+        background: #e8ddca;
+        padding: 18px 22px;
+        border-radius: 7px;
+      }
+      button,
+      a {
+        font: inherit;
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin: 12px 12px 0 0;
+      }
+      button {
+        background: #344b3c;
+        color: #f7f3eb;
+        border: 1px solid #344b3c;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+      a {
+        color: #344b3c;
+        border: 1px solid #b8bba9;
+        text-decoration: none;
+      }
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid #66715f;
+        outline-offset: 4px;
+      }
+      #status {
+        white-space: pre-line;
+        color: #344b3c;
+      }
+      small {
+        color: #66715f;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <small>KITCHEN MODE · APP FILES</small>
+      <h1>Let’s reopen your cookbook.</h1>
+      <p>
+        This repairs the downloaded app files used for offline cooking. Your
+        recipes, revision history, cooking sessions and timers stay on this
+        device.
+      </p>
+      <div class="panel">
+        Use this page inside the affected installed app when possible. Safari,
+        Private Browsing and the Home Screen app can have separate storage;
+        repairing one does not repair the others.
+      </div>
+      <p id="status" role="status" aria-live="polite">
+        Connect to the internet, then check for the repair.
+      </p>
+      <button id="repair" type="button">Repair app files</button
+      ><a id="return" href="./">Back to Kitchen Mode</a>
+      <p>
+        <small
+          >No website-data clearing, app removal or reinstallation is needed.
+          This page never opens or deletes your cookbook database.</small
+        >
+      </p>
+    </main>
+    <script>
+      const appBase = new URL(document.baseURI);
+      const button = document.getElementById("repair"),
+        status = document.getElementById("status");
+      document.getElementById("return").href = appBase.href;
+      function activeWorker(registration) {
+        return new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            cleanup();
+            reject(
+              new Error(
+                "The worker update is still pending. Close other Kitchen Mode windows, reopen the installed app while online, and try again.",
+              ),
+            );
+          }, 30000);
+          const workers = new Set();
+          function cleanup() {
+            clearTimeout(timeout);
+            registration.removeEventListener("updatefound", observe);
+            for (const worker of workers)
+              worker.removeEventListener("statechange", check);
+          }
+          function check() {
+            if (
+              !registration.installing &&
+              !registration.waiting &&
+              registration.active?.state === "activated"
+            ) {
+              cleanup();
+              resolve(registration.active);
+            }
+          }
+          function observe() {
+            for (const worker of [
+              registration.installing,
+              registration.waiting,
+              registration.active,
+            ])
+              if (worker && !workers.has(worker)) {
+                workers.add(worker);
+                worker.addEventListener("statechange", check);
+              }
+            check();
+          }
+          registration.addEventListener("updatefound", observe);
+          observe();
+        });
+      }
+      function repair(worker) {
+        return new Promise((resolve, reject) => {
+          const channel = new MessageChannel(),
+            timeout = setTimeout(() => {
+              channel.port1.close();
+              reject(
+                new Error(
+                  "The repair did not finish in time. Check the connection and try again. Your cookbook has not been cleared.",
+                ),
+              );
+            }, 90000);
+          channel.port1.onmessage = (event) => {
+            clearTimeout(timeout);
+            channel.port1.close();
+            event.data.ok
+              ? resolve(event.data)
+              : reject(
+                  new Error(
+                    event.data.error ||
+                      "The repair could not finish. Please try again.",
+                  ),
+                );
+          };
+          worker.postMessage({ type: "KITCHEN_MODE_REPAIR" }, [channel.port2]);
+        });
+      }
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        status.textContent = "Checking for the latest app repair…";
+        try {
+          if (!("serviceWorker" in navigator))
+            throw new Error(
+              "Open the HTTPS app URL in Safari or its installed Home Screen app.",
+            );
+          const registration = await navigator.serviceWorker.register(
+            new URL("sw.js", appBase),
+            { scope: appBase.pathname, updateViaCache: "none" },
+          );
+          await registration.update();
+          const worker = await activeWorker(registration);
+          status.textContent =
+            "Downloading clean app files. Your local cookbook is being kept…";
+          const result = await repair(worker);
+          status.textContent =
+            "App files repaired. Your local cookbook and cooking progress were kept.\nRepair version: " +
+            result.version +
+            "\nTap Back to Kitchen Mode, then try opening it offline.";
+        } catch (error) {
+          status.textContent =
+            error.message ||
+            "Repair could not finish. Check the connection and try again. Your local cookbook has not been cleared.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

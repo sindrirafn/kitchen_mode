@@ -117,16 +117,46 @@ export function App() {
   useEffect(() => {
     if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
     let live = true;
+    let currentRegistration: ServiceWorkerRegistration | undefined;
+    let lastCheck = 0;
+    let hadController = !!navigator.serviceWorker.controller;
+    const checkForRepair = () => {
+      if (
+        document.visibilityState !== "visible" ||
+        !navigator.onLine ||
+        Date.now() - lastCheck < 60_000
+      )
+        return;
+      lastCheck = Date.now();
+      void currentRegistration?.update().catch(() => {});
+    };
+    const controllerChanged = () => {
+      if (!live) return;
+      setOfflineReady(true);
+      if (hadController)
+        setToast(
+          "App files updated. Reload when ready; your saved cookbook and cooking progress are kept.",
+        );
+      hadController = true;
+    };
+    navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      controllerChanged,
+    );
+    document.addEventListener("visibilitychange", checkForRepair);
+    window.addEventListener("online", checkForRepair);
     navigator.serviceWorker
       .register(`${import.meta.env.BASE_URL}sw.js`, {
         scope: import.meta.env.BASE_URL,
+        updateViaCache: "none",
       })
       .then(async (registration) => {
+        currentRegistration = registration;
         await navigator.serviceWorker.ready;
         if (live) setOfflineReady(true);
         if (registration.waiting && live)
           setToast(
-            "An app update is ready. Close all Kitchen Mode windows and reopen when you finish cooking.",
+            "An app-file update is being installed. Your saved cookbook and cooking progress are kept.",
           );
         registration.addEventListener("updatefound", () => {
           const worker = registration.installing;
@@ -137,10 +167,11 @@ export function App() {
               live
             )
               setToast(
-                "An app update is ready for your next visit. Finish cooking, then close all cookbook windows to update.",
+                "App files updated. Reload when ready; your saved cookbook and cooking progress are kept.",
               );
           });
         });
+        checkForRepair();
       })
       .catch(() => {
         if (live)
@@ -150,6 +181,12 @@ export function App() {
       });
     return () => {
       live = false;
+      navigator.serviceWorker.removeEventListener(
+        "controllerchange",
+        controllerChanged,
+      );
+      document.removeEventListener("visibilitychange", checkForRepair);
+      window.removeEventListener("online", checkForRepair);
     };
   }, []);
   useEffect(() => {
@@ -1211,6 +1248,20 @@ export function App() {
                 ? "✓ App files and packaged photographs are cached for offline use."
                 : "Offline caching is available in the production build over HTTPS or localhost."}
             </p>
+          </div>
+          <div className="settings-panel">
+            <h3>Having trouble opening the cookbook?</h3>
+            <p>
+              Repair the offline app files while keeping your recipes, revision
+              history and cooking sessions.
+            </p>
+            <a
+              className="text-button"
+              href={`${import.meta.env.BASE_URL}recover.html`}
+            >
+              Repair offline app files
+              <Icon name="arrow" size={16} />
+            </a>
           </div>
           <RecoveryLibrary
             repo={repo}

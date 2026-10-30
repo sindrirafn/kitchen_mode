@@ -20,13 +20,13 @@ npm run build
 npm run preview -- --port 4173
 ```
 
-Open `http://localhost:4173`. Offline caching runs in the production build, not the development server. Use a different port or unregister an old localhost service worker when switching between different builds on the same origin.
+Open `http://localhost:4173`. Offline caching runs in the production build, not the development server. Use a different port when switching unrelated development apps. For an existing Kitchen Mode installation with a navigation/service-worker error, follow the data-preserving steps in [RECOVERY.md](RECOVERY.md).
 
 The server can also be reached from your iPad using the Mac's LAN IP on the same Wi-Fi network. This is useful for a quick layout check, but plain `http://192.168…` is **not** a secure context: it is not a valid installation/offline test. Use HTTPS for actual iPad installation.
 
 ## Free HTTPS hosting and iPad installation
 
-You must sign in to your own free Cloudflare account. This repository has **not** been deployed. No credentials are needed for local development.
+Hosting is managed in your Cloudflare account. This repair task has **not** published an updated deployment; use the existing production project if the app is already installed. No credentials are needed for local development.
 
 1. Run `npm run build`.
 2. In the [Cloudflare dashboard](https://dash.cloudflare.com/), open **Workers & Pages**, choose to create a **Pages** application, and select the **Direct Upload / drag-and-drop** option. Dashboard wording can change.
@@ -40,7 +40,7 @@ This app fits within the [Cloudflare Pages Free plan limits](https://developers.
 
 Hosting publishes the app and its six bundled recipes. Imported recipes, recovery versions and cooking sessions stay on the device and are never sent to the host. V1 has no authentication; a public static hosting URL does not make the bundled files access-controlled.
 
-For an app-code update, build again and upload `dist` as a new **production deployment of the same project**. The service worker fully caches a new version before it can activate, and waits for existing cookbook windows to close. Finish cooking, close all app/browser windows for that origin, and reopen. It never clears IndexedDB. Recipe updates normally use **Import Recipe**, without redeployment.
+For an app-code update, build again and upload `dist` as a new **production deployment of the same project**. The service worker fully caches a new version, then activates without forcing open cooking pages to reload. It keeps one previous build’s immutable assets for open clients, removes stale navigation entries and never clears IndexedDB or localStorage. Reload or reopen when convenient to use the new interface. The repaired navigation fallback reconstructs HTML responses so a redirected cached fetch cannot cause Safari’s redirection error. See [RECOVERY.md](RECOVERY.md) for existing-installation recovery and verification. Recipe updates normally use **Import Recipe**, without redeployment.
 
 ### Optional subdirectory hosting
 
@@ -100,6 +100,8 @@ Detailed final verification results and remaining physical-device checks are in 
 - `src/validation.ts`: supplied JSON Schema validation, reference checks and import decisions.
 - `src/repository.ts`: local recipes, atomic updates, bounded recovery, portable backups and sessions.
 - `src/styles.css`: warm ivory/olive editorial design and iPad/phone layouts; system serif and sans fonts work offline.
-- `scripts/sw-template.js`, `vite.config.ts`: build-derived, path-scoped offline shell and image cache; no data-wiping migrations.
+- `scripts/sw-template.js`, `vite.config.ts`: worker-source-versioned, redirect-safe, path-scoped offline cache and staged app-file repairs; no data-wiping migrations.
+- `public/recover.html`, `RECOVERY.md`: standalone app-file repair page and existing-installation recovery instructions.
+- `tests/service-worker.test.ts`, `tests/e2e/service-worker.spec.ts`: redirected-response, legacy-upgrade, safe repair and data-preservation regressions.
 - `public/photography.json`: verified Pexels creators, sources, license and local transformations.
 - `tests/core.test.ts`, `tests/e2e/kitchen.spec.ts`: data/timing tests and production browser acceptance tests.
