@@ -2,6 +2,16 @@ import { openDB, type IDBPDatabase } from "idb";
 import schema from "../recipe.schema.json";
 import type { Recipe, RecipeRecord, Revision, Session, Backup } from "./model";
 import { canonical, validateRecipe } from "./validation";
+import { normalizeRecipe } from "./recipe-text";
+function readSession(session: Session): Session {
+  return {
+    ...session,
+    // Older sessions keep their phase and all existing progress. Gathering is
+    // available on return from preparation, without forcing a fresh start.
+    gatheredIds: session.gatheredIds ?? [],
+    recipeSnapshot: normalizeRecipe(session.recipeSnapshot),
+  };
+}
 const modules = import.meta.glob<Recipe>("../recipes/*.json", {
   eager: true,
   import: "default",
@@ -66,15 +76,19 @@ export class RecipeRepository {
       : [...this.records.values()];
     const all = new Map(bundledRecipes.map((r) => [r.id, r]));
     for (const o of overrides) {
-      if (o.recipe) all.set(o.id, o.recipe);
+      if (o.recipe) all.set(o.id, normalizeRecipe(o.recipe));
       else all.delete(o.id);
     }
     return structuredClone([...all.values()]);
   }
   async history(id?: string): Promise<Revision[]> {
-    const saved: Revision[] = this.db
+    const stored: Revision[] = this.db
       ? await this.db.getAll("revisions")
       : this.revisions;
+    const saved = stored.map((h) => ({
+      ...h,
+      recipe: normalizeRecipe(h.recipe),
+    }));
     const originals: Revision[] = bundledRecipes.map((r) => ({
       key: `bundled:${r.id}`,
       recipeId: r.id,
@@ -104,7 +118,10 @@ export class RecipeRepository {
     // All validation happens before starting one atomic write transaction.
     const recipes = backup.recipes.map(validateRecipe);
     const history = [
-      ...backup.history,
+      ...backup.history.map((h) => ({
+        ...h,
+        recipe: validateRecipe(h.recipe),
+      })),
       ...backup.bundledOriginals.map((recipe) => ({
         key: "",
         recipeId: recipe.id,
@@ -138,17 +155,18 @@ export class RecipeRepository {
         savedAt: number,
         revisionSource: Revision["source"],
       ) => {
+        const normalized = normalizeRecipe(recipe);
         if (
           !history.some(
             (h) =>
               h.recipeId === recipe.id &&
-              canonical(h.recipe) === canonical(recipe),
+              canonical(normalizeRecipe(h.recipe)) === canonical(normalized),
           )
         )
           history.push({
             key: `${recipe.id}:${now}:${Math.random().toString(36).slice(2)}`,
             recipeId: recipe.id,
-            recipe: structuredClone(recipe),
+            recipe: normalized,
             savedAt,
             source: revisionSource,
           });
@@ -209,6 +227,7 @@ export class RecipeRepository {
     }
   }
   async saveSession(session: Session, active = true) {
+    session = readSession(session);
     // IndexedDB remains the primary store. This temporary, synchronous journal
     // closes the small window between an input event and transaction commit if
     // Safari reloads or terminates the page immediately after the tap.
@@ -249,7 +268,7 @@ export class RecipeRepository {
     const sessions: Session[] = this.db
       ? await this.db.getAll("sessions")
       : [...this.sessions.values()];
-    return sessions.sort((a, b) => b.updatedAt - a.updatedAt);
+    return sessions.map(readSession).sort((a, b) => b.updatedAt - a.updatedAt);
   }
   async discardSession(id: string) {
     const tx = this.db?.transaction(["sessions", "meta"], "readwrite");
@@ -307,13 +326,15 @@ export class RecipeRepository {
       const text = localStorage.getItem(this.journalKey);
       if (text) {
         const candidate = JSON.parse(text) as Session;
-        validateRecipe(candidate.recipeSnapshot);
+        candidate.recipeSnapshot = validateRecipe(candidate.recipeSnapshot);
         if (
           typeof candidate.id === "string" &&
           candidate.recipeId === candidate.recipeSnapshot.id &&
           Number.isFinite(candidate.startedAt) &&
           Number.isFinite(candidate.updatedAt) &&
-          ["preparation", "cooking", "completed"].includes(candidate.phase) &&
+          ["gathering", "preparation", "cooking", "completed"].includes(
+            candidate.phase,
+          ) &&
           Array.isArray(candidate.checkedIds) &&
           candidate.timers &&
           (!saved || candidate.updatedAt >= saved.updatedAt) &&
@@ -321,7 +342,7 @@ export class RecipeRepository {
             ? await this.db.get("meta", `discardedSession:${candidate.id}`)
             : this.discardedIds.has(candidate.id))
         )
-          recovery = candidate;
+          recovery = readSession(candidate);
       }
     } catch {
       /* A corrupt or unavailable journal must never hide valid IDB data. */
@@ -335,7 +356,7 @@ export class RecipeRepository {
       }
       return recovery;
     }
-    return saved;
+    return saved ? readSession(saved) : null;
   }
   async clearActive() {
     try {

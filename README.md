@@ -26,7 +26,7 @@ The server can also be reached from your iPad using the Mac's LAN IP on the same
 
 ## Free HTTPS hosting and iPad installation
 
-Hosting is managed in your Cloudflare account. This repair task has **not** published an updated deployment; use the existing production project if the app is already installed. No credentials are needed for local development.
+Hosting is managed in your Cloudflare account. This feature branch has **not** been manually deployed; use the existing production project if the app is already installed. No credentials are needed for local development.
 
 1. Run `npm run build`.
 2. In the [Cloudflare dashboard](https://dash.cloudflare.com/), open **Workers & Pages**, choose to create a **Pages** application, and select the **Direct Upload / drag-and-drop** option. Dashboard wording can change.
@@ -34,13 +34,38 @@ Hosting is managed in your Cloudflare account. This repair task has **not** publ
 4. Deploy. Cloudflare supplies a free HTTPS URL such as `https://our-kitchen-mode.pages.dev`. Keep this **same production URL** for future deployments: local storage belongs to its origin. A preview URL, different domain or different browser has a separate cookbook.
 5. On the **iPad**, open that HTTPS URL in **Safari**. On iPadOS 17, tap **Share → Add to Home Screen → Add**. Keep the name **Kitchen Mode**. The supplied manifest opens it as a standalone app.
 6. Open **Kitchen Mode from its new Home Screen icon while online**. Wait for **Ready for offline cooking** at the bottom of the library. Scroll through all six recipes once to inspect them.
-7. Turn on Airplane Mode (and disable Wi-Fi if it remains enabled), close the app and reopen the icon. Confirm the recipes and photographs still open. Start a recipe, tick preparation items, move to a stage, start a timer, then close and reopen to check recovery.
+7. Turn on Airplane Mode (and disable Wi-Fi if it remains enabled), close the app and reopen the icon. Confirm the recipes and photographs still open. Start a recipe, tick gathering items, choose **Start preparation**, tick tasks, move to a cooking stage, start a timer, then close and reopen to check recovery.
 
 This app fits within the [Cloudflare Pages Free plan limits](https://developers.cloudflare.com/pages/platform/limits/). See the provider's [Direct Upload instructions](https://developers.cloudflare.com/pages/get-started/direct-upload/) and [Apple's Home Screen web app guidance](https://webkit.org/blog/13878/) for details. No custom domain or paid plan is needed. Direct Upload projects cannot later be converted to Git integration; create a new project if you need that workflow.
 
 Hosting publishes the app and its six bundled recipes. Imported recipes, recovery versions and cooking sessions stay on the device and are never sent to the host. V1 has no authentication; a public static hosting URL does not make the bundled files access-controlled.
 
 For an app-code update, build again and upload `dist` as a new **production deployment of the same project**. The service worker fully caches a new version, then activates without forcing open cooking pages to reload. It keeps one previous build’s immutable assets for open clients, removes stale navigation entries and never clears IndexedDB or localStorage. Reload or reopen when convenient to use the new interface. The repaired navigation fallback reconstructs HTML responses so a redirected cached fetch cannot cause Safari’s redirection error. See [RECOVERY.md](RECOVERY.md) for existing-installation recovery and verification. Recipe updates normally use **Import Recipe**, without redeployment.
+
+### Deploy from the command line or GitHub
+
+The repository's current GitHub check is **Workers Builds: kitchen-mode**. For that existing **Worker**, set build command `npm run build` and production deploy command:
+
+```sh
+npx wrangler deploy --assets ./dist --name kitchen-mode --compatibility-date 2026-11-01
+```
+
+For a manual deployment, run `npm ci`, `npm run build` and `npx wrangler login` first, then the command above. Verify the Worker name and Cloudflare account match the current installation so its origin stays the same. See [Workers Builds deploy commands](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) and [deploying static assets without a configuration file](https://developers.cloudflare.com/changelog/post/2025-09-09-interactive-wrangler-assets/). The branch's remote Workers build reported failure; its public GitHub summary does not expose the cause. Check its Cloudflare build logs before relying on automatic deployment. Local production build and browser tests pass.
+
+If your existing installation instead uses **Cloudflare Pages**, use the Pages-specific instructions below. Workers and Pages have different deploy commands.
+
+After reviewing this branch, deploy its production build to your **existing Cloudflare Pages project**:
+
+```sh
+npm ci
+npm run build
+npx wrangler login
+npx wrangler pages deploy dist --project-name YOUR_EXISTING_PROJECT --branch main
+```
+
+Replace `YOUR_EXISTING_PROJECT` with its actual Pages project name. The `--branch` value must match that project's configured production branch (use its actual name if it is not `main`). Using `--branch codex/real-cooking-ux` instead creates a preview for review; that preview origin has separate local data. The command uploads your current local `dist`, so rebuild after changing branches. See the [Wrangler Pages command reference](https://developers.cloudflare.com/workers/wrangler/commands/pages/).
+
+For an existing **Pages Git integration**, use build command `npm run build`, output directory `dist`, repository root as the root directory, and Node 22.18 or later. Pages handles deployment after building; it does not require a separate deploy command. Review the PR's preview first and merge only after approval. See [Cloudflare's React (Vite) build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/). Keep the existing production origin for the installed iPad's cookbook. This task prepares a PR and does not merge it or run the production deploy command.
 
 ### Optional subdirectory hosting
 
@@ -67,11 +92,21 @@ Exports contain **recipe data and recovery history**, not cooking-journal/sessio
 
 ## Local data and timers
 
-IndexedDB database `kitchen-mode-v1` separates recipe overrides, recipe revisions, cooking sessions and schema/active-session metadata. The repository is in `src/repository.ts`. A tiny synchronous localStorage recovery journal protects the latest session change if the page is reloaded before its IndexedDB transaction commits; it is removed after a successful save. A session includes its recipe snapshot, phase, stage ID, checked IDs, timer end timestamps, `startedAt`, `completedAt` and `updatedAt`.
+IndexedDB database `kitchen-mode-v1` separates recipe overrides, recipe revisions, cooking sessions and schema/active-session metadata. The repository is in `src/repository.ts`. A tiny synchronous localStorage recovery journal protects the latest session change if the page is reloaded before its IndexedDB transaction commits; it is removed after a successful save. A session includes its recipe snapshot, phase, stage ID, preparation/cooking checked IDs, separate gathered IDs, timer end timestamps, `startedAt`, `completedAt` and `updatedAt`.
 
-Opening a recipe introduction does not start timing. **Start Preparing** deliberately records the start. Navigation and checklists never force cooking completion. Only **Finish Cooking** records completion. **Undo Finish** reopens the final stage and resumes whole-session timing from the original start, including the intervening time. The cooking journal retains completed and set-aside sessions.
+Opening a recipe introduction does not start timing. **Gather ingredients** deliberately starts the session and elapsed time. Gathering lists every ingredient with its authored amount and optional status, grouped by recipe component, followed by the recipe's equipment. Check ingredients and equipment individually; the count and progress bar update as you go. **Start preparation** is available at the top and bottom, with no requirement to check everything. **Back to gathering** returns from preparation without losing either checklist or running timers.
 
-While preparing or cooking, choose **Exit recipe** (or the cookbook logo) to open the exit options. **Save & Exit** preserves the session's recipe snapshot, preparation checks, current stage, start time and timers for later resumption. **Discard Session → Confirm Discard** removes that session and its timers, clears its resumable progress and returns to the library. **Keep cooking** cancels the confirmation. Discarding never finishes the meal or creates a completed history entry; existing completed meals and other saved sessions remain. Starting the same recipe again creates a fresh session.
+Preparation retains the recipe's ordered groups and full instructions, including amounts and directions to keep ingredients together or separate. Each task has its own checkbox area. Explicit advance work (for example oven preheating or starting dough early) has an **Allow time** marker. The two-column landscape layout becomes one column on phones. Older saved sessions resume in their existing preparation, cooking or completed phase, with gathering checks initially empty; no database reset is needed.
+
+Navigation and checklists never force cooking completion. Only **Finish Cooking** records completion. **Undo Finish** reopens the final stage and resumes whole-session timing from the original start, including the intervening time. The cooking journal retains completed and set-aside sessions.
+
+While gathering, preparing or cooking, choose **Exit recipe** (or the cookbook logo) to open the exit options. **Save & Exit** preserves the session's recipe snapshot, gathering and preparation checks, current stage, start time and timers for later resumption. **Discard Session → Confirm Discard** removes that session and its timers, clears its resumable progress and returns to the library. **Keep cooking** cancels the confirmation. Discarding never finishes the meal or creates a completed history entry; existing completed meals and other saved sessions remain. Starting the same recipe again creates a fresh session.
+
+### Imported text encoding
+
+The bundled JSON, HTML charset and file import path use UTF-8. Sequences such as `220Â°C` and `Â½` are consistent with UTF-8 bytes previously misread as Latin-1 or Windows-1252, rather than a font problem. The original affected import is not in this repository, so its upstream conversion cannot be identified here.
+
+`src/recipe-text.ts` conservatively repairs known degree, fraction, punctuation and Icelandic mojibake sequences in known display fields. It also handles common double encoding. Valid Unicode, including Icelandic letters, remains intact; unrecognized corruption is left alone. IDs, references, revisions, paths, numeric amounts and extension metadata are preserved. Textual amounts retain their meaning with corrected symbols. Imports and backup restores normalize after validation; existing recipes, recovery versions and session snapshots normalize on read. Reading does not rewrite stored originals, increment revisions, reset sessions or clear any storage. Exports include the corrected display text. This is intentionally not a general repair for arbitrary damaged encodings or replacement characters (`�`).
 
 Timers start, pause, resume, cancel and restart using timestamps. They remain visible across stages; on phone, timers from other stages are available in the Ingredients dialog. Countdown and elapsed time recompute when the app becomes visible. No background audible notification is promised: iPadOS can suspend or terminate any web app. Use the iPad's Clock app for a critical alarm. Device-clock changes affect timestamp-based timers and elapsed durations.
 
@@ -97,11 +132,11 @@ Detailed final verification results and remaining physical-device checks are in 
 
 - `src/App.tsx`, `src/components.tsx`, `src/ImportRecipe.tsx`: screens, cooking controls and import/recovery UI.
 - `src/model.ts`: recipe/session types, quantities and timestamp timer transitions.
-- `src/validation.ts`: supplied JSON Schema validation, reference checks and import decisions.
+- `src/validation.ts`, `src/recipe-text.ts`: supplied JSON Schema validation, reference checks, import decisions and conservative display-text normalization.
 - `src/repository.ts`: local recipes, atomic updates, bounded recovery, portable backups and sessions.
 - `src/styles.css`: warm ivory/olive editorial design and iPad/phone layouts; system serif and sans fonts work offline.
 - `scripts/sw-template.js`, `vite.config.ts`: worker-source-versioned, redirect-safe, path-scoped offline cache and staged app-file repairs; no data-wiping migrations.
 - `public/recover.html`, `RECOVERY.md`: standalone app-file repair page and existing-installation recovery instructions.
 - `tests/service-worker.test.ts`, `tests/e2e/service-worker.spec.ts`: redirected-response, legacy-upgrade, safe repair and data-preservation regressions.
 - `public/photography.json`: verified Pexels creators, sources, license and local transformations.
-- `tests/core.test.ts`, `tests/e2e/kitchen.spec.ts`: data/timing tests and production browser acceptance tests.
+- `tests/core.test.ts`, `tests/cooking-ux.test.ts`, `tests/e2e/kitchen.spec.ts`: data/timing, gathering, legacy-session, encoding and production browser acceptance tests.
