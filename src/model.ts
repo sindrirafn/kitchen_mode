@@ -80,9 +80,10 @@ export interface Session {
   id: string;
   recipeId: string;
   recipeSnapshot: Recipe;
-  phase: "preparation" | "cooking" | "completed";
+  phase: "gathering" | "preparation" | "cooking" | "completed";
   currentStepId: string;
   checkedIds: string[];
+  gatheredIds: string[];
   timers: Record<string, TimerState>;
   startedAt: number;
   completedAt: number | null;
@@ -108,6 +109,57 @@ export interface Backup {
   history: Revision[];
   bundledOriginals: Recipe[];
   deletedRecipeIds: string[];
+}
+export function gatheringGroups(recipe: Recipe) {
+  return [
+    ...recipe.components.map((component) => ({
+      id: `component:${component.id}`,
+      title: component.name,
+      items: recipe.ingredients
+        .filter((i) => i.componentId === component.id)
+        .map((i) => ({
+          id: `ingredient:${i.id}`,
+          name: i.name,
+          amount: quantity(i.quantity),
+          optional: i.optional,
+          detail: [i.preparation, i.notes].filter(Boolean).join(" · "),
+        })),
+    })),
+    {
+      id: "equipment",
+      title: "Equipment",
+      items: (recipe.equipment ?? []).flatMap((e, index) =>
+        e.name
+          ? [
+              {
+                id:
+                  e.id === undefined
+                    ? `equipment:index:${index}`
+                    : `equipment:id:${e.id}`,
+                name: e.name,
+                amount: "",
+                optional: false,
+                detail: "",
+              },
+            ]
+          : [],
+      ),
+    },
+  ].filter((group) => group.items.length);
+}
+export function isLongLeadPreparation(
+  group: Recipe["preparation"][number],
+): boolean {
+  // Highlight only explicit authored advance work, never infer new tasks from
+  // ingredients or mislabel instructions such as “Do not preheat … yet”.
+  return (
+    /\b(early|long.lead|overnight)\b/i.test(group.title) ||
+    group.items.some((item) =>
+      /^preheat\b|\b(leave to rise|leave to soak|refrigerate overnight|long.lead)\b/i.test(
+        item.text,
+      ),
+    )
+  );
 }
 export function quantity(q: Quantity): string {
   if ("text" in q) return q.text;
@@ -138,9 +190,10 @@ export function startSession(recipe: Recipe): Session {
       `session-${now}-${Math.random().toString(36).slice(2)}`,
     recipeId: recipe.id,
     recipeSnapshot: structuredClone(recipe),
-    phase: "preparation",
+    phase: "gathering",
     currentStepId: recipe.cooking[0].id,
     checkedIds: [],
+    gatheredIds: [],
     timers: {},
     startedAt: now,
     completedAt: null,

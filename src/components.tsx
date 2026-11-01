@@ -281,7 +281,7 @@ export function CheckRow({
   checkable = true,
 }: {
   id: string;
-  text: string;
+  text: ReactNode;
   checked: boolean;
   onChange: () => void;
   checkable?: boolean;

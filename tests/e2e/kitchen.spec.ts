@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFileSync, readdirSync } from "node:fs";
 import { offlineServer } from "./offline-server";
 import type { Recipe, Session } from "../../src/model";
+import { quantity, gatheringGroups } from "../../src/model";
 const recipes: Recipe[] = readdirSync("recipes")
   .filter((f) => f.endsWith(".json"))
   .map((f) => JSON.parse(readFileSync(`recipes/${f}`, "utf8")));
@@ -21,10 +22,18 @@ async function openRecipe(page: Page, r = skillet) {
     page.getByRole("heading", { name: r.identity.title, exact: true }),
   ).toBeVisible();
 }
-async function start(page: Page, r = skillet) {
+async function start(page: Page, r = skillet, gatherOnly = false) {
   await openRecipe(page, r);
   await page
-    .getByRole("button", { name: "Start Preparing", exact: true })
+    .getByRole("button", { name: "Gather ingredients", exact: true })
+    .click();
+  await expect(page.locator(".gathering h1")).toHaveText(
+    "Everything in its place.",
+  );
+  if (gatherOnly) return;
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
     .click();
   await expect(
     page.getByRole("heading", { name: "First, a little preparation." }),
@@ -68,6 +77,161 @@ async function leave(page: Page) {
     page.getByRole("heading", { name: "The recipe collection" }),
   ).toBeVisible();
 }
+test("gathering resumes ingredient and equipment checks independently of preparation, without gating navigation", async ({
+  page,
+}) => {
+  await ready(page);
+  await start(page, skillet, true);
+  const ingredientId = `ingredient:${skillet.ingredients[0].id}`;
+  const equipmentId = gatheringGroups(skillet).at(-1)!.items[0].id;
+  const total = skillet.ingredients.length + skillet.equipment!.length;
+  await page.locator(`input[id="${ingredientId}"]`).check();
+  await page.locator(`input[id="${equipmentId}"]`).check();
+  await page.reload();
+  await expect(page.getByRole("status")).toContainText(
+    `2 of ${total} items gathered`,
+  );
+  await expect(page.locator(`input[id="${equipmentId}"]`)).toBeChecked();
+  await leave(page);
+  await page.reload();
+  await expect(page.locator(".resume-banner")).toContainText("Gathering");
+  await openRecipe(page);
+  await page
+    .getByRole("button", { name: "Resume gathering", exact: true })
+    .click();
+  await expect(page.locator(`input[id="${ingredientId}"]`)).toBeChecked();
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
+    .click();
+  await expect(page.getByRole("checkbox").first()).not.toBeChecked();
+  await page.getByRole("checkbox").first().check();
+  await page.getByRole("button", { name: "Ingredients", exact: true }).click();
+  await expect(
+    page.getByRole("dialog").locator(".ingredient-list"),
+  ).toContainText(skillet.ingredients[0].name);
+  await page.getByRole("button", { name: "Close dialog" }).click();
+  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page
+    .getByRole("button", { name: /Start .* timer/ })
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Preparation", exact: true }).click();
+  await expect(page.getByRole("checkbox").first()).toBeChecked();
+  await page
+    .getByRole("button", { name: "Back to gathering", exact: true })
+    .click();
+  await expect(page.locator(`input[id="${ingredientId}"]`)).toBeChecked();
+  await expect(page.locator(`input[id="${equipmentId}"]`)).toBeChecked();
+  await expect(
+    page.getByRole("button", { name: /Pause .* timer/ }).first(),
+  ).toBeVisible();
+  await page.locator(`input[id="${ingredientId}"]`).uncheck();
+  await page.reload();
+  await expect(page.locator(`input[id="${ingredientId}"]`)).not.toBeChecked();
+  await expect(page.getByRole("status")).toContainText(
+    `1 of ${total} items gathered`,
+  );
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
+    .click();
+  await expect(page.getByRole("checkbox").first()).toBeChecked();
+});
+
+test("legacy sessions and imported UTF-8 files repair known mojibake while preserving Icelandic and quantities", async ({
+  page,
+}) => {
+  await ready(page);
+  const recipe = structuredClone(skillet);
+  recipe.identity.title = "Þorskur með smjöri Â½";
+  recipe.preparation[0].items[0].text =
+    "Preheat to 220Â°C; use Â½ tsp and Â¼ tsp. Þorskur með smjöri.";
+  recipe.ingredients[0].quantity = { text: "Â½ tsp" };
+  await page.evaluate(async (recipe) => {
+    const db = await new Promise<IDBDatabase>((resolve) => {
+      const req = indexedDB.open("kitchen-mode-v1");
+      req.onsuccess = () => resolve(req.result);
+    });
+    const tx = db.transaction(["recipes", "sessions", "meta"], "readwrite");
+    const now = Date.now();
+    tx.objectStore("recipes").put({ id: recipe.id, recipe, updatedAt: now });
+    tx.objectStore("sessions").put({
+      id: "legacy-session",
+      recipeId: recipe.id,
+      recipeSnapshot: recipe,
+      phase: "preparation",
+      currentStepId: recipe.cooking[0].id,
+      checkedIds: [recipe.preparation[0].items[0].id],
+      timers: {},
+      startedAt: now,
+      updatedAt: now,
+      completedAt: null,
+    });
+    tx.objectStore("meta").put("legacy-session", "activeSessionId");
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  }, recipe);
+  await page.reload();
+  await expect(page.locator(".preparation h1")).toHaveText(
+    "First, a little preparation.",
+  );
+  await expect(page.getByRole("checkbox").first()).toBeChecked();
+  await expect(page.locator(".prep-tasks").first()).toContainText(
+    "Preheat to 220°C; use ½ tsp and ¼ tsp. Þorskur með smjöri.",
+  );
+  await page
+    .getByRole("button", { name: "Back to gathering", exact: true })
+    .click();
+  await expect(page.getByRole("status")).toContainText("0 of");
+  await expect(page.locator(".gather-card").first()).toContainText("½ tsp");
+  await leave(page);
+  await page
+    .getByRole("button", { name: "Import Recipe", exact: true })
+    .click();
+  const imported = {
+    ...recipe,
+    id: "icelandic-import",
+    identity: { title: "Innfluttur þorskur Â½" },
+  };
+  await page
+    .getByLabel("Open recipe or cookbook JSON file", { exact: true })
+    .setInputFiles({
+      name: "recipe.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(imported), "utf8"),
+    });
+  await page
+    .getByRole("button", { name: "Review import", exact: true })
+    .click();
+  await expect(page.locator(".import-review")).toContainText(
+    "Innfluttur þorskur ½",
+  );
+  await page
+    .getByRole("button", { name: "Add to cookbook", exact: true })
+    .click();
+  await start(
+    page,
+    { ...imported, identity: { title: "Innfluttur þorskur ½" } },
+    true,
+  );
+  await expect(page.locator(".gather-card").first()).toContainText("½ tsp");
+  await page.reload();
+  await expect(page.locator(".gathering")).not.toContainText("Â");
+  const saved = (await store<Session>(page, "sessions")).find(
+    (s) => s.recipeId === imported.id,
+  )!;
+  expect(saved.recipeSnapshot.ingredients[0].quantity).toEqual({
+    text: "½ tsp",
+  });
+  expect(saved.recipeSnapshot.ingredients[1].quantity).toEqual(
+    skillet.ingredients[1].quantity,
+  );
+  expect(saved.recipeSnapshot.revision).toBe(imported.revision);
+});
 test("six originals, deliberate start, preparation, full cooking, finish, undo and journal", async ({
   page,
 }, info) => {
@@ -79,10 +243,17 @@ test("six originals, deliberate start, preparation, full cooking, finish, undo a
   });
   expect(await store(page, "sessions")).toHaveLength(0);
   await page
-    .getByRole("button", { name: "Start Preparing", exact: true })
+    .getByRole("button", { name: "Gather ingredients", exact: true })
     .click();
   const check = page.getByRole("checkbox").first();
   await check.check();
+  await page.reload();
+  await expect(page.getByRole("checkbox").first()).toBeChecked();
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
+    .click();
+  await page.getByRole("checkbox").first().check();
   await page.reload();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
   await page.getByRole("button", { name: "Let’s start cooking" }).click();
@@ -162,9 +333,59 @@ test("all authored stages stay readable on iPad and scroll safely on phone", asy
   await ready(page);
   const overflows: string[] = [];
   for (const recipe of recipes) {
-    await start(page, recipe);
+    await start(page, recipe, true);
+    await expect(page.getByRole("checkbox")).toHaveCount(
+      recipe.ingredients.length + (recipe.equipment?.length ?? 0),
+    );
+    for (const component of recipe.components) {
+      const group = page.getByRole("region", {
+        name: component.name,
+        exact: true,
+      });
+      for (const ingredient of recipe.ingredients.filter(
+        (item) => item.componentId === component.id,
+      )) {
+        const row = group.locator(".check-row").filter({
+          has: page.locator(`input[id="ingredient:${ingredient.id}"]`),
+        });
+        await expect(row).toContainText(
+          `${quantity(ingredient.quantity)} ${ingredient.name}`,
+        );
+        if (ingredient.optional) await expect(row).toContainText("optional");
+      }
+    }
+    await expect(
+      page
+        .getByRole("region", { name: "Equipment", exact: true })
+        .locator(".check-row"),
+    ).toHaveText(recipe.equipment!.map((e) => e.name!));
+    if (recipe.id === "crispy-roasted-chicken")
+      await page.screenshot({
+        path: `test-results/${info.project.name}-gathering.png`,
+        fullPage: true,
+      });
+    await page
+      .getByRole("button", { name: "Start preparation", exact: true })
+      .first()
+      .click();
     const prepTitles = await page.locator(".prep-card h2").allTextContents();
     expect(prepTitles).toEqual(recipe.preparation.map((p) => p.title));
+    expect(
+      await page.locator(".prep-tasks .check-row").allTextContents(),
+    ).toEqual(
+      recipe.preparation.flatMap((p) => p.items.map((item) => item.text)),
+    );
+    if (
+      ["crispy-roasted-chicken", "chicken-chickpea-coconut-curry"].includes(
+        recipe.id,
+      )
+    ) {
+      await expect(page.locator(".prep-card").first()).toHaveClass(/long-lead/);
+      await page.screenshot({
+        path: `test-results/${info.project.name}-${recipe.id}-preparation.png`,
+        fullPage: true,
+      });
+    }
     await page.getByRole("button", { name: "Let’s start cooking" }).click();
     for (let i = 0; i < recipe.cooking.length; i++) {
       await expect(page.locator(".stage-panel h1")).toHaveText(
@@ -504,9 +725,13 @@ test("elapsed time begins deliberately, freezes at finish and resumes after undo
   expect(await store(page, "sessions")).toHaveLength(0);
   const before = await page.evaluate(() => Date.now());
   await page
-    .getByRole("button", { name: "Start Preparing", exact: true })
+    .getByRole("button", { name: "Gather ingredients", exact: true })
     .click();
   await page.clock.fastForward(65000);
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
+    .click();
   await page.getByRole("button", { name: "Let’s start cooking" }).click();
   const s = (await store<Session>(page, "sessions"))[0];
   expect(s.startedAt).toBeGreaterThanOrEqual(before);
@@ -571,12 +796,12 @@ test("Save & Exit preserves progress and running timers for resumption after rel
   await expect(page.getByRole("checkbox").first()).toBeChecked();
 });
 
-for (const phase of ["preparation", "cooking"] as const) {
+for (const phase of ["gathering", "preparation", "cooking"] as const) {
   test(`Discard Session confirms then removes ${phase} progress and timers across reload`, async ({
     page,
   }) => {
     await ready(page);
-    await start(page);
+    await start(page, skillet, phase === "gathering");
     await page.getByRole("checkbox").first().check();
     if (phase === "cooking") {
       await page.getByRole("button", { name: "Let’s start cooking" }).click();
@@ -601,7 +826,7 @@ for (const phase of ["preparation", "cooking"] as const) {
     await page
       .getByRole("button", { name: "Keep cooking", exact: true })
       .click();
-    if (phase === "preparation")
+    if (phase !== "cooking")
       await expect(page.getByRole("checkbox").first()).toBeChecked();
     else
       await expect(page.locator(".stage-panel h1")).toHaveText(

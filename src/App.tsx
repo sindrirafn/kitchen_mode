@@ -5,6 +5,8 @@ import {
   clockTime,
   elapsed,
   finishSession,
+  gatheringGroups,
+  isLongLeadPreparation,
   quantity,
   startSession,
   undoFinish,
@@ -250,6 +252,14 @@ export function App() {
   function changeTimer(timer: TimerState) {
     editSession((s) => ({ ...s, timers: { ...s.timers, [timer.id]: timer } }));
   }
+  function gather(id: string) {
+    editSession((s) => ({
+      ...s,
+      gatheredIds: s.gatheredIds.includes(id)
+        ? s.gatheredIds.filter((key) => key !== id)
+        : [...s.gatheredIds, id],
+    }));
+  }
   function openRecipe(r: Recipe) {
     setSelected(r);
     setView("intro");
@@ -400,6 +410,12 @@ export function App() {
   const index = r && stage ? r.cooking.findIndex((s) => s.id === stage.id) : 0;
   const cooking = view === "session" && session?.phase === "cooking";
   const preparing = view === "session" && session?.phase === "preparation";
+  const gathering = view === "session" && session?.phase === "gathering";
+  const gatherGroups = r ? gatheringGroups(r) : [];
+  const gatherItems = gatherGroups.flatMap((group) => group.items);
+  const gathered = gatherItems.filter((item) =>
+    session?.gatheredIds.includes(item.id),
+  ).length;
   const complete = view === "session" && session?.phase === "completed";
   const unfinished = sessions.filter((s) => s.phase !== "completed");
   const expired =
@@ -546,11 +562,13 @@ export function App() {
                 <small>RIGHT WHERE YOU LEFT OFF</small>
                 <b>{unfinished[0].recipeSnapshot.identity.title}</b>
                 <em>
-                  {unfinished[0].phase === "preparation"
-                    ? "Preparation"
-                    : unfinished[0].recipeSnapshot.cooking.find(
-                        (s) => s.id === unfinished[0].currentStepId,
-                      )?.title}{" "}
+                  {unfinished[0].phase === "gathering"
+                    ? "Gathering"
+                    : unfinished[0].phase === "preparation"
+                      ? "Preparation"
+                      : unfinished[0].recipeSnapshot.cooking.find(
+                          (s) => s.id === unfinished[0].currentStepId,
+                        )?.title}{" "}
                   · revision {unfinished[0].recipeSnapshot.revision}
                 </em>
               </span>
@@ -681,10 +699,13 @@ export function App() {
               <button className="primary start-button" onClick={start}>
                 {unfinished.some((s) => s.recipeId === r.id)
                   ? unfinished.find((s) => s.recipeId === r.id)?.phase ===
-                    "preparation"
-                    ? "Resume preparing"
-                    : "Resume cooking"
-                  : "Start Preparing"}
+                    "gathering"
+                    ? "Resume gathering"
+                    : unfinished.find((s) => s.recipeId === r.id)?.phase ===
+                        "preparation"
+                      ? "Resume preparing"
+                      : "Resume cooking"
+                  : "Gather ingredients"}
                 <Icon name="arrow" />
               </button>
               <p className="small muted">
@@ -724,11 +745,88 @@ export function App() {
           </div>
         </main>
       )}
+      {gathering && r && session && (
+        <main className="gathering page-width">
+          <div className="phase-heading">
+            <div>
+              <p className="eyebrow">01 / GATHER</p>
+              <h1 ref={headingRef} tabIndex={-1}>
+                Everything in its place.
+              </h1>
+              <p>{r.identity.title}</p>
+            </div>
+            <button
+              className="primary"
+              onClick={() =>
+                editSession((s) => ({ ...s, phase: "preparation" }))
+              }
+            >
+              Start preparation <Icon name="arrow" />
+            </button>
+          </div>
+          <div className="gather-progress">
+            <p role="status">
+              {gathered} of {gatherItems.length} items gathered
+            </p>
+            <progress
+              aria-label="Gathering progress"
+              value={gathered}
+              max={gatherItems.length}
+            />
+            <p className="muted">
+              Gather what you need. You can start preparation at any time.
+            </p>
+          </div>
+          <div className="gather-grid">
+            {gatherGroups.map((group) => (
+              <section
+                className="gather-card"
+                key={group.id}
+                aria-label={group.title}
+              >
+                <h2>{group.title}</h2>
+                {group.items.map((item) => (
+                  <CheckRow
+                    key={item.id}
+                    id={item.id}
+                    checked={session.gatheredIds.includes(item.id)}
+                    onChange={() => gather(item.id)}
+                    text={
+                      <>
+                        <b>{item.amount}</b>
+                        {item.amount ? " " : ""}
+                        {item.name}
+                        {item.optional && <em> · optional</em>}
+                        {item.detail && <small>{item.detail}</small>}
+                      </>
+                    }
+                  />
+                ))}
+              </section>
+            ))}
+          </div>
+          <AllTimers session={session} now={now} onChange={changeTimer} />
+          <div className="prep-footer">
+            <p className="muted">
+              Your checks are saved as you go. Nothing needs to be ticked to
+              continue.
+            </p>
+            <button
+              className="primary"
+              onClick={() =>
+                editSession((s) => ({ ...s, phase: "preparation" }))
+              }
+            >
+              Start preparation <Icon name="arrow" />
+            </button>
+          </div>
+        </main>
+      )}
       {preparing && r && session && (
         <main className="preparation page-width">
           <div className="phase-heading">
             <div>
-              <p className="eyebrow">01 / PREPARE</p>
+              <p className="eyebrow">02 / PREPARE</p>
               <h1 ref={headingRef} tabIndex={-1}>
                 First, a little preparation.
               </h1>
@@ -742,23 +840,54 @@ export function App() {
               <Icon name="book" />
             </button>
           </div>
+          <button
+            className="text-button back-to-gathering"
+            onClick={() => editSession((s) => ({ ...s, phase: "gathering" }))}
+          >
+            <Icon name="back" size={16} /> Back to gathering
+          </button>
           <div className="prep-grid">
             {r.preparation.map((group, i) => (
-              <section className="prep-card" key={group.id}>
+              <section
+                className={`prep-card ${isLongLeadPreparation(group) ? "long-lead" : ""}`}
+                key={group.id}
+              >
+                {isLongLeadPreparation(group) && (
+                  <p className="prep-lead eyebrow">
+                    <Icon name="clock" size={15} /> Allow time
+                  </p>
+                )}
                 <div className="prep-card-title">
                   <span>{String(i + 1).padStart(2, "0")}</span>
                   <h2>{group.title}</h2>
                 </div>
-                {group.items.map((item) => (
-                  <CheckRow
-                    key={item.id}
-                    id={item.id}
-                    text={item.text}
-                    checkable={item.checkable}
-                    checked={session.checkedIds.includes(item.id)}
-                    onChange={() => check(item.id)}
-                  />
-                ))}
+                <div className="prep-tasks">
+                  {group.items.map((item) => (
+                    <CheckRow
+                      key={item.id}
+                      id={item.id}
+                      text={item.text}
+                      checkable={item.checkable}
+                      checked={session.checkedIds.includes(item.id)}
+                      onChange={() => check(item.id)}
+                    />
+                  ))}
+                </div>
+                <p className="prep-group-progress small">
+                  {
+                    group.items.filter(
+                      (item) =>
+                        item.checkable !== false &&
+                        session.checkedIds.includes(item.id),
+                    ).length
+                  }{" "}
+                  of{" "}
+                  {
+                    group.items.filter((item) => item.checkable !== false)
+                      .length
+                  }{" "}
+                  tasks checked
+                </p>
                 {group.tip && (
                   <p className="prep-tip">
                     <Icon name="leaf" size={17} />
@@ -788,7 +917,7 @@ export function App() {
         <>
           <div className="cooking-heading">
             <div>
-              <p className="eyebrow">02 / COOK · REVISION {r.revision}</p>
+              <p className="eyebrow">03 / COOK · REVISION {r.revision}</p>
               <h2>{r.identity.title}</h2>
             </div>
             <span className="stage-count">
@@ -1033,11 +1162,13 @@ export function App() {
                     <p>
                       {s.completedAt
                         ? `${clockTime(elapsed(s, now))} in the kitchen`
-                        : s.phase === "preparation"
-                          ? "Preparation"
-                          : s.recipeSnapshot.cooking.find(
-                              (c) => c.id === s.currentStepId,
-                            )?.title}{" "}
+                        : s.phase === "gathering"
+                          ? "Gathering"
+                          : s.phase === "preparation"
+                            ? "Preparation"
+                            : s.recipeSnapshot.cooking.find(
+                                (c) => c.id === s.currentStepId,
+                              )?.title}{" "}
                       · revision {s.recipeSnapshot.revision}
                     </p>
                   </span>
@@ -1070,7 +1201,7 @@ export function App() {
             <p className="muted">{session.recipeSnapshot.identity.title}</p>
             <p>
               {dialog === "discard-session"
-                ? "Your preparation checks, cooking progress and timers will be cleared. This cannot be undone. This meal won’t be marked as finished or added to completed cooking history."
+                ? "Your gathering and preparation checks, cooking progress and timers will be cleared. This cannot be undone. This meal won’t be marked as finished or added to completed cooking history."
                 : "Save your place to pick up later, or discard this cooking session and its timers."}
             </p>
             {exitError && (

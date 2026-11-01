@@ -114,7 +114,12 @@ async function seed(page: Page) {
     })
     .click();
   await page
-    .getByRole("button", { name: "Start Preparing", exact: true })
+    .getByRole("button", { name: "Gather ingredients", exact: true })
+    .click();
+  await page.getByRole("checkbox").first().check();
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
     .click();
   await page.getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Let’s start cooking" }).click();

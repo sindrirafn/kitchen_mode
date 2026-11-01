@@ -1,6 +1,7 @@
 import Ajv2020 from "ajv/dist/2020";
 import schema from "../recipe.schema.json";
 import type { Recipe, Backup } from "./model";
+import { normalizeRecipe } from "./recipe-text";
 const validateSchema = new Ajv2020({ allErrors: true, strict: false }).compile(
   schema,
 );
@@ -142,7 +143,7 @@ export function validateRecipe(value: unknown): Recipe {
   refs(r, "Recipe");
   if (errors.length)
     throw new RecipeError([...new Set(errors)].slice(0, 12).join("\n"));
-  return r;
+  return normalizeRecipe(r);
 }
 export function canonical(value: unknown): string {
   if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
@@ -179,8 +180,8 @@ export function parseImport(text: string): Recipe | Backup {
       throw new RecipeError(
         "Unsupported backup. Expected a Kitchen Mode version 1 cookbook export.",
       );
-    b.recipes.forEach(validateRecipe);
-    b.bundledOriginals.forEach(validateRecipe);
+    b.recipes = b.recipes.map(validateRecipe);
+    b.bundledOriginals = b.bundledOriginals.map(validateRecipe);
     const seen = new Set<string>();
     for (const r of b.recipes) {
       if (seen.has(r.id))
@@ -195,7 +196,7 @@ export function parseImport(text: string): Recipe | Backup {
         !Number.isFinite(h.savedAt)
       )
         throw new RecipeError("Backup history needs valid savedAt timestamps.");
-      validateRecipe(h.recipe);
+      h.recipe = validateRecipe(h.recipe);
       if (h.recipeId !== h.recipe.id)
         throw new RecipeError(
           "Backup history recipeId does not match its recipe.",
