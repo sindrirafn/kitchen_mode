@@ -44,6 +44,16 @@ For an app-code update, build again and upload `dist` as a new **production depl
 
 ### Deploy from the command line or GitHub
 
+The repository's current GitHub check is **Workers Builds: kitchen-mode**. For that existing **Worker**, set build command `npm run build` and production deploy command:
+
+```sh
+npx wrangler deploy --assets ./dist --name kitchen-mode --compatibility-date 2026-11-01
+```
+
+For a manual deployment, run `npm ci`, `npm run build` and `npx wrangler login` first, then the command above. Verify the Worker name and Cloudflare account match the current installation so its origin stays the same. See [Workers Builds deploy commands](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) and [deploying static assets without a configuration file](https://developers.cloudflare.com/changelog/post/2025-09-09-interactive-wrangler-assets/). The branch's remote Workers build reported failure; its public GitHub summary does not expose the cause. Check its Cloudflare build logs before relying on automatic deployment. Local production build and browser tests pass.
+
+If your existing installation instead uses **Cloudflare Pages**, use the Pages-specific instructions below. Workers and Pages have different deploy commands.
+
 After reviewing this branch, deploy its production build to your **existing Cloudflare Pages project**:
 
 ```sh
