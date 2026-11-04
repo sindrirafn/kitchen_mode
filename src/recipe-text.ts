@@ -79,20 +79,34 @@ export function normalizeRecipe(recipe: Recipe): Recipe {
     fields(value, ["text", "unit"]);
     if (value && "package" in value) fields(value.package, ["unit"]);
   }
+  function content(blocks: import("./model").RecipeContent[] | undefined) {
+    blocks?.forEach((block) => {
+      if (block.type === "action") fields(block, ["text"]);
+      else {
+        fields(block, ["title", "note"]);
+        block.items.forEach((item) => fields(item, ["note"]));
+      }
+    });
+  }
   fields(normalized.identity, ["title", "subtitle", "description"]);
   fields(normalized.yield, ["servingDescription"]);
   normalized.components.forEach((c) => fields(c, ["name"]));
   normalized.ingredients.forEach((ingredient) => {
     fields(ingredient, ["name", "preparation", "notes"]);
+    fields(ingredient.gathering, ["name"]);
     amount(ingredient.quantity);
   });
   normalized.quantityUsages?.forEach((usage) => amount(usage.quantity));
   normalized.preparation.forEach((group) => {
     fields(group, ["title", "tip"]);
-    group.items.forEach((item) => fields(item, ["text"]));
+    group.items.forEach((item) => {
+      fields(item, ["text"]);
+      content(item.content);
+    });
   });
   normalized.cooking.forEach((stage) => {
     fields(stage, ["title", "tip"]);
+    content(stage.content);
     stage.instructions.forEach((instruction) => {
       if (instruction.type === "text") fields(instruction, ["text"]);
     });

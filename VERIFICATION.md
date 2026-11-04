@@ -1,21 +1,21 @@
 # Kitchen Mode V1 verification
 
-Verified locally on **November 1, 2026**, using Node 22.18.0 on macOS 14.5. The real-cooking UX feature branch has not been manually deployed by this task, and no physical iPad testing was performed.
+Verified locally on **November 4, 2026**, using Node 22.18.0 on macOS 14.5. The Recipe → Gather → Prep → Cook redesign branch has not been manually deployed by this task, and no physical iPad testing was performed.
 
 ## Results
 
 | Check | Result |
 | --- | --- |
 | TypeScript: `npm run typecheck` | Passed |
-| Data/timer/repository tests: `npm test` | **44 passed** |
+| Data/timer/repository tests: `npm test` | **69 passed** |
 | Production build: `npm run build` | Passed; static `dist/` generated with manifest, icons and scoped service worker |
-| Full production browser suite: `npm run test:e2e` | **63 passed**, no skipped tests or retries |
+| Full production browser suite: `npm run test:e2e` | **72 passed**, no skipped tests or retries |
 | Visual inspection | Gathering and preparation captures inspected at iPad landscape and phone portrait sizes |
 | Production dependency audit: `npm audit --omit=dev` | **0 vulnerabilities** |
 | `git diff --check` | Passed |
-| Remote Cloudflare Workers build | **Failed** for `2f0cea3`; [public check summary](https://github.com/sindrirafn/kitchen_mode/runs/124814862803) links to account-only Cloudflare logs without exposing a cause. Production deployment remains unverified. |
+| Deployment | Not run; branch and PR prepared for review only. Earlier Workers builds failed and their account-only logs were not available. |
 
-The full browser suite runs twenty-one scenarios in each of these three projects:
+The full browser suite runs twenty-four scenarios in each of these three projects:
 
 - **WebKit 26.0**, iPad landscape, **1024×768** CSS pixels, touch/mobile emulation.
 - **Chromium 141**, **1024×768** CSS pixels.
@@ -25,7 +25,7 @@ Playwright 1.56.1 and its matching browser binaries are locked in `package-lock.
 
 ## Acceptance coverage
 
-1. Exactly **six bundled originals** validate against the supplied Draft 2020-12 schema and cross-reference checks. The supplied JSON files and schema were not edited. Their **14 preparation groups and 40 cooking stages** render in source order. The naan dough and oven long-lead preparation stay at their authored positions.
+1. Exactly **six bundled originals** validate against the supplied Draft 2020-12 schema and cross-reference checks. The schema adds optional fields and the recipes add presentation metadata only. Stripping only those added fields reproduces all six original recipe objects exactly: IDs, revisions, quantities, fallback preparation text, cooking instructions and safety caveats are unchanged. All **14 preparation groups and 40 cooking stages** remain; explicit long-lead work is shown first, with source order preserved within each section.
 2. Every recipe was taken through library → introduction → intentional start → gathering → preparation → every authored stage → explicit finish → completion → library. Final forward controls say **Finish Cooking**. Entering the final stage does not complete a session.
 3. Opening the introduction creates no session. Browser-clock tests confirm deliberate start, timestamp-based elapsed duration, frozen elapsed time after completion, and resumed timing after Undo Finish. Completed sessions remain in the cooking journal after returning to the library and reloading.
 4. Gathering checks, preparation checks, phase, stage and timer deadlines survive reload. Tests deliberately reload immediately after input, covering the recovery journal as well as IndexedDB. Timer start/pause/resume/cancel survive reload without restarting their duration.
@@ -40,13 +40,17 @@ Playwright 1.56.1 and its matching browser binaries are locked in `package-lock.
 
 12. **Service-worker recovery:** unit tests reject foreign/opaque/non-HTML/mismatched documents and verify that a freshly constructed response strips redirect metadata and decoded-body encoding/length headers. Browser tests reproduce Cloudflare-style `/index.html` redirects with the actual previous worker, verify online close/reopen recovery and in-place activation without reloading an active cooking client, and compare all cookbook IndexedDB stores plus localStorage before and after. They also cover redirected/missing/invalid shell entries, safe retry HTML when offline files are absent, staged repair success/failure, preservation of unrelated caches, and a separate `/kitchen-mode/` production build with a working scoped repair page and offline session restoration.
 
-13. **Gathering:** every authored ingredient appears under its component with its quantity and optional status, followed by every named equipment item. Ingredient and equipment checks use separate namespaces from preparation/cooking checks. Both Start preparation actions remain available with zero or partial gathering progress. Ingredient and equipment checks, unchecking, return navigation, preparation checks, timers, Save & Exit and resumption survive reload. All original preparation task text and group ordering are compared to the JSON. Oven preheating and early naan dough are highlighted; “do not preheat” instructions are not. Ingredient dialogs remain available.
+13. **Gathering:** repeated product uses consolidate into one checklist row under practical kitchen categories, followed by tools and equipment. Compatible fixed/range quantities total accurately; incompatible units, different package sizes and textual amounts remain separate. Optional and required allocations remain distinct. The roast recipe shows one garlic-powder row with **3 tsp + a pinch** and one oil row with **3–3½ tbsp**. Component allocations remain available in a disclosure. Ingredient and equipment checks use separate namespaces from preparation/cooking checks. Both Start preparation actions remain available with zero or partial gathering progress. Ingredient and equipment checks, unchecking, return navigation, preparation checks, timers, Save & Exit and resumption survive reload. All authored structured action lines, collection labels and legacy fallback text are compared to the JSON. Oven preheating, early naan dough and advance rice work are separated from ordinary preparation; “do not preheat” instructions are not. Ingredient dialogs remain available.
 
 14. **Older local data and encoding:** unit tests load pre-gathering sessions from IndexedDB in preparation, cooking and completed phases, preserving their phase and progress with empty gathering checks. A browser fixture resumes an older preparation session with its check intact. Tests repair degree/fraction, punctuation, Latin-1/Windows-1252 and common double-encoding cases; correct Unicode, Icelandic letters, decomposed accents, emoji and unrelated text remain unchanged. Tests cover future JSON/file imports, already-stored recipes/recovery versions/session snapshots, interrupted session journals, and every recipe source inside backup imports. IDs, references, revisions, numeric amounts, paths and extension metadata are preserved. Read normalization leaves raw stored originals unchanged; normalized history comparisons avoid duplicate versions caused solely by encoding repair.
 
-The current full suite passes without skips or retries. `playwright-report/` and `test-results/` contain the most recent run and are regenerated by tests. The warm editorial stylesheet was refined for gathering and preparation; cooking-screen layout and theme behavior were retained. The repository has no existing dark-mode toggle or dark-mode stylesheet; this change does not introduce a new theme system.
+15. **Structured preparation and cooking:** tests import explicit action and ingredient-collection blocks, verify one action per authored line, and display a ½ tsp `quantityUsages` allocation instead of a 3 tsp whole-recipe total. Lists preserve separate-versus-combined instructions. New metadata and missing/mismatched references are validated before imports. Legacy prose with punctuation stays intact. Bundle metadata includes explicit long-lead flags, and every original task ID remains available exactly once.
 
-The remote Cloudflare check is separate from the passing local suite. README documents both the current Worker's static-assets deploy command and Pages deployment for installations using Pages. No Cloudflare settings or production deployment were changed during this task. The failed remote build needs its Cloudflare logs inspected by an authenticated account before automatic deployment can be verified.
+16. **Legacy gathering snapshots:** browser tests load an older snapshot without gathering/layout metadata, retain its partial garlic gathering checks in the original store, show a mixed master checkbox, and verify that checking it updates every original ingredient ID. Legacy preparation remains prose. No schema-version bump, destructive browser migration, service-worker changes, or clearing of local data was introduced.
+
+The current full suite passes without skips or retries. `playwright-report/` and `test-results/` contain the most recent run and are regenerated by tests. The warm editorial stylesheet was refined for gathering and preparation; step navigation, timers, next-step previews, progress, Finish/Undo and theme behavior were retained. The repository has no existing dark-mode toggle or dark-mode stylesheet; this change does not introduce a new theme system.
+
+The previously reported Cloudflare failure is historical, separate from this redesign and the passing local suite. README documents both the current Worker's static-assets deploy command and Pages deployment for installations using Pages. No Cloudflare settings or production deployment were changed during this task. No merge or deployment is part of this task. A remote deployment check is not evidence of physical-device verification.
 
 ## What still needs the physical sixth-generation iPad
 

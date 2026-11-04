@@ -661,6 +661,11 @@ i {
   font-size: 13px;
   color: var(--sage);
 }
+.phase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 .prep-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -775,6 +780,128 @@ i {
 .gather-card .check-row {
   padding: 14px 0;
   font-size: 16px;
+}
+.gather-item + .gather-item {
+  border-top: 1px solid var(--line);
+}
+.gather-item .check-row {
+  border-bottom: 0;
+}
+.gather-allocations {
+  margin: -4px 0 14px 34px;
+  color: var(--sage);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.gather-allocations summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 0;
+}
+.gather-allocations ul {
+  padding-left: 18px;
+  margin: 0;
+}
+.gather-allocations li + li {
+  margin-top: 10px;
+}
+.gather-allocations small {
+  display: block;
+}
+.prep-section-heading {
+  margin-bottom: 22px;
+}
+.prep-section-heading .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.prep-section-heading h2 {
+  font-size: 30px;
+  margin: 9px 0;
+}
+.prep-section-heading > p:last-child {
+  color: var(--sage);
+  font-size: 14px;
+}
+.prep-early {
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 30px;
+}
+.prep-early-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+}
+.structured-content,
+.recipe-action,
+.ingredient-collection,
+.ingredient-collection [role="list"],
+.ingredient-collection [role="listitem"],
+.collection-title,
+.collection-note,
+.ingredient-reference-note {
+  display: block;
+}
+.structured-content > * + * {
+  margin-top: 14px;
+}
+.ingredient-collection {
+  border-left: 2px solid var(--oatmeal);
+  padding-left: 14px;
+  font-size: 0.92em;
+  line-height: 1.55;
+}
+.collection-title {
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--sage);
+  margin-bottom: 9px;
+}
+.ingredient-collection [role="listitem"] + [role="listitem"] {
+  margin-top: 6px;
+}
+.ingredient-collection .quantity-ref {
+  font-weight: 500;
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+.collection-note,
+.ingredient-reference-note {
+  font-size: 0.85em;
+  color: var(--sage);
+  margin-top: 7px;
+}
+.instructions:has(.structured-content) {
+  font-size: 21px;
+  line-height: 1.55;
+}
+.instructions .ingredient-collection {
+  font-size: 17px;
+}
+@media (min-width: 801px) {
+  .preparation .prep-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .preparation .prep-card {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 2fr);
+    column-gap: 30px;
+    align-items: start;
+  }
+  .preparation .prep-card-title {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    margin: 4px 0 0;
+  }
+  .preparation .prep-tasks,
+  .preparation .prep-group-progress,
+  .preparation .prep-tip {
+    grid-column: 2;
+  }
+}
+.check-row.checked .structured-content {
+  text-decoration: none;
 }
 .gather-card .check-row > span {
   min-width: 0;
@@ -2198,4 +2325,41 @@ h3,
 p,
 li {
   overflow-wrap: break-word;
+}
+
+/* Keep structured lists, timers and the learning note together on landscape iPad. */
+@media (min-width: 601px) {
+  .cooking-app .stage-panel:has(.structured-content) {
+    padding-top: 22px;
+    padding-bottom: 16px;
+  }
+  .cooking-app .stage-panel:has(.structured-content) h1 {
+    font-size: 36px;
+    margin: 12px 0 14px;
+  }
+  .cooking-app .stage-panel:has(.structured-content) .instructions {
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .instructions .structured-content > * + * {
+    margin-top: 8px;
+  }
+  .instructions .ingredient-collection {
+    font-size: 17px;
+    line-height: 1.35;
+  }
+  .instructions .ingredient-collection [role="listitem"] + [role="listitem"] {
+    margin-top: 3px;
+  }
+  .instructions .collection-title {
+    margin-bottom: 5px;
+  }
+  .cooking-app .stage-panel:has(.structured-content) .learning-tip {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 12px;
+  }
+  .cooking-app .stage-panel:has(.structured-content) .stage-timers {
+    margin-top: 8px;
+  }
 }

@@ -8,13 +8,8 @@
     "description": "Fast, filling, warmly spiced beans in a thick tomato sauce"
   },
   "classification": {
-    "mealTypes": [
-      "dinner"
-    ],
-    "tags": [
-      "family-rotation",
-      "budget-friendly"
-    ],
+    "mealTypes": ["dinner"],
+    "tags": ["family-rotation", "budget-friendly"],
     "dietary": {
       "vegetarian": false,
       "vegan": false
@@ -264,7 +259,43 @@
         {
           "id": "prep-ingredients-3",
           "text": "Measure paprika, cumin, curry powder, garlic powder and ground ginger together; keep the garam masala separate.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Measure these spices together:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Spice mix",
+              "items": [
+                {
+                  "ingredientId": "paprika"
+                },
+                {
+                  "ingredientId": "cumin"
+                },
+                {
+                  "ingredientId": "curry-powder"
+                },
+                {
+                  "ingredientId": "garlic-powder"
+                },
+                {
+                  "ingredientId": "ginger"
+                }
+              ]
+            },
+            {
+              "type": "ingredients",
+              "title": "Keep separate",
+              "items": [
+                {
+                  "ingredientId": "garam-masala"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-ingredients-4",
@@ -276,7 +307,8 @@
           "text": "Have rice and/or naan ready to serve (accompaniments not quantified in the tested bank).",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     }
   ],
   "cooking": [
@@ -323,7 +355,38 @@
           "durationSeconds": 30
         }
       ],
-      "tip": "Briefly warming the spices in oil helps release fat-soluble aromas."
+      "tip": "Briefly warming the spices in oil helps release fat-soluble aromas.",
+      "content": [
+        {
+          "type": "action",
+          "text": "Add the prepared spice mix."
+        },
+        {
+          "type": "ingredients",
+          "title": "Spice mix",
+          "items": [
+            {
+              "ingredientId": "paprika"
+            },
+            {
+              "ingredientId": "cumin"
+            },
+            {
+              "ingredientId": "curry-powder"
+            },
+            {
+              "ingredientId": "garlic-powder"
+            },
+            {
+              "ingredientId": "ginger"
+            }
+          ]
+        },
+        {
+          "type": "action",
+          "text": "Stir for 20–30 seconds."
+        }
+      ]
     },
     {
       "id": "cook-3",

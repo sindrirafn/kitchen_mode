@@ -124,6 +124,11 @@ export function validateRecipe(value: unknown): Recipe {
   const timerIds = new Set(r.cooking.flatMap((s) => s.timers.map((t) => t.id)));
   function refs(v: unknown, path: string) {
     if (!v || typeof v !== "object") return;
+    if ("ingredientId" in v && "usageId" in v) {
+      const usage = r.quantityUsages?.find((u) => u.id === v.usageId);
+      if (usage?.ingredientId && usage.ingredientId !== v.ingredientId)
+        errors.push(`${path}: usage belongs to a different ingredient.`);
+    }
     for (const [key, val] of Object.entries(v)) {
       const target =
         key === "ingredientId"

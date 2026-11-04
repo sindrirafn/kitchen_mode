@@ -279,16 +279,28 @@ export function CheckRow({
   checked,
   onChange,
   checkable = true,
+  indeterminate = false,
 }: {
   id: string;
   text: ReactNode;
   checked: boolean;
   onChange: () => void;
   checkable?: boolean;
+  indeterminate?: boolean;
 }) {
+  const input = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (input.current) input.current.indeterminate = indeterminate;
+  }, [indeterminate]);
   return checkable ? (
     <label className={`check-row ${checked ? "checked" : ""}`}>
-      <input id={id} type="checkbox" checked={checked} onChange={onChange} />
+      <input
+        ref={input}
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+      />
       <span>{text}</span>
     </label>
   ) : (

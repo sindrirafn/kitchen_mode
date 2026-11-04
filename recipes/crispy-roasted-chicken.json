@@ -8,13 +8,8 @@
     "description": "Crisp cut-side-down potatoes and buttery carrots roasted beneath chicken"
   },
   "classification": {
-    "mealTypes": [
-      "dinner"
-    ],
-    "tags": [
-      "family-rotation",
-      "budget-friendly"
-    ],
+    "mealTypes": ["dinner"],
+    "tags": ["family-rotation", "budget-friendly"],
     "dietary": {
       "vegetarian": false,
       "vegan": false
@@ -134,7 +129,11 @@
       },
       "componentId": "chicken",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "ch-garlic",
@@ -146,7 +145,11 @@
       },
       "componentId": "chicken",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "garlic-powder",
+        "name": "Garlic powder"
+      }
     },
     {
       "id": "ch-thyme",
@@ -158,7 +161,11 @@
       },
       "componentId": "chicken",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "thyme",
+        "name": "Thyme"
+      }
     },
     {
       "id": "ch-rosemary",
@@ -170,7 +177,11 @@
       },
       "componentId": "chicken",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "rosemary",
+        "name": "Rosemary"
+      }
     },
     {
       "id": "ch-cumin",
@@ -195,7 +206,11 @@
       "componentId": "chicken",
       "optional": true,
       "scaling": "linear",
-      "notes": "Original says ½ tsp pepper, optional"
+      "notes": "Original says ½ tsp pepper, optional",
+      "gathering": {
+        "key": "black-pepper",
+        "name": "Black pepper"
+      }
     },
     {
       "id": "ch-salt",
@@ -207,7 +222,11 @@
       },
       "componentId": "chicken",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "ch-onionpowder",
@@ -246,7 +265,11 @@
       },
       "componentId": "potatoes",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "pot-salt",
@@ -259,7 +282,11 @@
       },
       "componentId": "potatoes",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "pot-garlic",
@@ -271,7 +298,11 @@
       },
       "componentId": "potatoes",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "garlic-powder",
+        "name": "Garlic powder"
+      }
     },
     {
       "id": "pot-rosemary",
@@ -282,7 +313,11 @@
       },
       "componentId": "potatoes",
       "optional": false,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "rosemary",
+        "name": "Rosemary"
+      }
     },
     {
       "id": "pot-pepper",
@@ -293,7 +328,11 @@
       },
       "componentId": "potatoes",
       "optional": false,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "black-pepper",
+        "name": "Black pepper"
+      }
     },
     {
       "id": "carrots",
@@ -332,7 +371,11 @@
       },
       "componentId": "vegetables",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "veg-salt",
@@ -344,7 +387,11 @@
       },
       "componentId": "vegetables",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "veg-thyme",
@@ -356,7 +403,11 @@
       },
       "componentId": "vegetables",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "thyme",
+        "name": "Thyme"
+      }
     },
     {
       "id": "veg-pepper",
@@ -367,7 +418,11 @@
       },
       "componentId": "vegetables",
       "optional": false,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "black-pepper",
+        "name": "Black pepper"
+      }
     },
     {
       "id": "butter",
@@ -391,7 +446,11 @@
       },
       "componentId": "finish",
       "optional": false,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "garlic-powder",
+        "name": "Garlic powder"
+      }
     },
     {
       "id": "lemon",
@@ -414,7 +473,8 @@
         {
           "id": "prep-oven-1",
           "text": "Preheat to 200°C fan (or 220°C conventional).",
-          "checkable": true
+          "checkable": true,
+          "longLead": true
         },
         {
           "id": "prep-oven-2",
@@ -427,7 +487,8 @@
           "checkable": true
         }
       ],
-      "tip": "Two separate trays let the potatoes get crisp while the vegetables catch the chicken drippings."
+      "tip": "Two separate trays let the potatoes get crisp while the vegetables catch the chicken drippings.",
+      "longLead": false
     },
     {
       "id": "prep-potatoes",
@@ -436,19 +497,67 @@
         {
           "id": "prep-potatoes-1",
           "text": "Wash and dry 1–1.2 kg small potatoes thoroughly. Halve lengthwise; do not peel or parboil.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Wash and dry 1–1.2 kg small potatoes thoroughly."
+            },
+            {
+              "type": "action",
+              "text": "Halve lengthwise; do not peel or parboil."
+            }
+          ]
         },
         {
           "id": "prep-potatoes-2",
           "text": "Toss with 1½–2 tbsp oil, ½–¾ tsp salt, 1 tsp garlic powder, a pinch of rosemary and pepper.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Toss the potatoes with:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Potato seasoning",
+              "items": [
+                {
+                  "ingredientId": "pot-oil"
+                },
+                {
+                  "ingredientId": "pot-salt"
+                },
+                {
+                  "ingredientId": "pot-garlic"
+                },
+                {
+                  "ingredientId": "pot-rosemary"
+                },
+                {
+                  "ingredientId": "pot-pepper"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-potatoes-3",
           "text": "Arrange cut-side down in one layer on a metal tray. Do not put the tray in yet.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Arrange cut-side down in one layer on a metal tray."
+            },
+            {
+              "type": "action",
+              "text": "Do not put the tray in yet."
+            }
+          ]
         }
-      ]
+      ],
+      "longLead": false
     },
     {
       "id": "prep-chicken-veg",
@@ -457,24 +566,118 @@
         {
           "id": "prep-chicken-veg-1",
           "text": "Cut 500–600 g carrots into 2–3 cm pieces and 1 onion into wedges.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Cut the carrots into 2–3 cm pieces and the onion into wedges."
+            },
+            {
+              "type": "ingredients",
+              "title": "Vegetables",
+              "items": [
+                {
+                  "ingredientId": "carrots"
+                },
+                {
+                  "ingredientId": "veg-onion"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-chicken-veg-2",
           "text": "Toss carrots and onion with ½ tbsp oil, ¼ tsp salt, ½ tsp thyme and pepper; place in the deep pan.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Toss the carrots and onion with:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Vegetable seasoning",
+              "items": [
+                {
+                  "ingredientId": "veg-oil"
+                },
+                {
+                  "ingredientId": "veg-salt"
+                },
+                {
+                  "ingredientId": "veg-thyme"
+                },
+                {
+                  "ingredientId": "veg-pepper"
+                }
+              ]
+            },
+            {
+              "type": "action",
+              "text": "Place in the deep pan."
+            }
+          ]
         },
         {
           "id": "prep-chicken-veg-3",
           "text": "Pat about 1 kg chicken pieces thoroughly dry. Rub with 1 tbsp oil, 2 tsp garlic powder, 1 tsp thyme, ½ tsp rosemary and 1 tsp salt; use optional cumin, pepper or onion powder as desired.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Pat about 1 kg chicken pieces thoroughly dry."
+            },
+            {
+              "type": "action",
+              "text": "Rub with:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Chicken seasoning",
+              "items": [
+                {
+                  "ingredientId": "ch-oil"
+                },
+                {
+                  "ingredientId": "ch-garlic"
+                },
+                {
+                  "ingredientId": "ch-thyme"
+                },
+                {
+                  "ingredientId": "ch-rosemary"
+                },
+                {
+                  "ingredientId": "ch-salt"
+                }
+              ]
+            },
+            {
+              "type": "ingredients",
+              "title": "Optional additions",
+              "items": [
+                {
+                  "ingredientId": "ch-cumin"
+                },
+                {
+                  "ingredientId": "ch-pepper"
+                },
+                {
+                  "ingredientId": "ch-onionpowder"
+                }
+              ],
+              "note": "Use as desired."
+            }
+          ]
         },
         {
           "id": "prep-chicken-veg-4",
           "text": "Put chicken skin-side up on a wire rack above the carrots/onions.",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     }
   ],
   "cooking": [
@@ -494,6 +697,16 @@
           "label": "Head start for chicken",
           "durationSeconds": 600
         }
+      ],
+      "content": [
+        {
+          "type": "action",
+          "text": "Put the chicken on its rack above the vegetables in the preheated oven."
+        },
+        {
+          "type": "action",
+          "text": "Roast for 10 minutes before adding the potatoes."
+        }
       ]
     },
     {
@@ -507,7 +720,17 @@
       ],
       "checklist": [],
       "timers": [],
-      "tip": "Contact with the metal tray creates the deeply browned potato cut sides."
+      "tip": "Contact with the metal tray creates the deeply browned potato cut sides.",
+      "content": [
+        {
+          "type": "action",
+          "text": "Slide the prepared potato tray into the oven, cut-side down."
+        },
+        {
+          "type": "action",
+          "text": "Leave the potatoes undisturbed—do not flip."
+        }
+      ]
     },
     {
       "id": "cook-3",
@@ -555,6 +778,32 @@
           "id": "cook-5-timer-1",
           "label": "Chicken rest",
           "durationSeconds": 300
+        }
+      ],
+      "content": [
+        {
+          "type": "action",
+          "text": "Remove the chicken and rest uncovered 5–10 minutes."
+        },
+        {
+          "type": "action",
+          "text": "Toss the roasted carrots and onions with the chicken drippings and:"
+        },
+        {
+          "type": "ingredients",
+          "title": "Vegetable finish",
+          "items": [
+            {
+              "ingredientId": "butter"
+            },
+            {
+              "ingredientId": "finish-garlic"
+            }
+          ]
+        },
+        {
+          "type": "action",
+          "text": "Add optional lemon juice to taste."
         }
       ]
     },

@@ -8,13 +8,8 @@
     "description": "A rich long-simmered ragù with farfalle and garlic-yogurt flatbreads"
   },
   "classification": {
-    "mealTypes": [
-      "dinner"
-    ],
-    "tags": [
-      "family-rotation",
-      "budget-friendly"
-    ],
+    "mealTypes": ["dinner"],
+    "tags": ["family-rotation", "budget-friendly"],
     "dietary": {
       "vegetarian": false,
       "vegan": false
@@ -244,7 +239,11 @@
       },
       "componentId": "ragu",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "milk",
+        "name": "Milk"
+      }
     },
     {
       "id": "oil",
@@ -257,7 +256,11 @@
       },
       "componentId": "ragu",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "oregano",
@@ -385,7 +388,11 @@
       },
       "componentId": "flatbread",
       "optional": true,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "bread-milk",
@@ -396,7 +403,11 @@
       },
       "componentId": "flatbread",
       "optional": true,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "milk",
+        "name": "Milk"
+      }
     },
     {
       "id": "garlic-butter",
@@ -434,7 +445,28 @@
         {
           "id": "prep-vegetables-1",
           "text": "Finely dice 1 onion, 1 carrot and 2 celery stalks.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Finely dice:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Ragù vegetables",
+              "items": [
+                {
+                  "ingredientId": "onion"
+                },
+                {
+                  "ingredientId": "carrot"
+                },
+                {
+                  "ingredientId": "celery"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-vegetables-2",
@@ -444,14 +476,46 @@
         {
           "id": "prep-vegetables-3",
           "text": "Measure 100–125 g dry green lentils and prepare ½ beef stock cube in 150 ml water.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Measure the dry green lentils."
+            },
+            {
+              "type": "ingredients",
+              "title": "Lentils",
+              "items": [
+                {
+                  "ingredientId": "lentils"
+                }
+              ]
+            },
+            {
+              "type": "action",
+              "text": "Prepare the stock."
+            },
+            {
+              "type": "ingredients",
+              "title": "Stock",
+              "items": [
+                {
+                  "ingredientId": "stock-cube"
+                },
+                {
+                  "ingredientId": "stock-water"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-vegetables-4",
           "text": "Have minced beef, tomato paste, canned tomatoes, herbs and 100–150 ml milk ready.",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     },
     {
       "id": "prep-flatbread",
@@ -460,19 +524,62 @@
         {
           "id": "prep-flatbread-1",
           "text": "Measure 300 g flour, 225 g Greek yogurt, 2¼ tsp baking powder and ¾ tsp salt.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Measure the flatbread ingredients."
+            },
+            {
+              "type": "ingredients",
+              "title": "For the dough",
+              "items": [
+                {
+                  "ingredientId": "flour"
+                },
+                {
+                  "ingredientId": "yogurt"
+                },
+                {
+                  "ingredientId": "baking-powder"
+                },
+                {
+                  "ingredientId": "bread-salt"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-flatbread-2",
           "text": "Reserve 50–60 g butter and 1½–2 tsp garlic powder for finishing.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Reserve for finishing:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Garlic-butter finish",
+              "items": [
+                {
+                  "ingredientId": "garlic-butter"
+                },
+                {
+                  "ingredientId": "bread-garlic"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-flatbread-3",
           "text": "Prepare rolling pin and dry skillet for later; do not preheat the skillet yet.",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     }
   ],
   "cooking": [
@@ -486,7 +593,17 @@
         }
       ],
       "checklist": [],
-      "timers": []
+      "timers": [],
+      "content": [
+        {
+          "type": "action",
+          "text": "Heat 1–2 tbsp oil in a pot."
+        },
+        {
+          "type": "action",
+          "text": "Brown 250–300 g minced beef, then transfer it to a plate."
+        }
+      ]
     },
     {
       "id": "cook-2",
@@ -576,6 +693,38 @@
           "id": "cook-6-timer-1",
           "label": "Dough rest",
           "durationSeconds": 600
+        }
+      ],
+      "content": [
+        {
+          "type": "action",
+          "text": "Mix into a dough:"
+        },
+        {
+          "type": "ingredients",
+          "title": "Flatbread dough",
+          "items": [
+            {
+              "ingredientId": "flour"
+            },
+            {
+              "ingredientId": "yogurt"
+            },
+            {
+              "ingredientId": "baking-powder"
+            },
+            {
+              "ingredientId": "bread-salt"
+            }
+          ]
+        },
+        {
+          "type": "action",
+          "text": "Add only a little optional oil or milk if needed."
+        },
+        {
+          "type": "action",
+          "text": "Knead briefly, rest 5–10 minutes, then divide into 6 pieces."
         }
       ]
     },

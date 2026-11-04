@@ -12,11 +12,34 @@ export interface Ingredient {
   scaling: "linear" | "fixed" | "manual";
   preparation?: string;
   notes?: string;
+  gathering?: {
+    key?: string;
+    name?: string;
+    category?: GatherCategory;
+    form?: string;
+  };
 }
+export type GatherCategory =
+  "produce" | "fridge" | "oils" | "dry-goods" | "other";
+export interface IngredientReference {
+  ingredientId: string;
+  usageId?: string;
+  note?: string;
+}
+export type RecipeContent =
+  | { type: "action"; text: string }
+  | {
+      type: "ingredients";
+      title: string;
+      items: IngredientReference[];
+      note?: string;
+    };
 export interface CheckItem {
   id: string;
   text: string;
   checkable?: boolean;
+  longLead?: boolean;
+  content?: RecipeContent[];
 }
 export interface TimerDefinition {
   id: string;
@@ -32,6 +55,7 @@ export interface Stage {
     | { type: "text"; text: string }
     | { type: "quantity"; ingredientId: string; usageId?: string }
   )[];
+  content?: RecipeContent[];
   checklist: CheckItem[];
   timers: TimerDefinition[];
 }
@@ -55,6 +79,7 @@ export interface Recipe {
     title: string;
     items: CheckItem[];
     tip?: string;
+    longLead?: boolean;
   }[];
   cooking: Stage[];
   media?: { id: string; path: string; alt?: string; [key: string]: unknown }[];
@@ -110,48 +135,13 @@ export interface Backup {
   bundledOriginals: Recipe[];
   deletedRecipeIds: string[];
 }
-export function gatheringGroups(recipe: Recipe) {
-  return [
-    ...recipe.components.map((component) => ({
-      id: `component:${component.id}`,
-      title: component.name,
-      items: recipe.ingredients
-        .filter((i) => i.componentId === component.id)
-        .map((i) => ({
-          id: `ingredient:${i.id}`,
-          name: i.name,
-          amount: quantity(i.quantity),
-          optional: i.optional,
-          detail: [i.preparation, i.notes].filter(Boolean).join(" · "),
-        })),
-    })),
-    {
-      id: "equipment",
-      title: "Equipment",
-      items: (recipe.equipment ?? []).flatMap((e, index) =>
-        e.name
-          ? [
-              {
-                id:
-                  e.id === undefined
-                    ? `equipment:index:${index}`
-                    : `equipment:id:${e.id}`,
-                name: e.name,
-                amount: "",
-                optional: false,
-                detail: "",
-              },
-            ]
-          : [],
-      ),
-    },
-  ].filter((group) => group.items.length);
-}
+export { gatheringGroups, isGathered, toggleGathered } from "./gathering";
 export function isLongLeadPreparation(
   group: Recipe["preparation"][number],
 ): boolean {
   // Highlight only explicit authored advance work, never infer new tasks from
   // ingredients or mislabel instructions such as “Do not preheat … yet”.
+  if (group.longLead !== undefined) return group.longLead;
   return (
     /\b(early|long.lead|overnight)\b/i.test(group.title) ||
     group.items.some((item) =>
@@ -161,9 +151,28 @@ export function isLongLeadPreparation(
     )
   );
 }
+export function formatAmount(value: number): string {
+  const whole = Math.trunc(value);
+  const fractions: Record<number, string> = {
+    0.125: "⅛",
+    0.25: "¼",
+    0.375: "⅜",
+    0.5: "½",
+    0.625: "⅝",
+    0.75: "¾",
+    0.875: "⅞",
+  };
+  const fraction = fractions[Math.abs(value - whole)];
+  return fraction
+    ? `${value < 0 ? "−" : ""}${Math.abs(whole) || ""}${fraction}`
+    : String(value);
+}
 export function quantity(q: Quantity): string {
   if ("text" in q) return q.text;
-  const amount = "value" in q ? String(q.value) : `${q.min}–${q.max}`;
+  const amount =
+    "value" in q
+      ? formatAmount(q.value)
+      : `${formatAmount(q.min)}–${formatAmount(q.max)}`;
   const pack =
     "package" in q && q.package
       ? ` (${q.package.value ?? ""} ${q.package.unit ?? ""} each)`

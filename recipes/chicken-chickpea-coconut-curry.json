@@ -8,13 +8,8 @@
     "description": "A mild creamy curry with rice and homemade garlic-butter yeast naan"
   },
   "classification": {
-    "mealTypes": [
-      "dinner"
-    ],
-    "tags": [
-      "family-rotation",
-      "budget-friendly"
-    ],
+    "mealTypes": ["dinner"],
+    "tags": ["family-rotation", "budget-friendly"],
     "dietary": {
       "vegetarian": false,
       "vegan": false
@@ -195,7 +190,11 @@
       },
       "componentId": "curry",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "curry-powder",
@@ -268,7 +267,11 @@
       "componentId": "curry",
       "optional": false,
       "scaling": "linear",
-      "notes": "approximate; adjust to taste"
+      "notes": "approximate; adjust to taste",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "pepper",
@@ -314,7 +317,11 @@
       },
       "componentId": "curry",
       "optional": true,
-      "scaling": "manual"
+      "scaling": "manual",
+      "gathering": {
+        "key": "sugar",
+        "name": "Sugar"
+      }
     },
     {
       "id": "rice",
@@ -363,7 +370,11 @@
       },
       "componentId": "naan",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "sugar",
+        "name": "Sugar"
+      }
     },
     {
       "id": "naan-salt",
@@ -375,7 +386,11 @@
       },
       "componentId": "naan",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "milk",
@@ -399,7 +414,11 @@
       },
       "componentId": "naan",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oil",
+        "name": "Cooking oil"
+      }
     },
     {
       "id": "naan-water",
@@ -444,12 +463,61 @@
         {
           "id": "prep-naan-1",
           "text": "Mix 450 g flour, 7 g dry yeast, 1 tbsp sugar and 1 tsp salt.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Mix the dry ingredients."
+            },
+            {
+              "type": "ingredients",
+              "title": "Dry dough mix",
+              "items": [
+                {
+                  "ingredientId": "flour"
+                },
+                {
+                  "ingredientId": "yeast"
+                },
+                {
+                  "ingredientId": "naan-sugar"
+                },
+                {
+                  "ingredientId": "naan-salt"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-naan-2",
           "text": "Add 250 ml milk and 2 tbsp oil; add water only as needed for a workable dough. Knead 6–8 minutes.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Add milk and oil; add water only as needed for a workable dough."
+            },
+            {
+              "type": "ingredients",
+              "title": "Liquids",
+              "items": [
+                {
+                  "ingredientId": "milk"
+                },
+                {
+                  "ingredientId": "naan-oil"
+                },
+                {
+                  "ingredientId": "naan-water"
+                }
+              ]
+            },
+            {
+              "type": "action",
+              "text": "Knead 6–8 minutes."
+            }
+          ]
         },
         {
           "id": "prep-naan-3",
@@ -457,7 +525,8 @@
           "checkable": true
         }
       ],
-      "tip": "Starting the dough before the curry gives the yeast time to work."
+      "tip": "Starting the dough before the curry gives the yeast time to work.",
+      "longLead": true
     },
     {
       "id": "prep-curry",
@@ -466,24 +535,87 @@
         {
           "id": "prep-curry-1",
           "text": "Dice 1 large onion and about 100–150 g sweet Palermo pepper.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Dice the onion and sweet Palermo pepper."
+            },
+            {
+              "type": "ingredients",
+              "title": "Vegetables to dice",
+              "items": [
+                {
+                  "ingredientId": "onion"
+                },
+                {
+                  "ingredientId": "palermo"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-curry-2",
           "text": "Open 2 cans coconut milk; drain 3 cans chickpeas.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Open 2 cans coconut milk."
+            },
+            {
+              "type": "action",
+              "text": "Drain 3 cans chickpeas."
+            }
+          ]
         },
         {
           "id": "prep-curry-3",
           "text": "Measure ½ tsp mustard seeds separately. Combine 3 tbsp mild curry powder, 2 tsp cumin, 1½ tsp garlic powder and ½ tsp ground ginger.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "ingredients",
+              "title": "Keep separate",
+              "items": [
+                {
+                  "ingredientId": "mustard-seeds"
+                }
+              ],
+              "note": "Measure the mustard seeds separately."
+            },
+            {
+              "type": "action",
+              "text": "Combine the curry spices."
+            },
+            {
+              "type": "ingredients",
+              "title": "Curry spice mix",
+              "items": [
+                {
+                  "ingredientId": "curry-powder"
+                },
+                {
+                  "ingredientId": "cumin"
+                },
+                {
+                  "ingredientId": "garlic-powder"
+                },
+                {
+                  "ingredientId": "ginger"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-curry-4",
           "text": "Have 450 g chicken thighs, rice, salt and optional finishing seasonings ready.",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     },
     {
       "id": "prep-equipment",
@@ -504,7 +636,8 @@
           "text": "Do not preheat the dry naan skillet until the dough is ready to cook.",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     }
   ],
   "cooking": [
@@ -543,7 +676,35 @@
           "durationSeconds": 30
         }
       ],
-      "tip": "Blooming the spices in fat builds aroma; keep them moving to avoid scorching."
+      "tip": "Blooming the spices in fat builds aroma; keep them moving to avoid scorching.",
+      "content": [
+        {
+          "type": "action",
+          "text": "Add ½ tsp mustard seeds to the oil and cook around 45–60 seconds."
+        },
+        {
+          "type": "action",
+          "text": "Stir in the prepared curry spices for approximately 30 seconds."
+        },
+        {
+          "type": "ingredients",
+          "title": "Prepared spice mix",
+          "items": [
+            {
+              "ingredientId": "curry-powder"
+            },
+            {
+              "ingredientId": "cumin"
+            },
+            {
+              "ingredientId": "garlic-powder"
+            },
+            {
+              "ingredientId": "ginger"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cook-3",
@@ -608,6 +769,16 @@
           "id": "cook-6-timer-1",
           "label": "Naan rest",
           "durationSeconds": 600
+        }
+      ],
+      "content": [
+        {
+          "type": "action",
+          "text": "Once the dough has risen for 45–60 minutes, divide into six portions and rest 10 minutes."
+        },
+        {
+          "type": "action",
+          "text": "Roll each portion fairly thin."
         }
       ]
     },

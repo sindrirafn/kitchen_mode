@@ -8,13 +8,8 @@
     "description": "Rice bowls with black beans, kidney beans, sweetcorn and lime-yogurt sauce"
   },
   "classification": {
-    "mealTypes": [
-      "dinner"
-    ],
-    "tags": [
-      "family-rotation",
-      "budget-friendly"
-    ],
+    "mealTypes": ["dinner"],
+    "tags": ["family-rotation", "budget-friendly"],
     "dietary": {
       "vegetarian": false,
       "vegan": false
@@ -176,7 +171,13 @@
       },
       "componentId": "filling",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "bell-pepper",
+        "name": "Bell pepper",
+        "category": "produce",
+        "form": "fresh"
+      }
     },
     {
       "id": "onion",
@@ -248,7 +249,11 @@
       },
       "componentId": "filling",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "garlic-powder",
+        "name": "Garlic powder"
+      }
     },
     {
       "id": "chili",
@@ -273,7 +278,11 @@
       },
       "componentId": "filling",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oregano",
+        "name": "Oregano"
+      }
     },
     {
       "id": "salt",
@@ -286,7 +295,11 @@
       "componentId": "filling",
       "optional": false,
       "scaling": "linear",
-      "notes": "initial amount; adjust to taste"
+      "notes": "initial amount; adjust to taste",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "pepper-black",
@@ -359,7 +372,11 @@
       },
       "componentId": "sauce",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "garlic-powder",
+        "name": "Garlic powder"
+      }
     },
     {
       "id": "sauce-oregano",
@@ -371,7 +388,11 @@
       },
       "componentId": "sauce",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "oregano",
+        "name": "Oregano"
+      }
     },
     {
       "id": "sauce-salt",
@@ -383,7 +404,11 @@
       },
       "componentId": "sauce",
       "optional": false,
-      "scaling": "linear"
+      "scaling": "linear",
+      "gathering": {
+        "key": "salt",
+        "name": "Salt"
+      }
     },
     {
       "id": "water",
@@ -428,19 +453,49 @@
         {
           "id": "prep-rice-1",
           "text": "Measure 300 g dry rice and start cooking according to the package, timing it to finish near serving.",
-          "checkable": true
+          "checkable": true,
+          "longLead": true
         },
         {
           "id": "prep-rice-2",
           "text": "Dice 1 onion and 1 bell pepper.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Dice the onion and bell pepper."
+            },
+            {
+              "type": "ingredients",
+              "title": "Vegetables to dice",
+              "items": [
+                {
+                  "ingredientId": "onion"
+                },
+                {
+                  "ingredientId": "pepper"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-rice-3",
           "text": "Rinse and drain the black beans and kidney beans; drain 2 cans sweetcorn.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Rinse and drain the black beans and kidney beans."
+            },
+            {
+              "type": "action",
+              "text": "Drain 2 cans sweetcorn."
+            }
+          ]
         }
-      ]
+      ],
+      "longLead": false
     },
     {
       "id": "prep-spices",
@@ -449,14 +504,75 @@
         {
           "id": "prep-spices-1",
           "text": "Mix 2 tsp cumin, 2 tsp paprika, 1½ tsp garlic powder, 1 tsp oregano, ½ tsp black pepper and optional ¼–½ tsp chili.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Mix the seasoning."
+            },
+            {
+              "type": "ingredients",
+              "title": "Cumin–paprika seasoning",
+              "items": [
+                {
+                  "ingredientId": "cumin"
+                },
+                {
+                  "ingredientId": "paprika"
+                },
+                {
+                  "ingredientId": "garlic-powder"
+                },
+                {
+                  "ingredientId": "oregano"
+                },
+                {
+                  "ingredientId": "pepper-black"
+                },
+                {
+                  "ingredientId": "chili"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-spices-2",
           "text": "For the sauce, measure 125 g Greek yogurt, 1–2 tsp lime juice, optional ½ tsp zest, ¼ tsp garlic powder, ¼ tsp oregano and ¼ tsp salt.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "For the sauce, measure:"
+            },
+            {
+              "type": "ingredients",
+              "title": "Lime–yogurt sauce",
+              "items": [
+                {
+                  "ingredientId": "yogurt"
+                },
+                {
+                  "ingredientId": "lime-juice"
+                },
+                {
+                  "ingredientId": "lime-zest"
+                },
+                {
+                  "ingredientId": "sauce-garlic"
+                },
+                {
+                  "ingredientId": "sauce-oregano"
+                },
+                {
+                  "ingredientId": "sauce-salt"
+                }
+              ]
+            }
+          ]
         }
-      ]
+      ],
+      "longLead": false
     }
   ],
   "cooking": [
@@ -470,7 +586,17 @@
         }
       ],
       "checklist": [],
-      "timers": []
+      "timers": [],
+      "content": [
+        {
+          "type": "action",
+          "text": "Heat 1 tbsp oil in a skillet."
+        },
+        {
+          "type": "action",
+          "text": "Brown 275 g minced beef, then transfer it to a plate."
+        }
+      ]
     },
     {
       "id": "cook-2",
@@ -507,7 +633,17 @@
           "durationSeconds": 60
         }
       ],
-      "tip": "Briefly heating spices in oil releases their aromas."
+      "tip": "Briefly heating spices in oil releases their aromas.",
+      "content": [
+        {
+          "type": "action",
+          "text": "Stir in the prepared cumin-paprika seasoning and optional 1 tbsp tomato paste."
+        },
+        {
+          "type": "action",
+          "text": "Cook for about 1 minute."
+        }
+      ]
     },
     {
       "id": "cook-4",

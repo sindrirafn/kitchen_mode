@@ -8,13 +8,8 @@
     "description": "Big-batch fried rice with chicken, eggs, vegetables and sesame oil"
   },
   "classification": {
-    "mealTypes": [
-      "dinner"
-    ],
-    "tags": [
-      "family-rotation",
-      "budget-friendly"
-    ],
+    "mealTypes": ["dinner"],
+    "tags": ["family-rotation", "budget-friendly"],
     "dietary": {
       "vegetarian": false,
       "vegan": false
@@ -307,7 +302,8 @@
           "checkable": true
         }
       ],
-      "tip": "Cold, dry rice fries more cleanly; cool and refrigerate promptly for food safety."
+      "tip": "Cold, dry rice fries more cleanly; cool and refrigerate promptly for food safety.",
+      "longLead": true
     },
     {
       "id": "prep-parts",
@@ -326,14 +322,43 @@
         {
           "id": "prep-parts-3",
           "text": "Dice 1 onion and 150–200 g sweet Palermo peppers.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Dice the onion and sweet Palermo peppers."
+            },
+            {
+              "type": "ingredients",
+              "title": "Vegetables to dice",
+              "items": [
+                {
+                  "ingredientId": "onion"
+                },
+                {
+                  "ingredientId": "palermo"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-parts-4",
           "text": "Measure 800–1000 g frozen wok vegetables. Prepare a large receiving bowl for the cooked batches.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Measure 800–1000 g frozen wok vegetables."
+            },
+            {
+              "type": "action",
+              "text": "Prepare a large receiving bowl for the cooked batches."
+            }
+          ]
         }
-      ]
+      ],
+      "longLead": false
     },
     {
       "id": "prep-sauce",
@@ -342,19 +367,78 @@
         {
           "id": "prep-sauce-1",
           "text": "Mix 5 tbsp light soy sauce, 2 tbsp oyster sauce, 2 tsp rice vinegar, 1 tsp sugar, 1 tsp garlic powder and ½ tsp black pepper.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Mix the cooking sauce."
+            },
+            {
+              "type": "ingredients",
+              "title": "Cooking sauce",
+              "items": [
+                {
+                  "ingredientId": "soy"
+                },
+                {
+                  "ingredientId": "oyster"
+                },
+                {
+                  "ingredientId": "rice-vinegar"
+                },
+                {
+                  "ingredientId": "sugar"
+                },
+                {
+                  "ingredientId": "garlic-powder"
+                },
+                {
+                  "ingredientId": "pepper"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-sauce-2",
           "text": "Reserve 2 tsp toasted sesame oil for the end; keep 3–4 tbsp neutral oil for batch frying.",
-          "checkable": true
+          "checkable": true,
+          "content": [
+            {
+              "type": "action",
+              "text": "Reserve the toasted sesame oil for the end."
+            },
+            {
+              "type": "ingredients",
+              "title": "Keep separate — finishing oil",
+              "items": [
+                {
+                  "ingredientId": "sesame-oil"
+                }
+              ]
+            },
+            {
+              "type": "action",
+              "text": "Keep the neutral oil for batch frying."
+            },
+            {
+              "type": "ingredients",
+              "title": "Batch-frying oil",
+              "items": [
+                {
+                  "ingredientId": "oil"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "prep-sauce-3",
           "text": "Divide sauce mentally into roughly thirds for the rice batches.",
           "checkable": true
         }
-      ]
+      ],
+      "longLead": false
     }
   ],
   "cooking": [
@@ -429,7 +513,21 @@
         }
       ],
       "checklist": [],
-      "timers": []
+      "timers": [],
+      "content": [
+        {
+          "type": "action",
+          "text": "Combine the fried rice, cooked chicken, eggs and vegetables in the large bowl."
+        },
+        {
+          "type": "action",
+          "text": "Drizzle with 2 tsp toasted sesame oil and toss."
+        },
+        {
+          "type": "action",
+          "text": "Taste and adjust seasoning if needed."
+        }
+      ]
     },
     {
       "id": "cook-6",

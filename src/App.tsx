@@ -6,8 +6,8 @@ import {
   elapsed,
   finishSession,
   gatheringGroups,
-  isLongLeadPreparation,
-  quantity,
+  isGathered,
+  toggleGathered,
   startSession,
   undoFinish,
   type Backup,
@@ -21,13 +21,14 @@ import {
   CheckRow,
   Icon,
   IngredientList,
-  InlineIngredient,
   Modal,
   Photo,
   RecipeMeta,
   TimerChip,
 } from "./components";
 import { ImportRecipe } from "./ImportRecipe";
+import { PreparationGroups } from "./Preparation";
+import { LegacyInstructions, StructuredContent } from "./recipe-content";
 import { photographs } from "./photography";
 type View = "library" | "intro" | "session" | "journal";
 type Dialog =
@@ -252,12 +253,10 @@ export function App() {
   function changeTimer(timer: TimerState) {
     editSession((s) => ({ ...s, timers: { ...s.timers, [timer.id]: timer } }));
   }
-  function gather(id: string) {
+  function gather(sourceIds: string[]) {
     editSession((s) => ({
       ...s,
-      gatheredIds: s.gatheredIds.includes(id)
-        ? s.gatheredIds.filter((key) => key !== id)
-        : [...s.gatheredIds, id],
+      gatheredIds: toggleGathered({ sourceIds }, s.gatheredIds),
     }));
   }
   function openRecipe(r: Recipe) {
@@ -414,7 +413,7 @@ export function App() {
   const gatherGroups = r ? gatheringGroups(r) : [];
   const gatherItems = gatherGroups.flatMap((group) => group.items);
   const gathered = gatherItems.filter((item) =>
-    session?.gatheredIds.includes(item.id),
+    session ? isGathered(item, session.gatheredIds) : false,
   ).length;
   const complete = view === "session" && session?.phase === "completed";
   const unfinished = sessions.filter((s) => s.phase !== "completed");
@@ -786,21 +785,49 @@ export function App() {
               >
                 <h2>{group.title}</h2>
                 {group.items.map((item) => (
-                  <CheckRow
-                    key={item.id}
-                    id={item.id}
-                    checked={session.gatheredIds.includes(item.id)}
-                    onChange={() => gather(item.id)}
-                    text={
-                      <>
-                        <b>{item.amount}</b>
-                        {item.amount ? " " : ""}
-                        {item.name}
-                        {item.optional && <em> · optional</em>}
-                        {item.detail && <small>{item.detail}</small>}
-                      </>
-                    }
-                  />
+                  <div className="gather-item" key={item.id}>
+                    <CheckRow
+                      id={item.id}
+                      checked={isGathered(item, session.gatheredIds)}
+                      indeterminate={
+                        !isGathered(item, session.gatheredIds) &&
+                        item.sourceIds.some((id) =>
+                          session.gatheredIds.includes(id),
+                        )
+                      }
+                      onChange={() => gather(item.sourceIds)}
+                      text={
+                        <>
+                          <b>{item.amount}</b>
+                          {item.amount ? " " : ""}
+                          {item.name}
+                          {item.optional && <em> · optional</em>}
+                          {item.detail && <small>{item.detail}</small>}
+                        </>
+                      }
+                    />
+                    {item.allocations.length > 1 && (
+                      <details className="gather-allocations">
+                        <summary>
+                          Used in {item.allocations.length} places
+                        </summary>
+                        <ul>
+                          {item.allocations.map((allocation, i) => (
+                            <li key={i}>
+                              <b>{allocation.amount}</b> {allocation.name}
+                              {allocation.optional ? " · optional" : ""}
+                              <small>
+                                {allocation.component}
+                                {allocation.detail
+                                  ? ` · ${allocation.detail}`
+                                  : ""}
+                              </small>
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
                 ))}
               </section>
             ))}
@@ -832,13 +859,21 @@ export function App() {
               </h1>
               <p>{r.identity.title}</p>
             </div>
-            <button
-              className="secondary"
-              onClick={() => setDialog("ingredients")}
-            >
-              Ingredients
-              <Icon name="book" />
-            </button>
+            <div className="phase-actions">
+              <button
+                className="secondary"
+                onClick={() => setDialog("ingredients")}
+              >
+                Ingredients
+                <Icon name="book" />
+              </button>
+              <button
+                className="primary"
+                onClick={() => editSession((s) => ({ ...s, phase: "cooking" }))}
+              >
+                Continue to cooking <Icon name="arrow" />
+              </button>
+            </div>
           </div>
           <button
             className="text-button back-to-gathering"
@@ -846,57 +881,7 @@ export function App() {
           >
             <Icon name="back" size={16} /> Back to gathering
           </button>
-          <div className="prep-grid">
-            {r.preparation.map((group, i) => (
-              <section
-                className={`prep-card ${isLongLeadPreparation(group) ? "long-lead" : ""}`}
-                key={group.id}
-              >
-                {isLongLeadPreparation(group) && (
-                  <p className="prep-lead eyebrow">
-                    <Icon name="clock" size={15} /> Allow time
-                  </p>
-                )}
-                <div className="prep-card-title">
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  <h2>{group.title}</h2>
-                </div>
-                <div className="prep-tasks">
-                  {group.items.map((item) => (
-                    <CheckRow
-                      key={item.id}
-                      id={item.id}
-                      text={item.text}
-                      checkable={item.checkable}
-                      checked={session.checkedIds.includes(item.id)}
-                      onChange={() => check(item.id)}
-                    />
-                  ))}
-                </div>
-                <p className="prep-group-progress small">
-                  {
-                    group.items.filter(
-                      (item) =>
-                        item.checkable !== false &&
-                        session.checkedIds.includes(item.id),
-                    ).length
-                  }{" "}
-                  of{" "}
-                  {
-                    group.items.filter((item) => item.checkable !== false)
-                      .length
-                  }{" "}
-                  tasks checked
-                </p>
-                {group.tip && (
-                  <p className="prep-tip">
-                    <Icon name="leaf" size={17} />
-                    {group.tip}
-                  </p>
-                )}
-              </section>
-            ))}
-          </div>
+          <PreparationGroups recipe={r} session={session} onCheck={check} />
           <AllTimers session={session} now={now} onChange={changeTimer} />
           <div className="prep-footer">
             <p className="muted">
@@ -956,31 +941,13 @@ export function App() {
                 {stage.title}
               </h1>
               <div className="instructions">
-                {stage.instructions.map((instruction, i) =>
-                  instruction.type === "text" ? (
-                    <span key={i}>{instruction.text}</span>
-                  ) : (
-                    <span key={i}>
-                      <InlineIngredient
-                        ingredient={r.ingredients.find(
-                          (g) => g.id === instruction.ingredientId,
-                        )!}
-                        amount={
-                          instruction.usageId
-                            ? r.quantityUsages?.find(
-                                (u) => u.id === instruction.usageId,
-                              )?.quantity
-                              ? quantity(
-                                  r.quantityUsages.find(
-                                    (u) => u.id === instruction.usageId,
-                                  )!.quantity!,
-                                )
-                              : undefined
-                            : undefined
-                        }
-                      />
-                    </span>
-                  ),
+                {stage.content ? (
+                  <StructuredContent recipe={r} blocks={stage.content} />
+                ) : (
+                  <LegacyInstructions
+                    recipe={r}
+                    instructions={stage.instructions}
+                  />
                 )}
               </div>
               {stage.checklist.map((item) => (

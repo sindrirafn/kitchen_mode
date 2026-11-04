@@ -52,5 +52,5 @@ export default defineConfig({
   base: process.env.VITE_BASE_PATH || "/",
   plugins: [react(), offline()],
   build: { target: "safari16", sourcemap: false },
-  test: { include: ["tests/**/*.test.ts"] },
+  test: { include: ["tests/**/*.test.{ts,tsx}"] },
 });

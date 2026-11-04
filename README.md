@@ -2,7 +2,7 @@
 
 A local-first family cookbook for a sixth-generation iPad (2018), iPadOS 17, and portrait iPhones. Built with React, TypeScript and Vite. No server, accounts, cloud database, analytics, remote phone controls, wake lock or external font requests.
 
-The six files in `recipes/` and `recipe.schema.json` remain the authoritative, unchanged recipe content. The app renders the supplied preparation groups and cooking stages in their authored order. It does not scale servings or apply untested proposed changes.
+The six files in `recipes/` remain the authoritative recipe content. Their original amounts, IDs, revisions and fallback instructions are retained, with optional gathering and structured layout metadata added. The schema remains backward compatible. It does not scale servings or apply untested proposed changes.
 
 ## Run on your Mac
 
@@ -77,6 +77,10 @@ VITE_BASE_PATH=/kitchen-mode/ npm run build
 
 Upload the contents of `dist` at that path. App assets, icons, manifest, service worker and packaged photos use that base path. Keep a trailing slash. The service worker limits requests and shell-cache cleanup to its own path.
 
+## Recipe format
+
+See [RECIPE_FORMAT.md](RECIPE_FORMAT.md) for optional gathering identity/category/form fields, structured actions and ingredient collections, partial quantities, long-lead flags and legacy behavior.
+
 ## Import, update, export and recover
 
 - In the library, choose **Import Recipe**. Paste a complete JSON recipe matching `recipe.schema.json`, then **Review import**. The field always supports ordinary typing and iOS long-press Paste, even if the optional clipboard button is unavailable.
@@ -94,9 +98,9 @@ Exports contain **recipe data and recovery history**, not cooking-journal/sessio
 
 IndexedDB database `kitchen-mode-v1` separates recipe overrides, recipe revisions, cooking sessions and schema/active-session metadata. The repository is in `src/repository.ts`. A tiny synchronous localStorage recovery journal protects the latest session change if the page is reloaded before its IndexedDB transaction commits; it is removed after a successful save. A session includes its recipe snapshot, phase, stage ID, preparation/cooking checked IDs, separate gathered IDs, timer end timestamps, `startedAt`, `completedAt` and `updatedAt`.
 
-Opening a recipe introduction does not start timing. **Gather ingredients** deliberately starts the session and elapsed time. Gathering lists every ingredient with its authored amount and optional status, grouped by recipe component, followed by the recipe's equipment. Check ingredients and equipment individually; the count and progress bar update as you go. **Start preparation** is available at the top and bottom, with no requirement to check everything. **Back to gathering** returns from preparation without losing either checklist or running timers.
+Opening a recipe introduction does not start timing. **Gather ingredients** deliberately starts the session and elapsed time. Gathering consolidates repeated ingredient uses into one product checkbox, grouped by practical kitchen category, followed by tools and equipment. Compatible quantities are totaled; incompatible units, package sizes and textual amounts stay distinct. Component allocations remain available under Used in … places, and optional portions stay distinct from required totals. Check ingredients and equipment individually; the count and progress bar update as you go. **Start preparation** is available at the top and bottom, with no requirement to check everything. **Back to gathering** returns from preparation without losing either checklist or running timers.
 
-Preparation retains the recipe's ordered groups and full instructions, including amounts and directions to keep ingredients together or separate. Each task has its own checkbox area. Explicit advance work (for example oven preheating or starting dough early) has an **Allow time** marker. The two-column landscape layout becomes one column on phones. Older saved sessions resume in their existing preparation, cooking or completed phase, with gathering checks initially empty; no database reset is needed.
+Preparation separates authored advance work into **Start these first**, followed by ordinary preparation groups. Structured actions render as individual lines, and ingredients used together appear in vertical lists with their own quantities. Explicit keep-separate directions remain visible. Landscape iPad uses full-width editorial rows with a group heading beside its tasks; phones use one column. Cooking uses the same optional structured content while retaining step navigation, timers, progress and next-step previews. Legacy prose is never automatically split by punctuation. Older saved sessions resume in their existing preparation, cooking or completed phase, with gathering checks initially empty; no database reset is needed.
 
 Navigation and checklists never force cooking completion. Only **Finish Cooking** records completion. **Undo Finish** reopens the final stage and resumes whole-session timing from the original start, including the intervening time. The cooking journal retains completed and set-aside sessions.
 
@@ -140,3 +144,5 @@ Detailed final verification results and remaining physical-device checks are in 
 - `tests/service-worker.test.ts`, `tests/e2e/service-worker.spec.ts`: redirected-response, legacy-upgrade, safe repair and data-preservation regressions.
 - `public/photography.json`: verified Pexels creators, sources, license and local transformations.
 - `tests/core.test.ts`, `tests/cooking-ux.test.ts`, `tests/e2e/kitchen.spec.ts`: data/timing, gathering, legacy-session, encoding and production browser acceptance tests.
+- `src/gathering.ts`, `src/recipe-content.tsx`, `src/Preparation.tsx`: safe product totals, shared structured instruction rendering and preparation sections.
+- `tests/recipe-flow.test.tsx`: deduplication, split quantities, optional amounts, structured references and legacy rendering.

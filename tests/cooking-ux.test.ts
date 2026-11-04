@@ -10,6 +10,7 @@ import {
 } from "../src/model";
 import { normalizeRecipe, normalizeRecipeText } from "../src/recipe-text";
 import { importDecision, parseImport, validateRecipe } from "../src/validation";
+import { preparationSections } from "../src/Preparation";
 
 const opened: RecipeRepository[] = [];
 async function repository(name = `cooking-ux-${Math.random()}`) {
@@ -23,23 +24,24 @@ afterEach(() => {
 });
 
 describe("gathering and preparation", () => {
-  it("starts with independent gathering progress and includes every authored ingredient and equipment item in order", () => {
+  it("starts with independent gathering progress and accounts for every authored ingredient and equipment item", () => {
     for (const recipe of bundledRecipes) {
       const session = startSession(recipe);
       expect(session.phase).toBe("gathering");
       expect(session.gatheredIds).toEqual([]);
       expect(session.checkedIds).toEqual([]);
       const groups = gatheringGroups(recipe);
-      expect(
-        groups.slice(0, recipe.components.length).map((group) => group.title),
-      ).toEqual(recipe.components.map((c) => c.name));
       const ingredients = groups
         .flatMap((g) => g.items)
         .filter((i) => i.id.startsWith("ingredient:"));
-      expect(ingredients).toHaveLength(recipe.ingredients.length);
+      expect(ingredients.flatMap((item) => item.sourceIds).sort()).toEqual(
+        recipe.ingredients.map((i) => `ingredient:${i.id}`).sort(),
+      );
       for (const ingredient of recipe.ingredients) {
         expect(
-          ingredients.find((i) => i.id === `ingredient:${ingredient.id}`),
+          ingredients
+            .flatMap((i) => i.allocations)
+            .find((i) => i.name === ingredient.name),
         ).toMatchObject({
           name: ingredient.name,
           optional: ingredient.optional,
@@ -121,7 +123,9 @@ describe("gathering and preparation", () => {
       (r) => r.id === "crispy-roasted-chicken",
     )!;
     const curry = bundledRecipes.find((r) => r.id.includes("coconut"))!;
-    expect(isLongLeadPreparation(roast.preparation[0])).toBe(true);
+    expect(
+      preparationSections(roast).early.flatMap((g) => g.items.map((i) => i.id)),
+    ).toEqual(["prep-oven-1"]);
     expect(isLongLeadPreparation(curry.preparation[0])).toBe(true);
     expect(isLongLeadPreparation(curry.preparation.at(-1)!)).toBe(false);
   });
