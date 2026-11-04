@@ -34,7 +34,7 @@ import { PreparationGroups } from "./Preparation";
 import { LegacyInstructions, StructuredContent } from "./recipe-content";
 import { GatherGroups } from "./Gather";
 import { CookingSidebar } from "./CookingSidebar";
-import { PhaseNav } from "./PhaseNav";
+import { RecipeToolbar } from "./RecipeToolbar";
 import { photographs } from "./photography";
 type View = "library" | "intro" | "session" | "journal";
 type Dialog =
@@ -262,14 +262,6 @@ export function App() {
   function toggleAccordion(id: string) {
     editSession((s) => toggleSection(s, id));
   }
-  function phaseNav(phase: Session["phase"]) {
-    return (
-      <PhaseNav
-        phase={phase}
-        onNavigate={(phase) => editSession((s) => ({ ...s, phase }))}
-      />
-    );
-  }
   function gather(sourceIds: string[]) {
     editSession((s) => ({
       ...s,
@@ -427,6 +419,7 @@ export function App() {
   const cooking = view === "session" && session?.phase === "cooking";
   const preparing = view === "session" && session?.phase === "preparation";
   const gathering = view === "session" && session?.phase === "gathering";
+  const activeRecipe = gathering || preparing || cooking;
   const gatherGroups = r ? gatheringGroups(r) : [];
   const gatherItems = gatherGroups.flatMap((group) => group.items);
   const gathered = gatherItems.filter((item) =>
@@ -447,63 +440,76 @@ export function App() {
   );
   return (
     <div className={`app ${cooking ? "cooking-app" : ""}`}>
-      <header className="site-header">
-        <button
-          className="brand"
-          onClick={requestExit}
-          aria-label="Kitchen Mode, back to recipes"
-        >
-          <span className="brand-symbol">
-            <Icon name="book" size={25} />
-          </span>
-          <span>
-            Kitchen Mode<small>THE FAMILY COOKBOOK</small>
-          </span>
-        </button>
-        {view === "library" || view === "journal" ? (
-          <>
-            <nav aria-label="Cookbook">
-              <button
-                className={
-                  view === "library" ? "nav-link selected" : "nav-link"
-                }
-                onClick={() => setView("library")}
-              >
-                Recipes
-              </button>
-              <button
-                className={
-                  view === "journal" ? "nav-link selected" : "nav-link"
-                }
-                onClick={() => setView("journal")}
-              >
-                Cooking journal
-              </button>
-            </nav>
-            <button
-              className="header-action secondary"
-              onClick={() => setDialog("import")}
-              disabled={!repo}
-            >
-              <Icon name="plus" />
-              Import Recipe
-            </button>
-          </>
-        ) : (
-          <div className="header-session">
-            <span className="device-status">
-              <i />
-              {session && view === "session"
-                ? `In the kitchen · ${clockTime(elapsed(session, now))}`
-                : "Made for your kitchen"}
+      {!activeRecipe && (
+        <header className="site-header">
+          <button
+            className="brand"
+            onClick={requestExit}
+            aria-label="Kitchen Mode, back to recipes"
+          >
+            <span className="brand-symbol">
+              <Icon name="book" size={25} />
             </span>
-            <button className="text-button" onClick={requestExit}>
-              Exit recipe
-              <Icon name="close" size={18} />
-            </button>
-          </div>
-        )}
-      </header>
+            <span>
+              Kitchen Mode<small>THE FAMILY COOKBOOK</small>
+            </span>
+          </button>
+          {view === "library" || view === "journal" ? (
+            <>
+              <nav aria-label="Cookbook">
+                <button
+                  className={
+                    view === "library" ? "nav-link selected" : "nav-link"
+                  }
+                  onClick={() => setView("library")}
+                >
+                  Recipes
+                </button>
+                <button
+                  className={
+                    view === "journal" ? "nav-link selected" : "nav-link"
+                  }
+                  onClick={() => setView("journal")}
+                >
+                  Cooking journal
+                </button>
+              </nav>
+              <button
+                className="header-action secondary"
+                onClick={() => setDialog("import")}
+                disabled={!repo}
+              >
+                <Icon name="plus" />
+                Import Recipe
+              </button>
+            </>
+          ) : (
+            <div className="header-session">
+              <span className="device-status">
+                <i />
+                {session && view === "session"
+                  ? `In the kitchen · ${clockTime(elapsed(session, now))}`
+                  : "Made for your kitchen"}
+              </span>
+              <button className="text-button" onClick={requestExit}>
+                Exit recipe
+                <Icon name="close" size={18} />
+              </button>
+            </div>
+          )}
+        </header>
+      )}
+      {activeRecipe && r && session && (
+        <RecipeToolbar
+          recipe={r}
+          session={session}
+          now={now}
+          step={cooking ? index + 1 : undefined}
+          onPhase={(phase) => editSession((s) => ({ ...s, phase }))}
+          onIngredients={() => setDialog("ingredients")}
+          onExit={requestExit}
+        />
+      )}
       {error && (
         <div className="error storage-error" role="alert">
           {error}
@@ -765,11 +771,9 @@ export function App() {
         <main className="gathering page-width">
           <div className="phase-heading">
             <div>
-              {phaseNav("gathering")}
               <h1 ref={headingRef} tabIndex={-1}>
                 Gather
               </h1>
-              <p>{r.identity.title}</p>
             </div>
             <button
               className="primary"
@@ -813,20 +817,11 @@ export function App() {
         <main className="preparation page-width">
           <div className="phase-heading">
             <div>
-              {phaseNav("preparation")}
               <h1 ref={headingRef} tabIndex={-1}>
                 Preparation
               </h1>
-              <p>{r.identity.title}</p>
             </div>
             <div className="phase-actions">
-              <button
-                className="secondary"
-                onClick={() => setDialog("ingredients")}
-              >
-                Ingredients
-                <Icon name="book" />
-              </button>
               <button
                 className="primary"
                 onClick={() => editSession((s) => ({ ...s, phase: "cooking" }))}
@@ -855,24 +850,6 @@ export function App() {
       )}
       {cooking && r && session && stage && (
         <>
-          <div className="cooking-heading">
-            <div>
-              {phaseNav("cooking")}
-              <h2>{r.identity.title}</h2>
-            </div>
-            <div className="cooking-heading-actions">
-              <button
-                className="secondary"
-                onClick={() => setDialog("ingredients")}
-              >
-                Ingredients <Icon name="book" />
-              </button>
-              <span className="stage-count">
-                {index + 1}
-                <span> / {r.cooking.length}</span>
-              </span>
-            </div>
-          </div>
           <div
             className="progress-track"
             role="progressbar"

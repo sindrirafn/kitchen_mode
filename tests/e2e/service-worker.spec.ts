@@ -136,7 +136,7 @@ async function assertResumed(page: Page) {
   await expect(page.locator(".stage-panel h1")).toHaveText(
     recipe.cooking[1].title,
   );
-  await expect(page.locator(".cooking-heading")).toContainText(
+  await expect(page.locator(".recipe-toolbar")).toContainText(
     "Our saved skillet",
   );
 }

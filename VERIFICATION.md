@@ -1,6 +1,6 @@
 # Kitchen Mode V1 verification
 
-Verified locally on **November 4, 2026**, using Node 22.18.0 on macOS 14.5. The accordion and cooking-sidebar refinement branch has not been manually deployed by this task, and no physical iPad testing was performed.
+Verified locally on **November 4, 2026**, using Node 22.18.0 on macOS 14.5. The compact recipe-toolbar branch has not been manually deployed by this task, and no physical iPad testing was performed.
 
 ## Results
 
@@ -9,13 +9,13 @@ Verified locally on **November 4, 2026**, using Node 22.18.0 on macOS 14.5. The 
 | TypeScript: `npm run typecheck`                     | Passed                                                                                                                         |
 | Data/timer/repository tests: `npm test`             | **78 passed**                                                                                                                  |
 | Production build: `npm run build`                   | Passed; static `dist/` generated with manifest, icons and scoped service worker                                                |
-| Full production browser suite: `npm run test:e2e`   | **81 passed**, no skipped tests or retries                                                                                     |
-| Visual inspection                                   | Gathering and preparation captures inspected at iPad landscape and phone portrait sizes                                        |
+| Full production browser suite: `npm run test:e2e`   | **87 passed**, no skipped tests or retries                                                                                     |
+| Visual inspection                                   | Gather, Prep and Cook viewport captures inspected at iPad landscape and phone portrait sizes                                   |
 | Production dependency audit: `npm audit --omit=dev` | **0 vulnerabilities**                                                                                                          |
 | `git diff --check`                                  | Passed                                                                                                                         |
 | Deployment                                          | Not run; branch and PR prepared for review only. Earlier Workers builds failed and their account-only logs were not available. |
 
-The full browser suite runs twenty-seven scenarios in each of these three projects:
+The full browser suite runs twenty-nine scenarios in each of these three projects:
 
 - **WebKit 26.0**, iPad landscape, **1024×768** CSS pixels, touch/mobile emulation.
 - **Chromium 141**, **1024×768** CSS pixels.
@@ -52,6 +52,8 @@ Playwright 1.56.1 and its matching browser binaries are locked in `package-lock.
 
 18. **Timeline and persistent timers:** explicit Next actions complete only their current stage; direct jumps preserve skipped stages and separate completed/current/visited/upcoming states. New optional session metadata round-trips, and older snapshots retain their recipe and stage without inferred completion. Active timers have one primary control location outside the scrollable iPad timeline. Tests cover a small timer set without internal scrolling and a 10-timer/25-stage fixture with independent scrolling and a timer-panel height no more than 40% of the sidebar. Expiration sorts prominently, displays the existing alert and remains until cancelled/restarted. Pause/resume/cancel, timestamp persistence, full Ingredients access and mobile timeline expansion pass. This is not a clock-based schedule; no durations/overlaps are invented. Viewport-only 1024×768 Gather, Prep and sidebar screenshots and 390×664 phone screenshots were inspected.
 
+19. **Compact session chrome:** the global header stays visible on the cookbook and non-active views but is absent in Gather, Prep and Cook. A shared, sticky recipe toolbar contains title, phases, elapsed time, Ingredients, the cooking step indicator and a 44 px Exit target. Targeted browser tests verify elapsed time after a controlled 65 seconds and reload, phase checks/timers, ingredient access from Gather, cancelled discard and Save & Exit. At 1024×768 the toolbar is 57 px high and the cooking footer is 70 px, with unchanged 53 px Previous/Next targets and 8 px outer vertical padding. Long titles remain complete in the document and truncate visually. Tests check 44 px toolbar controls, no overlapping header regions, one-line preview ellipsis, footer anchoring and independent instruction scrolling in light/dark color-scheme preferences. Extra checks cover a 1024×600 reduced-height workspace and 320×568 phone with a 13-hour elapsed time. Phone footer targets retain their 52 px height and existing natural page flow; no new viewport calculations or sidebar/timer changes are introduced. As noted below, testing a dark system preference does not imply a separate dark theme exists in this repository.
+
 The current full suite passes without skips or retries. `playwright-report/` and `test-results/` contain the most recent run and are regenerated by tests. The warm editorial stylesheet now uses compact accordions for gathering and preparation and a timeline/timer sidebar; step navigation, timers, next-step previews, progress, Finish/Undo and theme behavior were retained. The repository has no existing dark-mode toggle or dark-mode stylesheet; this change does not introduce a new theme system.
 
 The previously reported Cloudflare failure is historical, separate from this redesign and the passing local suite. README documents both the current Worker's static-assets deploy command and Pages deployment for installations using Pages. No Cloudflare settings or production deployment were changed during this task. No merge or deployment is part of this task. A remote deployment check is not evidence of physical-device verification.
@@ -65,6 +67,7 @@ Use the HTTPS installation steps in `README.md`, then check:
 - **Airplane Mode cold launch** after “Ready for offline cooking”: verify all six photos, a previously imported recipe, recovery versions and a saved session. Desktop offline-origin tests passed, but iOS manages its own cache/storage lifecycle.
 - **Clipboard and Files**: actual iOS permissions, long-press Paste, the JSON file picker, Safari download/Save to Files and restoring an exported cookbook inside the installed app.
 - **Background suspension**: leave a short timer running, switch apps or lock the device, then return. Deadlines should reconcile on return. V1 deliberately does not promise background sound or reliable alarms while iPadOS suspends/closes the PWA. Use the system Clock app for a critical alarm.
+- **Compact toolbar/footer**: verify the 44 px icon hit areas, long-title truncation, elapsed time, sticky toolbar and safe-area spacing in Safari and the standalone app. Confirm the footer remains anchored while iPad instructions scroll, including with browser controls showing.
 - **Accordion/sidebar interaction**: check large-label touch targets, rotation, manual section collapse without jumps, independent timeline/timer scrolling, a single active timer and an overflowing timer set. Confirm expired timers stay prominent, the current stage stays visible and the phone timeline does not hide timers.
 - **A10/2 GB performance and storage pressure**: actual cold-start latency, long-session responsiveness, low-storage error messages and OS storage eviction are not reproduced by desktop emulation. Device-clock changes affect timestamp-based durations.
 - **Recovery of the affected installation**: deploy the repair to the same existing production origin, leave the installed app open online for the worker check/download, close its running window and reopen. Verify imported recipes, revisions, journal, preparation checks, active revision and timer deadlines before testing an offline cold launch. Local browser tests cover legacy-worker replacement and close/reopen recovery, but not iPadOS 17’s exact update timing or the affected device’s installed storage container. Follow `RECOVERY.md`; do not delete website data or reinstall. If Safari refuses to check the deployed worker, the guide includes a data-preserving Web Inspector update request.

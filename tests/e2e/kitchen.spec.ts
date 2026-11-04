@@ -1421,3 +1421,309 @@ test("timer overflow and timeline scroll independently while expiration remains 
     page.getByRole("button", { name: "Resume Timer 2 timer", exact: true }),
   ).toBeVisible();
 });
+
+test("compact recipe toolbar preserves session actions and elapsed time across every phase", async ({
+  page,
+}, info) => {
+  const roast = recipes.find((r) => r.id === "crispy-roasted-chicken")!;
+  await page.clock.install({ time: new Date("2026-11-04T12:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-11-04T12:00:01Z"));
+  await ready(page);
+  await expect(page.locator(".site-header")).toBeVisible();
+  await expect(page.locator(".recipe-toolbar")).toHaveCount(0);
+  await start(page, roast, true);
+  const toolbar = page.getByRole("banner", {
+    name: "Recipe toolbar",
+    exact: true,
+  });
+  await expect(page.locator(".site-header")).toHaveCount(0);
+  await expect(toolbar).toHaveCount(1);
+  await expect(toolbar.locator(".recipe-toolbar-title")).toHaveText(
+    roast.identity.title,
+  );
+  await expect(toolbar.locator(".toolbar-step")).toHaveCount(0);
+  await expect(toolbar).not.toContainText("In the kitchen");
+  await page.clock.fastForward(65000);
+  await expect(
+    toolbar.getByRole("timer", { name: "Session elapsed time" }),
+  ).toHaveText("1:05");
+  await toolbar
+    .getByRole("button", { name: "Ingredients", exact: true })
+    .click();
+  await expect(
+    page.getByRole("dialog").locator(".ingredient-list"),
+  ).toContainText(roast.ingredients[0].name);
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  const produce = page.getByRole("region", { name: "Produce", exact: true });
+  await produce.getByRole("checkbox").first().check();
+  const fridge = page.getByRole("region", {
+    name: "Fridge & dairy",
+    exact: true,
+  });
+  for (const box of await fridge.getByRole("checkbox").all()) await box.check();
+  for (const name of [
+    "Fridge & dairy",
+    "Oils",
+    "Dry goods & spices",
+    "Tools & equipment",
+  ])
+    await page
+      .getByRole("region", { name, exact: true })
+      .locator(".section-toggle")
+      .click();
+  const startedAt = (await store<Session>(page, "sessions"))[0].startedAt;
+  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+  expect((await toolbar.boundingBox())!.y).toBe(0);
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.screenshot({
+    path: `test-results/${info.project.name}-compact-gather.png`,
+    fullPage: false,
+    scale: "css",
+  });
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
+    .click();
+  await expect(
+    toolbar.getByRole("button", { name: "Prep", exact: true }),
+  ).toHaveAttribute("aria-current", "step");
+  await expect(page.locator(".site-header")).toHaveCount(0);
+  await page
+    .getByRole("region", { name: "Preheat oven", exact: true })
+    .getByRole("checkbox")
+    .check();
+  for (const name of ["Preheat oven", "Set up roasting equipment"])
+    await page
+      .getByRole("region", { name, exact: true })
+      .locator(".section-toggle")
+      .click();
+  await page.screenshot({
+    path: `test-results/${info.project.name}-compact-prep.png`,
+    fullPage: false,
+    scale: "css",
+  });
+  await toolbar.getByRole("button", { name: "Gather", exact: true }).click();
+  await expect(produce.getByRole("checkbox").first()).toBeChecked();
+  await toolbar.getByRole("button", { name: "Cook", exact: true }).click();
+  await expect(page.locator(".site-header")).toHaveCount(0);
+  await expect(toolbar.locator(".toolbar-step")).toHaveText(
+    `1/${roast.cooking.length}`,
+  );
+  await page
+    .getByRole("button", { name: /Start .* timer/ })
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Next step", exact: true }).click();
+  await expect(toolbar.locator(".toolbar-step")).toHaveText(
+    `2/${roast.cooking.length}`,
+  );
+  await expect(
+    page
+      .locator(".active-timer-panel")
+      .getByRole("button", { name: /Pause .* timer/ }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: `test-results/${info.project.name}-compact-cook.png`,
+    fullPage: false,
+    scale: "css",
+  });
+  await toolbar
+    .getByRole("button", { name: "Exit recipe", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Save & Exit", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Discard Session", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Keep cooking", exact: true }).click();
+  await page.reload();
+  await expect(page.locator(".stage-panel h1")).toHaveText(
+    roast.cooking[1].title,
+  );
+  await expect(
+    toolbar.getByRole("timer", { name: "Session elapsed time" }),
+  ).toHaveText("1:05");
+  expect((await store<Session>(page, "sessions"))[0].startedAt).toBe(startedAt);
+  await toolbar
+    .getByRole("button", { name: "Exit recipe", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Save & Exit", exact: true }).click();
+  await expect(page.locator(".site-header")).toBeVisible();
+  await expect(toolbar).toHaveCount(0);
+});
+
+test("compact toolbar and footer fit long titles with full-size controls in light and dark preferences", async ({
+  page,
+}, info) => {
+  await ready(page);
+  await start(page);
+  await page
+    .getByRole("button", { name: "Start cooking", exact: true })
+    .click();
+  await expect
+    .poll(async () => (await store<Session>(page, "sessions")).length)
+    .toBe(1);
+  const session = (await store<Session>(page, "sessions"))[0];
+  const longTitle = "Þorskur með smjöri, kartöflum og grænmeti — ".repeat(12);
+  session.startedAt = Date.now() - 13 * 60 * 60 * 1000;
+  session.recipeSnapshot.identity.title = longTitle;
+  session.recipeSnapshot.cooking[1].title = longTitle;
+  session.recipeSnapshot.cooking[0].instructions = [
+    {
+      type: "text",
+      text: "An authored instruction that remains readable when the stage needs to scroll. ".repeat(
+        100,
+      ),
+    },
+  ];
+  delete session.recipeSnapshot.cooking[0].content;
+  await page.evaluate(async (session) => {
+    const db = await new Promise<IDBDatabase>((resolve) => {
+      const r = indexedDB.open("kitchen-mode-v1");
+      r.onsuccess = () => resolve(r.result);
+    });
+    const tx = db.transaction("sessions", "readwrite");
+    tx.objectStore("sessions").put(session);
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  }, session);
+  await page.reload();
+  const toolbar = page.locator(".recipe-toolbar"),
+    footer = page.locator(".cooking-controls");
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme });
+    await expect(toolbar.locator(".recipe-toolbar-title")).toHaveText(
+      longTitle,
+    );
+    expect(
+      await toolbar
+        .locator(".recipe-toolbar-title")
+        .evaluate((e) => e.scrollWidth > e.clientWidth),
+    ).toBe(true);
+    const toolbarBox = (await toolbar.boundingBox())!;
+    expect(toolbarBox.height).toBeLessThanOrEqual(
+      info.project.name.includes("ipad") ? 65 : 110,
+    );
+    for (const button of await toolbar.getByRole("button").all()) {
+      const box = (await button.boundingBox())!;
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+    const boxes = await toolbar.locator(":scope > *").evaluateAll((nodes) =>
+      nodes.map((e) => {
+        const { x, y, width, height } = e.getBoundingClientRect();
+        return { x, y, width, height };
+      }),
+    );
+    for (let a = 0; a < boxes.length; a++)
+      for (let b = a + 1; b < boxes.length; b++) {
+        const x = boxes[a],
+          y = boxes[b];
+        expect(
+          Math.min(x.x + x.width, y.x + y.width) - Math.max(x.x, y.x) > 1 &&
+            Math.min(x.y + x.height, y.y + y.height) - Math.max(x.y, y.y) > 1,
+        ).toBe(false);
+      }
+    await expect(footer.locator(".next-preview p")).toHaveText(longTitle);
+    expect(
+      await footer
+        .locator(".next-preview p")
+        .evaluate((e) => getComputedStyle(e).textOverflow),
+    ).toBe("ellipsis");
+    const expectedHeight = info.project.name.includes("ipad") ? 53 : 52;
+    const expectedWidth = info.project.name.includes("ipad") ? 155 : 167;
+    for (const name of ["Preparation", "Next step"]) {
+      const box = (await footer
+        .getByRole("button", { name, exact: true })
+        .boundingBox())!;
+      expect(box.height).toBe(expectedHeight);
+      if (info.project.name.includes("ipad"))
+        expect(box.width).toBeGreaterThanOrEqual(expectedWidth);
+      else expect(box.width).toBe(expectedWidth);
+    }
+    const padding = await footer.evaluate((e) => ({
+      top: parseFloat(getComputedStyle(e).paddingTop),
+      bottom: parseFloat(getComputedStyle(e).paddingBottom),
+    }));
+    expect(padding).toEqual({ top: 8, bottom: 8 });
+    if (info.project.name.includes("ipad")) {
+      const before = (await footer.boundingBox())!;
+      expect(before.height).toBe(70);
+      expect(before.y + before.height).toBe(768);
+      const panel = page.locator(".stage-panel");
+      expect(await panel.evaluate((e) => e.scrollHeight > e.clientHeight)).toBe(
+        true,
+      );
+      await panel.evaluate((e) => {
+        e.scrollTop = 10000;
+      });
+      expect(await panel.evaluate((e) => e.scrollTop)).toBeGreaterThan(0);
+      expect((await footer.boundingBox())!.y).toBe(before.y);
+      expect((await toolbar.boundingBox())!.y).toBe(0);
+    } else {
+      await footer.scrollIntoViewIfNeeded();
+      const end = (await footer.boundingBox())!,
+        app = (await page.locator(".app").boundingBox())!;
+      expect(end.y + end.height).toBeCloseTo(app.y + app.height, 0);
+    }
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await toolbar
+      .getByRole("button", { name: "Ingredients", exact: true })
+      .click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page
+      .getByRole("button", { name: "Close dialog", exact: true })
+      .click();
+  }
+  // Safari's browser bars and smaller phones must not squeeze essential controls.
+  await page.setViewportSize(
+    info.project.name.includes("ipad")
+      ? { width: 1024, height: 600 }
+      : { width: 320, height: 568 },
+  );
+  await page.evaluate(() => scrollTo(0, 0));
+  for (const button of await toolbar.getByRole("button").all()) {
+    const box = (await button.boundingBox())!;
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  const overlaps = await toolbar.evaluate((e) => {
+    const boxes = [...e.children].map((node) => node.getBoundingClientRect());
+    return boxes.some((a, i) =>
+      boxes
+        .slice(i + 1)
+        .some(
+          (b) =>
+            Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
+            Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1,
+        ),
+    );
+  });
+  expect(overlaps).toBe(false);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  if (info.project.name.includes("ipad")) {
+    const box = (await footer.boundingBox())!;
+    expect(box.y + box.height).toBe(600);
+    expect(box.height).toBe(70);
+  }
+  await footer.getByRole("button", { name: "Next step", exact: true }).click();
+  await expect(toolbar.locator(".toolbar-step")).toHaveText(
+    `2/${skillet.cooking.length}`,
+  );
+  await footer.getByRole("button", { name: "Previous", exact: true }).click();
+  await expect(toolbar.locator(".toolbar-step")).toHaveText(
+    `1/${skillet.cooking.length}`,
+  );
+});

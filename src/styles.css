@@ -650,7 +650,7 @@ i {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0 16px;
+  padding: 8px 0 10px;
   gap: 20px;
 }
 .phase-heading h1 {
@@ -961,7 +961,7 @@ i {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 20px 0 30px;
+  padding: 12px 0 max(12px, env(safe-area-inset-bottom));
   gap: 25px;
 }
 .prep-footer p {
@@ -975,38 +975,67 @@ i {
   flex-direction: column;
   overflow: hidden;
 }
-.cooking-app .site-header {
-  height: 74px;
-  flex-shrink: 0;
-}
-.cooking-heading {
+.recipe-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 10px 38px 12px;
+  gap: 12px;
+  padding: 6px 48px;
+  padding-top: max(6px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--line);
+  background: var(--ivory);
+  color: var(--olive);
+  position: sticky;
+  top: 0;
+  z-index: 5;
   flex-shrink: 0;
 }
-.cooking-heading h2 {
-  font-family: inherit;
-  font-size: 16px;
-  margin-top: 0;
-  font-weight: 500;
-  line-height: 1.3;
+.cooking-app .recipe-toolbar {
+  padding-left: 38px;
+  padding-right: 38px;
 }
-.cooking-heading .eyebrow {
-  font-size: 8px;
-  letter-spacing: 1.7px;
-}
-.stage-count {
-  font-family: var(--serif);
-  font-size: 25px;
+.recipe-toolbar-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--olive);
+  font: 18px/1.3 var(--serif);
 }
-.stage-count > span {
-  color: #969d89;
-  font-size: 20px;
+.recipe-toolbar .phase-nav,
+.session-elapsed,
+.toolbar-step,
+.toolbar-ingredients,
+.toolbar-exit {
+  flex-shrink: 0;
+}
+.recipe-toolbar .phase-nav button {
+  min-width: 44px;
+  padding: 8px 6px;
+}
+.recipe-toolbar .phase-divider {
+  padding: 0 2px;
+}
+.session-elapsed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.toolbar-step {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.toolbar-ingredients {
+  min-height: 44px;
+  padding: 10px 12px;
+  gap: 8px;
+  font-size: 13px;
+}
+.toolbar-exit {
+  border-radius: 6px;
 }
 .progress-track {
   height: 3px;
@@ -1276,17 +1305,12 @@ i {
 .active-timer-panel .timer-chip span {
   overflow-wrap: anywhere;
 }
-.cooking-heading-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
 .cooking-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 25px;
-  padding: 21px 38px;
+  padding: 8px 38px max(8px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   background: #f7f3eb;
   flex-shrink: 0;
@@ -1306,10 +1330,13 @@ i {
 }
 .next-preview p {
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 16px;
   color: var(--sage);
-  line-height: 1.2;
-  margin-top: 6px;
+  line-height: 1.25;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .mobile-ingredients {
   display: none;
@@ -1737,6 +1764,15 @@ summary {
   font-size: 16px;
 }
 @media (min-width: 1200px) {
+  .recipe-toolbar {
+    padding-left: max(48px, calc((100vw - 1024px) / 2));
+    padding-right: max(48px, calc((100vw - 1024px) / 2));
+  }
+  .cooking-app .recipe-toolbar,
+  .cooking-controls {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
   .site-header {
     padding-left: max(48px, calc((100vw - 1024px) / 2));
     padding-right: max(48px, calc((100vw - 1024px) / 2));
@@ -1845,7 +1881,11 @@ summary {
   .instructions {
     font-size: 19px;
   }
-  .cooking-heading {
+  .recipe-toolbar {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+  .cooking-app .recipe-toolbar {
     padding-left: 27px;
     padding-right: 27px;
   }
@@ -2059,7 +2099,7 @@ summary {
     font-size: 13px;
   }
   .phase-heading {
-    padding: 8px 0 14px;
+    padding: 8px 0;
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
@@ -2096,7 +2136,7 @@ summary {
     align-items: stretch;
     flex-direction: column;
     gap: 15px;
-    padding-bottom: 30px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
   .prep-footer p {
     max-width: none;
@@ -2111,26 +2151,46 @@ summary {
     min-height: 100svh;
     overflow: visible;
   }
-  .cooking-app .site-header {
-    height: 76px;
-    min-height: 76px;
+  .recipe-toolbar,
+  .cooking-app .recipe-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 44px;
+    gap: 0 8px;
+    padding-left: 22px;
+    padding-right: 22px;
   }
-  .cooking-heading {
-    padding: 19px 22px;
-    gap: 16px;
+  .recipe-toolbar-title {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 16px;
   }
-  .cooking-heading h2 {
-    font-size: 13px;
-    line-height: 1.5;
+  .recipe-toolbar .phase-nav {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    justify-self: start;
   }
-  .cooking-heading .eyebrow {
-    font-size: 7px;
+  .session-elapsed {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 12px;
   }
-  .stage-count {
-    font-size: 22px;
+  .toolbar-step {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
   }
-  .stage-count > span {
-    font-size: 17px;
+  .toolbar-ingredients {
+    grid-column: 3;
+    grid-row: 2;
+    width: 44px;
+    padding: 0;
+  }
+  .toolbar-ingredients > span {
+    display: none;
+  }
+  .toolbar-exit {
+    grid-column: 3;
+    grid-row: 1;
   }
   .cooking-layout {
     display: flex;
@@ -2177,30 +2237,6 @@ summary {
   .active-timer-panel .timer-chip > button {
     min-height: 48px;
   }
-  .cooking-heading-actions {
-    gap: 10px;
-  }
-  .cooking-heading-actions .secondary {
-    padding: 8px 10px;
-    min-height: 44px;
-    font-size: 12px;
-  }
-  .cooking-heading-actions .secondary svg {
-    display: none;
-  }
-  .cooking-heading {
-    flex-wrap: wrap;
-    padding-top: 6px;
-    padding-bottom: 12px;
-  }
-  .cooking-heading > div:first-child {
-    flex: 1;
-    min-width: 170px;
-  }
-  .cooking-heading h2 {
-    margin-top: 0;
-  }
-
   .stage-panel {
     padding: 26px 22px 28px;
     overflow: visible;
@@ -2237,10 +2273,10 @@ summary {
   }
   .cooking-controls {
     position: static;
-    padding: 15px 22px max(15px, env(safe-area-inset-bottom));
+    padding: 8px 22px max(8px, env(safe-area-inset-bottom));
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 6px 12px;
     box-shadow: 0 -5px 20px #f7f3eb80;
   }
   .cooking-controls > .primary,
@@ -2255,14 +2291,19 @@ summary {
     grid-row: 1;
     grid-column: 1 / -1;
     text-align: left;
-    padding-bottom: 3px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
   .next-preview p {
-    font-size: 15px;
-    margin-top: 5px;
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    margin: 0;
   }
   .next-preview .eyebrow {
     font-size: 7px;
+    flex-shrink: 0;
   }
   .timer-alert {
     padding: 10px 22px;
@@ -2423,13 +2464,6 @@ summary {
   }
 }
 @media (max-height: 710px) and (min-width: 601px) {
-  .cooking-app .site-header {
-    height: 64px;
-  }
-  .cooking-heading {
-    padding-top: 12px;
-    padding-bottom: 13px;
-  }
   .stage-panel {
     padding-top: 22px;
   }
@@ -2446,10 +2480,6 @@ summary {
   .learning-tip {
     margin-top: 16px;
     padding: 12px 15px;
-  }
-  .cooking-controls {
-    padding-top: 15px;
-    padding-bottom: 15px;
   }
 }
 
