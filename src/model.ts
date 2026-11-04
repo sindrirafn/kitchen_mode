@@ -17,6 +17,7 @@ export interface Ingredient {
     name?: string;
     category?: GatherCategory;
     form?: string;
+    detail?: string;
   };
 }
 export type GatherCategory =
@@ -80,10 +81,16 @@ export interface Recipe {
     items: CheckItem[];
     tip?: string;
     longLead?: boolean;
+    earlyTitle?: string;
+    continuationTitle?: string;
   }[];
   cooking: Stage[];
   media?: { id: string; path: string; alt?: string; [key: string]: unknown }[];
-  equipment?: { id?: string; name?: string }[];
+  equipment?: {
+    id?: string;
+    name?: string;
+    gathering?: { key?: string; name?: string };
+  }[];
   notes?: { id?: string; text?: string; type?: string }[];
   serving?: { instructions?: string };
   storage?: Record<string, unknown>;
@@ -109,6 +116,9 @@ export interface Session {
   currentStepId: string;
   checkedIds: string[];
   gatheredIds: string[];
+  collapsedSectionIds?: string[];
+  completedStepIds?: string[];
+  visitedStepIds?: string[];
   timers: Record<string, TimerState>;
   startedAt: number;
   completedAt: number | null;
@@ -203,6 +213,9 @@ export function startSession(recipe: Recipe): Session {
     currentStepId: recipe.cooking[0].id,
     checkedIds: [],
     gatheredIds: [],
+    collapsedSectionIds: [],
+    completedStepIds: [],
+    visitedStepIds: [],
     timers: {},
     startedAt: now,
     completedAt: null,
@@ -210,10 +223,63 @@ export function startSession(recipe: Recipe): Session {
   };
 }
 export function finishSession(session: Session, now = Date.now()): Session {
-  return { ...session, phase: "completed", completedAt: now, updatedAt: now };
+  return {
+    ...completeCurrentStep(session),
+    phase: "completed",
+    completedAt: now,
+    updatedAt: now,
+  };
+}
+// Only the explicit forward action completes a stage. Timeline jumps and visits
+// never imply completion, including for sessions saved before this field existed.
+export function completeCurrentStep(session: Session): Session {
+  return {
+    ...session,
+    completedStepIds: [
+      ...new Set([...(session.completedStepIds ?? []), session.currentStepId]),
+    ],
+  };
+}
+export function navigateStage(session: Session, stageId: string): Session {
+  if (!session.recipeSnapshot.cooking.some((stage) => stage.id === stageId))
+    return session;
+  return {
+    ...session,
+    phase: "cooking",
+    currentStepId: stageId,
+    visitedStepIds: [
+      ...new Set([
+        ...(session.visitedStepIds ?? []),
+        session.currentStepId,
+        stageId,
+      ]),
+    ],
+  };
+}
+export function toggleSection(session: Session, id: string): Session {
+  const collapsed = session.collapsedSectionIds ?? [];
+  return {
+    ...session,
+    collapsedSectionIds: collapsed.includes(id)
+      ? collapsed.filter((key) => key !== id)
+      : [...collapsed, id],
+  };
+}
+export function timerRemaining(timer: TimerState, now: number): number {
+  return timer.status === "running"
+    ? Math.max(0, (timer.endAt ?? now) - now)
+    : timer.remainingMs;
 }
 export function undoFinish(session: Session, now = Date.now()): Session {
-  return { ...session, phase: "cooking", completedAt: null, updatedAt: now };
+  return {
+    ...session,
+    phase: "cooking",
+    completedAt: null,
+    updatedAt: now,
+    completedStepIds: (session.completedStepIds ?? []).filter(
+      (id) => id !== session.currentStepId,
+    ),
+  };
 }
 export function timerAction(
   timer: TimerState | undefined,

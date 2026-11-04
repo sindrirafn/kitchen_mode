@@ -76,7 +76,23 @@
     "equipment": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "gathering": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        }
       }
     },
     "components": {
@@ -149,6 +165,9 @@
               },
               "category": {
                 "enum": ["produce", "fridge", "oils", "dry-goods", "other"]
+              },
+              "detail": {
+                "type": "string"
               }
             },
             "additionalProperties": false
@@ -279,6 +298,14 @@
         },
         "longLead": {
           "type": "boolean"
+        },
+        "earlyTitle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "continuationTitle": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": true

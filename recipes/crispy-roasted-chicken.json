@@ -488,7 +488,9 @@
         }
       ],
       "tip": "Two separate trays let the potatoes get crisp while the vegetables catch the chicken drippings.",
-      "longLead": false
+      "longLead": false,
+      "earlyTitle": "Preheat oven",
+      "continuationTitle": "Set up roasting equipment"
     },
     {
       "id": "prep-potatoes",

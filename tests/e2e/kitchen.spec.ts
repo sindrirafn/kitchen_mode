@@ -27,16 +27,14 @@ async function start(page: Page, r = skillet, gatherOnly = false) {
   await page
     .getByRole("button", { name: "Gather ingredients", exact: true })
     .click();
-  await expect(page.locator(".gathering h1")).toHaveText(
-    "Everything in its place.",
-  );
+  await expect(page.locator(".gathering h1")).toHaveText("Gather");
   if (gatherOnly) return;
   await page
     .getByRole("button", { name: "Start preparation", exact: true })
     .first()
     .click();
   await expect(
-    page.getByRole("heading", { name: "First, a little preparation." }),
+    page.getByRole("heading", { name: "Preparation" }),
   ).toBeVisible();
 }
 async function store<T>(page: Page, name: string): Promise<T[]> {
@@ -111,16 +109,14 @@ test("gathering resumes ingredient and equipment checks independently of prepara
     page.getByRole("dialog").locator(".ingredient-list"),
   ).toContainText(skillet.ingredients[0].name);
   await page.getByRole("button", { name: "Close dialog" }).click();
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await page
     .getByRole("button", { name: /Start .* timer/ })
     .first()
     .click();
   await page.getByRole("button", { name: "Preparation", exact: true }).click();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
-  await page
-    .getByRole("button", { name: "Back to gathering", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Gather", exact: true }).click();
   await expect(page.locator(`input[id="${ingredientId}"]`)).toBeChecked();
   await expect(page.locator(`input[id="${equipmentId}"]`)).toBeChecked();
   await expect(
@@ -176,16 +172,12 @@ test("legacy sessions and imported UTF-8 files repair known mojibake while prese
     db.close();
   }, recipe);
   await page.reload();
-  await expect(page.locator(".preparation h1")).toHaveText(
-    "First, a little preparation.",
-  );
+  await expect(page.locator(".preparation h1")).toHaveText("Preparation");
   await expect(page.getByRole("checkbox").first()).toBeChecked();
   await expect(page.locator(".prep-tasks").first()).toContainText(
     "Preheat to 220°C; use ½ tsp and ¼ tsp. Þorskur með smjöri.",
   );
-  await page
-    .getByRole("button", { name: "Back to gathering", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Gather", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("0 of");
   await expect(
     page.locator(".gather-item").filter({
@@ -240,7 +232,7 @@ test("legacy sessions and imported UTF-8 files repair known mojibake while prese
   );
   expect(saved.recipeSnapshot.revision).toBe(imported.revision);
 });
-test("consolidated gathering totals and component allocations persist as one checkbox", async ({
+test("consolidated gathering totals persist as one checkbox", async ({
   page,
 }, info) => {
   const roast = recipes.find((r) => r.id === "crispy-roasted-chicken")!;
@@ -248,7 +240,7 @@ test("consolidated gathering totals and component allocations persist as one che
   await start(page, roast, true);
   const input = page.locator('input[id="ingredient:ch-garlic"]');
   const row = page.locator(".gather-item").filter({ has: input });
-  await expect(page.locator(".gather-card h2")).toHaveText([
+  await expect(page.locator(".gather-sections .section-title")).toHaveText([
     "Produce",
     "Fridge & dairy",
     "Oils",
@@ -256,14 +248,11 @@ test("consolidated gathering totals and component allocations persist as one che
     "Tools & equipment",
   ]);
   await expect(row.locator(".check-row")).toHaveText(
-    "3 tsp + a pinch Garlic powder",
+    "Garlic powder · 3 tsp + a pinch",
   );
   await expect(
     page.locator(".check-row").filter({ hasText: "Garlic powder" }),
   ).toHaveCount(1);
-  await row.getByText("Used in 3 places", { exact: true }).click();
-  await expect(row.locator("li")).toHaveCount(3);
-  await expect(row.locator("li").first()).toContainText("2 tsp");
   await input.check();
   await page.reload();
   await expect(input).toBeChecked();
@@ -284,11 +273,11 @@ test("consolidated gathering totals and component allocations persist as one che
     .click();
   await expect(
     page
-      .getByRole("region", { name: "Start these first", exact: true })
+      .getByRole("region", { name: "Start early", exact: true })
       .getByRole("checkbox"),
   ).toHaveCount(1);
   await expect(
-    page.getByRole("region", { name: "Start these first", exact: true }),
+    page.getByRole("region", { name: "Start early", exact: true }),
   ).toContainText("220°C conventional");
   const potatoList = page.getByRole("group", {
     name: "Potato seasoning",
@@ -302,9 +291,7 @@ test("consolidated gathering totals and component allocations persist as one che
     path: `test-results/${info.project.name}-redesign-prep.png`,
     fullPage: true,
   });
-  await page
-    .getByRole("button", { name: "Back to gathering", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Gather", exact: true }).click();
   await input.uncheck();
   await page.reload();
   expect((await store<Session>(page, "sessions"))[0].gatheredIds).not.toEqual(
@@ -454,7 +441,7 @@ test("structured JSON prep and cook use partial quantities and separate action l
   await page.getByRole("checkbox").first().check();
   await page.reload();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await expect(page.locator(".instructions .recipe-action")).toHaveText([
     "Warm the pan.",
     "Add the measured sauce portion.",
@@ -505,7 +492,7 @@ test("six originals, deliberate start, preparation, full cooking, finish, undo a
   await page.getByRole("checkbox").first().check();
   await page.reload();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   for (let i = 0; i < skillet.cooking.length; i++) {
     await expect(page.locator(".stage-panel h1")).toHaveText(
       skillet.cooking[i].title,
@@ -596,9 +583,8 @@ test("all authored stages stay readable on iPad and scroll safely on phone", asy
         const row = region
           .locator(".check-row")
           .filter({ has: page.locator(`input[id="${item.id}"]`) });
-        await expect(row).toContainText(
-          `${item.amount}${item.amount ? " " : ""}${item.name}`,
-        );
+        await expect(row).toContainText(item.name);
+        await expect(row).toContainText(item.amount);
         if (item.optional) await expect(row).toContainText("optional");
       }
     }
@@ -643,13 +629,15 @@ test("all authored stages stay readable on iPad and scroll safely on phone", asy
         recipe.id,
       )
     ) {
-      await expect(page.locator(".prep-card").first()).toHaveClass(/long-lead/);
+      await expect(page.locator(".prep-section").first()).toHaveClass(
+        /long-lead/,
+      );
       await page.screenshot({
         path: `test-results/${info.project.name}-${recipe.id}-preparation.png`,
         fullPage: true,
       });
     }
-    await page.getByRole("button", { name: "Let’s start cooking" }).click();
+    await page.getByRole("button", { name: "Start cooking" }).click();
     for (let i = 0; i < recipe.cooking.length; i++) {
       await expect(page.locator(".stage-panel h1")).toHaveText(
         recipe.cooking[i].title,
@@ -687,7 +675,7 @@ test("imports handle revision conflicts, errors and preserve active snapshot", a
 }) => {
   await ready(page);
   await start(page);
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await page.getByRole("button", { name: "Next step", exact: true }).click();
   await leave(page);
   const updated = {
@@ -712,7 +700,9 @@ test("imports handle revision conflicts, errors and preserve active snapshot", a
   await expect(page.locator(".stage-panel h1")).toHaveText(
     skillet.cooking[1].title,
   );
-  await expect(page.locator(".cooking-heading")).toContainText("REVISION 1");
+  expect(
+    (await store<Session>(page, "sessions"))[0].recipeSnapshot.revision,
+  ).toBe(1);
   await leave(page);
   await importReview(page, updated);
   await expect(page.getByText(/Already in your cookbook/)).toBeVisible();
@@ -863,7 +853,7 @@ test("packaged build opens offline with images and saved session", async ({
 test("timer pause and resume timestamps survive reload", async ({ page }) => {
   await ready(page);
   await start(page);
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await page
     .getByRole("button", { name: /Start .* timer/ })
     .first()
@@ -952,7 +942,7 @@ test("clipboard denial falls back to manual paste; JSON files and long stages re
     .getByRole("button", { name: "Add to cookbook", exact: true })
     .click();
   await start(page, longRecipe as Recipe);
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await expect(page.locator(".instructions")).toHaveText(
     longRecipe.cooking[0].instructions[0].text,
   );
@@ -995,7 +985,7 @@ test("elapsed time begins deliberately, freezes at finish and resumes after undo
     .getByRole("button", { name: "Start preparation", exact: true })
     .first()
     .click();
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   const s = (await store<Session>(page, "sessions"))[0];
   expect(s.startedAt).toBeGreaterThanOrEqual(before);
   expect(s.startedAt - before).toBeLessThan(2000);
@@ -1027,7 +1017,7 @@ test("Save & Exit preserves progress and running timers for resumption after rel
   await ready(page);
   await start(page);
   await page.getByRole("checkbox").first().check();
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await page
     .getByRole("button", { name: /Start .* timer/ })
     .first()
@@ -1067,7 +1057,7 @@ for (const phase of ["gathering", "preparation", "cooking"] as const) {
     await start(page, skillet, phase === "gathering");
     await page.getByRole("checkbox").first().check();
     if (phase === "cooking") {
-      await page.getByRole("button", { name: "Let’s start cooking" }).click();
+      await page.getByRole("button", { name: "Start cooking" }).click();
       await page
         .getByRole("button", { name: /Start .* timer/ })
         .first()
@@ -1129,7 +1119,7 @@ for (const phase of ["gathering", "preparation", "cooking"] as const) {
     await page.getByRole("button", { name: "Recipes", exact: true }).click();
     await start(page);
     await expect(page.getByRole("checkbox").first()).not.toBeChecked();
-    await page.getByRole("button", { name: "Let’s start cooking" }).click();
+    await page.getByRole("button", { name: "Start cooking" }).click();
     await expect(page.locator(".stage-panel h1")).toHaveText(
       skillet.cooking[0].title,
     );
@@ -1144,3 +1134,290 @@ for (const phase of ["gathering", "preparation", "cooking"] as const) {
     expect(await store(page, "sessions")).toHaveLength(1);
   });
 }
+
+test("accordions retain manual expansion, counts and completion without closing or shifting", async ({
+  page,
+}, info) => {
+  const roast = recipes.find((r) => r.id === "crispy-roasted-chicken")!;
+  await ready(page);
+  await start(page, roast, true);
+  const produce = page.getByRole("region", { name: "Produce", exact: true });
+  const toggle = produce.locator(".section-toggle");
+  const boxes = produce.getByRole("checkbox");
+  const rows = produce.locator(".gather-item");
+  const a = await rows.nth(0).boundingBox(),
+    b = await rows.nth(1).boundingBox();
+  if (info.project.name.includes("ipad")) {
+    expect(a!.y).toBe(b!.y);
+    expect(b!.x).toBeGreaterThan(a!.x + a!.width);
+  } else {
+    expect(a!.x).toBe(b!.x);
+    expect(b!.y).toBeGreaterThan(a!.y);
+  }
+  await expect(produce).not.toContainText("halved");
+  await expect(produce).not.toContainText("wedges");
+  await expect(produce).toContainText("1–1.2 kg");
+  for (const box of await boxes.all()) await box.check();
+  await expect(toggle).toContainText("4/4");
+  await expect(toggle.getByLabel("Complete", { exact: true })).toBeVisible();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await boxes.first().scrollIntoViewIfNeeded();
+  const scroll = await page.evaluate(() => scrollY);
+  await boxes.first().uncheck();
+  expect(await page.evaluate(() => scrollY)).toBe(scroll);
+  await toggle.click();
+  const fridge = page.getByRole("region", {
+    name: "Fridge & dairy",
+    exact: true,
+  });
+  for (const box of await fridge.getByRole("checkbox").all()) await box.check();
+  await expect(fridge.getByLabel("Complete", { exact: true })).toBeVisible();
+  await fridge.locator(".section-toggle").click();
+  await page.reload();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(
+    page
+      .getByRole("region", { name: "Fridge & dairy", exact: true })
+      .locator(".section-toggle"),
+  ).toHaveAttribute("aria-expanded", "false");
+  await toggle.click();
+  await page.screenshot({
+    path: `test-results/${info.project.name}-refinement-gather.png`,
+    fullPage: false,
+    scale: "css",
+  });
+  await page
+    .getByRole("button", { name: "Start preparation", exact: true })
+    .first()
+    .click();
+  const early = page.getByRole("region", { name: "Preheat oven", exact: true });
+  await early.getByRole("checkbox").check();
+  await expect(early.locator(".section-toggle")).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+  await expect(early.getByLabel("Complete", { exact: true })).toBeVisible();
+  await early.locator(".section-toggle").click();
+  await page
+    .getByRole("region", { name: "Set up roasting equipment", exact: true })
+    .locator(".section-toggle")
+    .click();
+  const potato = page.getByRole("region", {
+    name: "Prepare the potatoes",
+    exact: true,
+  });
+  await expect(potato.locator(".recipe-action")).toHaveText([
+    "Wash and dry 1–1.2 kg small potatoes thoroughly.",
+    "Halve lengthwise; do not peel or parboil.",
+    "Toss the potatoes with:",
+    "Arrange cut-side down in one layer on a metal tray.",
+    "Do not put the tray in yet.",
+  ]);
+  const prepRows = potato.locator(".prep-tasks > li");
+  const first = await prepRows.nth(0).boundingBox(),
+    second = await prepRows.nth(1).boundingBox();
+  expect(first!.x).toBe(second!.x);
+  expect(first!.width).toBe(second!.width);
+  expect(second!.y).toBeGreaterThan(first!.y + first!.height - 1);
+  await expect(potato.locator('[role="listitem"]')).toHaveCount(5);
+  await expect(potato).not.toContainText("for potatoes");
+  await page.reload();
+  await expect(early.locator(".section-toggle")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
+  await page.screenshot({
+    path: `test-results/${info.project.name}-refinement-prep.png`,
+    fullPage: false,
+    scale: "css",
+  });
+  await page
+    .getByRole("navigation", { name: "Recipe phases" })
+    .getByRole("button", { name: "Gather", exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole("region", { name: "Fridge & dairy", exact: true })
+      .locator(".section-toggle"),
+  ).toHaveAttribute("aria-expanded", "false");
+  await expect(produce.locator(".section-toggle")).toContainText("3/4");
+});
+
+test("timeline jumps preserve actual completion, current stage and timers across reload", async ({
+  page,
+}, info) => {
+  await ready(page);
+  await start(page);
+  await page
+    .getByRole("button", { name: "Start cooking", exact: true })
+    .click();
+  await expect(page.locator(".active-timer-panel")).toHaveCount(0);
+  await page
+    .getByRole("button", { name: /Start .* timer/ })
+    .first()
+    .click();
+  const panel = page.getByRole("region", {
+    name: "Active timers",
+    exact: true,
+  });
+  await expect(panel).toBeVisible();
+  expect(
+    await panel
+      .locator(".active-timers-scroll")
+      .evaluate((e) => e.scrollHeight - e.clientHeight),
+  ).toBeLessThanOrEqual(1);
+  await expect(
+    page
+      .locator(".stage-panel")
+      .getByRole("button", { name: /Pause .* timer/ }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Next step", exact: true }).click();
+  if (info.project.name.includes("iphone"))
+    await page.getByRole("button", { name: "Show steps", exact: true }).click();
+  const steps = page.locator(".timeline-list > li");
+  await expect(steps.nth(0)).toContainText("Completed");
+  await steps.nth(3).getByRole("button").click();
+  await expect(page.locator(".stage-panel h1")).toHaveText(
+    skillet.cooking[3].title,
+  );
+  await expect(steps.nth(1)).toContainText("Visited · not completed");
+  await expect(steps.nth(2)).toContainText("Upcoming");
+  await expect(steps.nth(3).getByRole("button")).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await expect(steps.nth(0).locator(".timeline-timer")).toContainText(
+    skillet.cooking[0].timers[0].label,
+  );
+  await expect(
+    panel.getByRole("button", { name: /Pause .* timer/ }),
+  ).toBeVisible();
+  const snapshot = (await store<Session>(page, "sessions"))[0];
+  expect(snapshot.completedStepIds).toEqual([skillet.cooking[0].id]);
+  expect(snapshot.completedAt).toBeNull();
+  await panel.getByRole("button", { name: /Pause .* timer/ }).click();
+  await expect(
+    panel.getByRole("button", { name: /Resume .* timer/ }),
+  ).toBeVisible();
+  await panel.getByRole("button", { name: /Resume .* timer/ }).click();
+  await page.reload();
+  await expect(page.locator(".stage-panel h1")).toHaveText(
+    skillet.cooking[3].title,
+  );
+  if (info.project.name.includes("iphone"))
+    await page.getByRole("button", { name: "Show steps", exact: true }).click();
+  await expect(steps.nth(0)).toContainText("Completed");
+  await expect(steps.nth(2)).toContainText("Upcoming");
+  await page.getByRole("button", { name: "Ingredients", exact: true }).click();
+  await expect(
+    page.getByRole("dialog").locator(".ingredient-list"),
+  ).toContainText(skillet.ingredients[0].name);
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await expect(page.locator(".cooking-aside .ingredient-list")).toHaveCount(0);
+  await page.screenshot({
+    path: `test-results/${info.project.name}-refinement-sidebar.png`,
+    fullPage: false,
+    scale: "css",
+  });
+  await panel.getByRole("button", { name: /Cancel .* timer/ }).click();
+  await expect(panel).toHaveCount(0);
+});
+
+test("timer overflow and timeline scroll independently while expiration remains prominent", async ({
+  page,
+}, info) => {
+  await ready(page);
+  await start(page);
+  await page
+    .getByRole("button", { name: "Start cooking", exact: true })
+    .click();
+  await expect
+    .poll(async () => (await store<Session>(page, "sessions")).length)
+    .toBe(1);
+  const session = (await store<Session>(page, "sessions"))[0];
+  const now = Date.now();
+  session.recipeSnapshot.cooking.push(
+    ...Array.from({ length: 20 }, (_, i) => ({
+      ...structuredClone(skillet.cooking[0]),
+      id: `extra-${i}`,
+      title: `Extra stage ${i + 1}`,
+      checklist: [],
+      timers: [
+        {
+          id: `extra-timer-${i}`,
+          label: `Timer ${i + 1}`,
+          durationSeconds: 600,
+        },
+      ],
+    })),
+  );
+  for (let i = 0; i < 10; i++)
+    session.timers[`extra-timer-${i}`] = {
+      id: `extra-timer-${i}`,
+      label: `Timer ${i + 1}`,
+      durationSeconds: 600,
+      status: i === 1 ? "paused" : "running",
+      endAt: i === 1 ? null : i === 0 ? now - 1000 : now + 600000,
+      remainingMs: 600000,
+    };
+  await page.evaluate(async (session) => {
+    const db = await new Promise<IDBDatabase>((resolve) => {
+      const r = indexedDB.open("kitchen-mode-v1");
+      r.onsuccess = () => resolve(r.result);
+    });
+    const tx = db.transaction("sessions", "readwrite");
+    tx.objectStore("sessions").put(session);
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  }, session);
+  await page.reload();
+  const panel = page.getByRole("region", {
+    name: "Active timers",
+    exact: true,
+  });
+  await expect(panel.locator(".timer-chip")).toHaveCount(10);
+  await expect(panel.locator(".timer-chip").first()).toContainText(
+    "Time is up",
+  );
+  await expect(page.locator(".timer-alert")).toContainText("Timer 1");
+  if (info.project.name.includes("iphone"))
+    await page.getByRole("button", { name: "Show steps", exact: true }).click();
+  const timeline = page.locator(".timeline-scroll"),
+    timers = page.locator(".active-timers-scroll");
+  if (info.project.name.includes("ipad")) {
+    const p = await panel.boundingBox(),
+      aside = await page.locator(".cooking-aside").boundingBox();
+    expect(p!.height).toBeLessThanOrEqual(aside!.height * 0.41);
+    expect(p!.y + p!.height).toBeCloseTo(aside!.y + aside!.height, 0);
+  }
+  const before = await panel.boundingBox();
+  await timeline.evaluate((e) => {
+    e.scrollTop = 10000;
+  });
+  const after = await panel.boundingBox();
+  expect(after!.y).toBe(before!.y);
+  expect(await timeline.evaluate((e) => e.scrollTop)).toBeGreaterThan(0);
+  const timelinePosition = await timeline.evaluate((e) => e.scrollTop);
+  await timers.evaluate((e) => {
+    e.scrollTop = 10000;
+  });
+  expect(await timers.evaluate((e) => e.scrollTop)).toBeGreaterThan(0);
+  expect(await timeline.evaluate((e) => e.scrollTop)).toBe(timelinePosition);
+  await timers.evaluate((e) => {
+    e.scrollTop = 0;
+  });
+  await expect(panel.locator(".timer-chip").first()).toContainText(
+    "Time is up",
+  );
+  await panel
+    .getByRole("button", { name: "Cancel Timer 1 timer", exact: true })
+    .click();
+  await expect(panel.locator(".timer-chip")).toHaveCount(9);
+  await expect(page.locator(".timer-alert")).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Resume Timer 2 timer", exact: true }),
+  ).toBeVisible();
+});

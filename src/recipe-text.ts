@@ -93,12 +93,12 @@ export function normalizeRecipe(recipe: Recipe): Recipe {
   normalized.components.forEach((c) => fields(c, ["name"]));
   normalized.ingredients.forEach((ingredient) => {
     fields(ingredient, ["name", "preparation", "notes"]);
-    fields(ingredient.gathering, ["name"]);
+    fields(ingredient.gathering, ["name", "detail"]);
     amount(ingredient.quantity);
   });
   normalized.quantityUsages?.forEach((usage) => amount(usage.quantity));
   normalized.preparation.forEach((group) => {
-    fields(group, ["title", "tip"]);
+    fields(group, ["title", "tip", "earlyTitle", "continuationTitle"]);
     group.items.forEach((item) => {
       fields(item, ["text"]);
       content(item.content);
@@ -113,7 +113,10 @@ export function normalizeRecipe(recipe: Recipe): Recipe {
     stage.checklist.forEach((item) => fields(item, ["text"]));
     stage.timers.forEach((timer) => fields(timer, ["label"]));
   });
-  normalized.equipment?.forEach((equipment) => fields(equipment, ["name"]));
+  normalized.equipment?.forEach((equipment) => {
+    fields(equipment, ["name"]);
+    fields(equipment.gathering, ["name"]);
+  });
   normalized.notes?.forEach((note) => fields(note, ["text"]));
   normalized.media?.forEach((media) => fields(media, ["alt"]));
   fields(normalized.serving, ["instructions"]);

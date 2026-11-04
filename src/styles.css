@@ -650,102 +650,63 @@ i {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 29px 0 27px;
+  padding: 12px 0 16px;
   gap: 20px;
 }
 .phase-heading h1 {
-  font-size: 39px;
-  margin: 10px 0;
+  font-size: 34px;
+  margin: 2px 0 6px;
 }
-.phase-heading p:not(.eyebrow) {
+.phase-heading p {
   font-size: 13px;
   color: var(--sage);
 }
 .phase-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
-.prep-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-  align-items: start;
-}
-.prep-card {
-  padding: 25px;
-  background: #fcfaf5;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.prep-card-title {
-  display: flex;
-  gap: 12px;
-  align-items: baseline;
-  margin-bottom: 20px;
-}
-.prep-card-title > span {
-  font-family: var(--serif);
-  color: #9c9e8e;
-  font-size: 19px;
-}
-.prep-card h2 {
-  font-size: 26px;
-  line-height: 1.25;
-}
-.back-to-gathering {
-  margin: 0 0 24px;
-}
-.prep-tasks {
-  display: grid;
-  gap: 12px;
-}
-.prep-tasks .check-row {
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  padding: 16px;
-  font-size: 17px;
-  line-height: 1.65;
-  background: var(--ivory);
-}
-.prep-tasks p.check-row {
-  cursor: auto;
-}
-.prep-tasks .check-row.checked {
-  border-color: transparent;
-}
-.prep-group-progress {
-  margin-top: 16px;
-  color: var(--sage);
-}
-.prep-card.long-lead {
-  border-top: 4px solid var(--sage);
-  padding-top: 22px;
-}
-.prep-lead {
+.phase-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 15px;
+  font-size: 12px;
+  color: var(--sage);
 }
-.prep-card .prep-tip {
-  border-top: 1px solid var(--line);
-  padding-top: 16px;
-  font-size: 14px;
-  line-height: 1.65;
+.phase-nav > span {
+  display: inline-flex;
+  align-items: center;
+}
+.phase-nav button {
+  min-height: 44px;
+  padding: 8px 6px;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+.phase-nav > span:first-child button {
+  padding-left: 0;
+}
+.phase-nav button[aria-current] {
+  color: var(--olive);
+  font-weight: 650;
+}
+.phase-divider {
+  padding: 0 6px;
+  opacity: 0.6;
 }
 .gather-progress {
-  padding: 0 0 26px;
+  padding: 0 0 14px;
 }
-.gather-progress > p:first-child {
+.gather-progress p {
+  font-size: 13px;
   font-weight: 600;
   color: var(--olive);
 }
 .gather-progress progress {
   display: block;
   width: 100%;
-  height: 7px;
-  margin: 12px 0;
+  height: 4px;
+  margin-top: 8px;
   border: 0;
   border-radius: 4px;
   overflow: hidden;
@@ -758,79 +719,157 @@ i {
 .gather-progress progress::-webkit-progress-value {
   background: var(--olive);
 }
-.gather-progress > .muted {
-  font-size: 13px;
+.gather-sections,
+.prep-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
 }
-.gather-grid {
+.workflow-section {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--ivory);
+  overflow-anchor: none;
+}
+.workflow-section > h2 {
+  font-size: 23px;
+}
+.section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--olive);
+  text-align: left;
+  padding: 10px 20px;
+}
+.section-toggle:focus-visible {
+  outline-offset: -4px;
+}
+.section-title {
+  flex: 1;
+  min-width: 0;
+}
+.section-count {
+  font:
+    500 13px/1.5 -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--sage);
+}
+.section-complete {
+  display: inline-flex;
+  width: 20px;
+  flex-shrink: 0;
+}
+.section-chevron {
+  display: inline-flex;
+}
+.section-chevron.expanded {
+  transform: rotate(90deg);
+}
+.section-body {
+  padding: 0 20px 10px;
+}
+.section-body[hidden] {
+  display: none;
+}
+.gather-checklist {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-  align-items: start;
+  column-gap: 28px;
 }
-.gather-card {
-  padding: 25px;
-  background: var(--ivory);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.gather-card h2 {
-  font-size: 26px;
-  margin-bottom: 16px;
-}
-.gather-card .check-row {
-  padding: 14px 0;
-  font-size: 16px;
-}
-.gather-item + .gather-item {
+.gather-item {
+  min-width: 0;
   border-top: 1px solid var(--line);
 }
 .gather-item .check-row {
-  border-bottom: 0;
-}
-.gather-allocations {
-  margin: -4px 0 14px 34px;
-  color: var(--sage);
-  font-size: 13px;
-  line-height: 1.6;
-}
-.gather-allocations summary {
-  cursor: pointer;
-  min-height: 44px;
+  border: 0;
+  font-size: 16px;
+  min-height: 52px;
+  align-items: center;
   padding: 10px 0;
 }
-.gather-allocations ul {
-  padding-left: 18px;
-  margin: 0;
+.gather-item .check-row > span {
+  min-width: 0;
 }
-.gather-allocations li + li {
-  margin-top: 10px;
-}
-.gather-allocations small {
+.gather-item small {
   display: block;
-}
-.prep-section-heading {
-  margin-bottom: 22px;
-}
-.prep-section-heading .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.prep-section-heading h2 {
-  font-size: 30px;
-  margin: 9px 0;
-}
-.prep-section-heading > p:last-child {
+  font-size: 12px;
   color: var(--sage);
-  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 3px;
+}
+.gather-item em {
+  font-style: normal;
+  font-size: 13px;
+  color: var(--sage);
+}
+.equipment-section .check-row {
+  min-height: 46px;
+  padding: 8px 0;
+  font-size: 15px;
 }
 .prep-early {
-  padding-bottom: 30px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 30px;
+  margin-bottom: 16px;
 }
-.prep-early-grid {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+.start-early-heading {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--sage);
+  margin: 0 0 8px;
+}
+.prep-section.long-lead {
+  border-left: 3px solid var(--sage);
+}
+.prep-tasks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.prep-tasks > li {
+  border-top: 1px solid var(--line);
+}
+.prep-tasks .check-row {
+  border: 0;
+  padding: 13px 0;
+  font-size: 17px;
+  line-height: 1.55;
+  max-width: 76ch;
+}
+.prep-tasks p.check-row {
+  cursor: auto;
+}
+.prep-tasks .structured-content > * + * {
+  margin-top: 9px;
+}
+.prep-tasks .ingredient-collection {
+  padding-left: 12px;
+}
+.prep-tasks .collection-title {
+  margin-bottom: 5px;
+}
+.prep-tasks .ingredient-collection [role="listitem"] + [role="listitem"] {
+  margin-top: 3px;
+}
+.back-to-gathering {
+  margin: 0 0 10px;
+  font-size: 12px;
+}
+.prep-section .prep-tip {
+  border-top: 1px solid var(--line);
+  padding: 10px 0 2px;
+  margin-top: 0;
+  max-width: 76ch;
 }
 .structured-content,
 .recipe-action,
@@ -879,43 +918,6 @@ i {
 .instructions .ingredient-collection {
   font-size: 17px;
 }
-@media (min-width: 801px) {
-  .preparation .prep-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .preparation .prep-card {
-    display: grid;
-    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 2fr);
-    column-gap: 30px;
-    align-items: start;
-  }
-  .preparation .prep-card-title {
-    grid-column: 1;
-    grid-row: 1 / span 3;
-    margin: 4px 0 0;
-  }
-  .preparation .prep-tasks,
-  .preparation .prep-group-progress,
-  .preparation .prep-tip {
-    grid-column: 2;
-  }
-}
-.check-row.checked .structured-content {
-  text-decoration: none;
-}
-.gather-card .check-row > span {
-  min-width: 0;
-}
-.gather-card .check-row small {
-  display: block;
-  color: var(--sage);
-  margin-top: 4px;
-}
-.gather-card em {
-  font-style: normal;
-  color: var(--sage);
-  font-size: 13px;
-}
 .check-row {
   display: flex;
   align-items: flex-start;
@@ -929,9 +931,6 @@ i {
 }
 .check-row:last-of-type {
   border-bottom: 0;
-}
-.prep-tasks .check-row:last-of-type {
-  border-bottom: 1px solid var(--line);
 }
 .check-row input {
   accent-color: var(--olive);
@@ -961,8 +960,8 @@ i {
 .prep-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 26px 0 40px;
+  justify-content: flex-end;
+  padding: 20px 0 30px;
   gap: 25px;
 }
 .prep-footer p {
@@ -985,13 +984,13 @@ i {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px 38px 19px;
+  padding: 10px 38px 12px;
   flex-shrink: 0;
 }
 .cooking-heading h2 {
   font-family: inherit;
   font-size: 16px;
-  margin-top: 8px;
+  margin-top: 0;
   font-weight: 500;
   line-height: 1.3;
 }
@@ -1141,33 +1140,146 @@ i {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
-.aside-heading {
-  padding: 24px 23px 17px;
+.timeline-region {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
-.aside-heading h3 {
-  font-size: 24px;
-  margin-bottom: 6px;
+.timeline-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 16px 18px 10px;
+  gap: 8px;
 }
-.aside-heading span {
-  font-size: 10px;
-  color: var(--sage);
+.timeline-heading h3 {
+  font-size: 22px;
 }
-.aside-scroll {
-  padding: 4px 23px 15px;
+.timeline-toggle {
+  display: none;
+}
+.timeline-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: thin;
-  flex: 1;
+  padding: 0 10px 12px;
 }
-.aside-scroll .ingredient-list li {
-  font-size: 12px;
-  border-bottom-color: #ddd8c9;
+.timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.aside-note {
-  padding: 15px 23px;
-  background: #e7e3d4;
-  font-size: 10px;
+.timeline-list li + li {
+  margin-top: 4px;
+}
+.timeline-list button {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 10px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: none;
+  text-align: left;
+  min-height: 54px;
+  color: var(--olive);
+}
+.timeline-list .current button {
+  border-color: #bbc5ae;
+  background: #e3ebdd;
+}
+.timeline-marker {
+  flex-shrink: 0;
+  display: flex;
+  width: 18px;
+  justify-content: center;
+  padding-top: 1px;
+}
+.timeline-copy {
+  min-width: 0;
+}
+.timeline-title {
+  font-size: 15px;
+  line-height: 1.35;
+  display: block;
+}
+.timeline-copy small {
+  display: block;
+  font-size: 11px;
   color: var(--sage);
+  margin-top: 3px;
+}
+.timeline-list .completed:not(.current) .timeline-title {
+  color: var(--sage);
+}
+.timeline-timer {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 5px;
+  font-variant-numeric: tabular-nums;
+}
+.timeline-timer.expired {
+  font-weight: 650;
+  color: #795528;
+}
+.active-timer-panel {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 40%;
+  border-top: 1px solid var(--line);
+  background: var(--oatmeal);
+}
+.active-timer-panel h3 {
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  padding: 10px 16px 7px;
+}
+.active-timer-panel h3 span {
+  color: var(--sage);
+  margin-left: 6px;
+}
+.active-timers-scroll {
+  overflow-y: auto;
+  min-height: 0;
+  padding: 0 12px 12px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.active-timer-panel .timer-list {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 7px;
+}
+.active-timer-panel .timer-chip {
+  flex-shrink: 0;
+  width: 100%;
+}
+.active-timer-panel .timer-chip > button:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.active-timer-panel .timer-chip span {
+  overflow-wrap: anywhere;
+}
+.cooking-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 .cooking-controls {
   display: flex;
@@ -1947,41 +2059,38 @@ summary {
     font-size: 13px;
   }
   .phase-heading {
-    padding: 25px 0 22px;
+    padding: 8px 0 14px;
     align-items: flex-start;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
   .phase-heading h1 {
-    font-size: 34px;
+    font-size: 32px;
   }
   .phase-heading > button {
     min-height: 44px;
   }
-  .prep-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 17px;
+  .phase-actions > button {
+    min-height: 44px;
+    padding: 10px 12px;
+    gap: 8px;
+    font-size: 13px;
   }
-  .gather-grid {
+  .gather-checklist {
     grid-template-columns: minmax(0, 1fr);
-    gap: 17px;
   }
-  .gather-card {
-    padding: 22px;
+  .section-toggle {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .workflow-section > h2 {
+    font-size: 22px;
+  }
+  .section-body {
+    padding: 0 14px 8px;
   }
   .prep-tasks .check-row {
-    padding: 14px;
     font-size: 16px;
-  }
-  .prep-card {
-    padding: 22px;
-  }
-  .prep-card h2 {
-    font-size: 24px;
-  }
-  .check-row {
-    font-size: 15px;
-    padding: 11px 0;
   }
   .prep-footer {
     align-items: stretch;
@@ -2024,13 +2133,74 @@ summary {
     font-size: 17px;
   }
   .cooking-layout {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow: visible;
     flex: 1;
   }
   .cooking-aside {
+    display: flex;
+    order: -1;
+    flex-shrink: 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--line);
+    overflow: visible;
+  }
+  .timeline-heading {
+    padding: 5px 22px;
+  }
+  .timeline-heading h3 {
+    font-size: 22px;
+  }
+  .timeline-toggle {
+    display: inline-flex;
+    font-size: 12px;
+  }
+  .timeline-scroll {
+    display: none;
+    padding: 0 16px 12px;
+  }
+  .timeline-scroll.mobile-expanded {
+    display: block;
+    max-height: 35svh;
+    overflow-y: auto;
+  }
+  .active-timer-panel {
+    max-height: none;
+  }
+  .active-timers-scroll {
+    max-height: 32svh;
+  }
+  .active-timer-panel h3 {
+    padding-left: 22px;
+  }
+  .active-timer-panel .timer-chip > button {
+    min-height: 48px;
+  }
+  .cooking-heading-actions {
+    gap: 10px;
+  }
+  .cooking-heading-actions .secondary {
+    padding: 8px 10px;
+    min-height: 44px;
+    font-size: 12px;
+  }
+  .cooking-heading-actions .secondary svg {
     display: none;
   }
+  .cooking-heading {
+    flex-wrap: wrap;
+    padding-top: 6px;
+    padding-bottom: 12px;
+  }
+  .cooking-heading > div:first-child {
+    flex: 1;
+    min-width: 170px;
+  }
+  .cooking-heading h2 {
+    margin-top: 0;
+  }
+
   .stage-panel {
     padding: 26px 22px 28px;
     overflow: visible;
@@ -2066,8 +2236,7 @@ summary {
     font-size: 12px;
   }
   .cooking-controls {
-    position: sticky;
-    bottom: 0;
+    position: static;
     padding: 15px 22px max(15px, env(safe-area-inset-bottom));
     display: grid;
     grid-template-columns: 1fr 1fr;

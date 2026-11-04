@@ -9,6 +9,9 @@ function readSession(session: Session): Session {
     // Older sessions keep their phase and all existing progress. Gathering is
     // available on return from preparation, without forcing a fresh start.
     gatheredIds: session.gatheredIds ?? [],
+    collapsedSectionIds: session.collapsedSectionIds ?? [],
+    completedStepIds: session.completedStepIds ?? [],
+    visitedStepIds: session.visitedStepIds ?? [],
     recipeSnapshot: normalizeRecipe(session.recipeSnapshot),
   };
 }

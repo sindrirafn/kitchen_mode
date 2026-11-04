@@ -3,6 +3,9 @@ import { RecipeRepository } from "./repository";
 import { canonical } from "./validation";
 import {
   clockTime,
+  completeCurrentStep,
+  navigateStage,
+  toggleSection,
   elapsed,
   finishSession,
   gatheringGroups,
@@ -29,6 +32,9 @@ import {
 import { ImportRecipe } from "./ImportRecipe";
 import { PreparationGroups } from "./Preparation";
 import { LegacyInstructions, StructuredContent } from "./recipe-content";
+import { GatherGroups } from "./Gather";
+import { CookingSidebar } from "./CookingSidebar";
+import { PhaseNav } from "./PhaseNav";
 import { photographs } from "./photography";
 type View = "library" | "intro" | "session" | "journal";
 type Dialog =
@@ -252,6 +258,17 @@ export function App() {
   }
   function changeTimer(timer: TimerState) {
     editSession((s) => ({ ...s, timers: { ...s.timers, [timer.id]: timer } }));
+  }
+  function toggleAccordion(id: string) {
+    editSession((s) => toggleSection(s, id));
+  }
+  function phaseNav(phase: Session["phase"]) {
+    return (
+      <PhaseNav
+        phase={phase}
+        onNavigate={(phase) => editSession((s) => ({ ...s, phase }))}
+      />
+    );
   }
   function gather(sourceIds: string[]) {
     editSession((s) => ({
@@ -715,7 +732,7 @@ export function App() {
           <div className="intro-details">
             <section>
               <p className="eyebrow">BEFORE YOU BEGIN</p>
-              <h2>Everything in its place.</h2>
+              <h2>Gather</h2>
               <p>
                 Gather your ingredients and equipment. Check things off as you
                 prepare; you can always move at your own pace.
@@ -748,9 +765,9 @@ export function App() {
         <main className="gathering page-width">
           <div className="phase-heading">
             <div>
-              <p className="eyebrow">01 / GATHER</p>
+              {phaseNav("gathering")}
               <h1 ref={headingRef} tabIndex={-1}>
-                Everything in its place.
+                Gather
               </h1>
               <p>{r.identity.title}</p>
             </div>
@@ -772,72 +789,15 @@ export function App() {
               value={gathered}
               max={gatherItems.length}
             />
-            <p className="muted">
-              Gather what you need. You can start preparation at any time.
-            </p>
           </div>
-          <div className="gather-grid">
-            {gatherGroups.map((group) => (
-              <section
-                className="gather-card"
-                key={group.id}
-                aria-label={group.title}
-              >
-                <h2>{group.title}</h2>
-                {group.items.map((item) => (
-                  <div className="gather-item" key={item.id}>
-                    <CheckRow
-                      id={item.id}
-                      checked={isGathered(item, session.gatheredIds)}
-                      indeterminate={
-                        !isGathered(item, session.gatheredIds) &&
-                        item.sourceIds.some((id) =>
-                          session.gatheredIds.includes(id),
-                        )
-                      }
-                      onChange={() => gather(item.sourceIds)}
-                      text={
-                        <>
-                          <b>{item.amount}</b>
-                          {item.amount ? " " : ""}
-                          {item.name}
-                          {item.optional && <em> · optional</em>}
-                          {item.detail && <small>{item.detail}</small>}
-                        </>
-                      }
-                    />
-                    {item.allocations.length > 1 && (
-                      <details className="gather-allocations">
-                        <summary>
-                          Used in {item.allocations.length} places
-                        </summary>
-                        <ul>
-                          {item.allocations.map((allocation, i) => (
-                            <li key={i}>
-                              <b>{allocation.amount}</b> {allocation.name}
-                              {allocation.optional ? " · optional" : ""}
-                              <small>
-                                {allocation.component}
-                                {allocation.detail
-                                  ? ` · ${allocation.detail}`
-                                  : ""}
-                              </small>
-                            </li>
-                          ))}
-                        </ul>
-                      </details>
-                    )}
-                  </div>
-                ))}
-              </section>
-            ))}
-          </div>
+          <GatherGroups
+            recipe={r}
+            session={session}
+            onGather={gather}
+            onToggle={toggleAccordion}
+          />
           <AllTimers session={session} now={now} onChange={changeTimer} />
           <div className="prep-footer">
-            <p className="muted">
-              Your checks are saved as you go. Nothing needs to be ticked to
-              continue.
-            </p>
             <button
               className="primary"
               onClick={() =>
@@ -853,9 +813,9 @@ export function App() {
         <main className="preparation page-width">
           <div className="phase-heading">
             <div>
-              <p className="eyebrow">02 / PREPARE</p>
+              {phaseNav("preparation")}
               <h1 ref={headingRef} tabIndex={-1}>
-                First, a little preparation.
+                Preparation
               </h1>
               <p>{r.identity.title}</p>
             </div>
@@ -875,24 +835,19 @@ export function App() {
               </button>
             </div>
           </div>
-          <button
-            className="text-button back-to-gathering"
-            onClick={() => editSession((s) => ({ ...s, phase: "gathering" }))}
-          >
-            <Icon name="back" size={16} /> Back to gathering
-          </button>
-          <PreparationGroups recipe={r} session={session} onCheck={check} />
+          <PreparationGroups
+            recipe={r}
+            session={session}
+            onCheck={check}
+            onToggle={toggleAccordion}
+          />
           <AllTimers session={session} now={now} onChange={changeTimer} />
           <div className="prep-footer">
-            <p className="muted">
-              Checklists are here to help. Nothing needs to be ticked to
-              continue.
-            </p>
             <button
               className="primary"
               onClick={() => editSession((s) => ({ ...s, phase: "cooking" }))}
             >
-              Let’s start cooking
+              Start cooking
               <Icon name="arrow" />
             </button>
           </div>
@@ -902,13 +857,21 @@ export function App() {
         <>
           <div className="cooking-heading">
             <div>
-              <p className="eyebrow">03 / COOK · REVISION {r.revision}</p>
+              {phaseNav("cooking")}
               <h2>{r.identity.title}</h2>
             </div>
-            <span className="stage-count">
-              Step {index + 1}
-              <span> / {r.cooking.length}</span>
-            </span>
+            <div className="cooking-heading-actions">
+              <button
+                className="secondary"
+                onClick={() => setDialog("ingredients")}
+              >
+                Ingredients <Icon name="book" />
+              </button>
+              <span className="stage-count">
+                {index + 1}
+                <span> / {r.cooking.length}</span>
+              </span>
+            </div>
           </div>
           <div
             className="progress-track"
@@ -964,76 +927,66 @@ export function App() {
                 <div className="learning-tip">
                   <Icon name="leaf" />
                   <p>
-                    <span>A LITTLE KITCHEN WISDOM</span>
+                    <span>TIP</span>
                     {stage.tip}
                   </p>
                 </div>
               )}
-              {stage.timers.length > 0 && (
+              {stage.timers.some(
+                (def) =>
+                  !session.timers[def.id] ||
+                  session.timers[def.id].status === "cancelled",
+              ) && (
                 <div className="stage-timers">
                   <div className="timer-list">
-                    {stage.timers.map((def) => (
-                      <TimerChip
-                        key={def.id}
-                        def={def}
-                        state={session.timers[def.id]}
-                        now={now}
-                        onChange={changeTimer}
-                      />
-                    ))}
+                    {stage.timers
+                      .filter(
+                        (def) =>
+                          !session.timers[def.id] ||
+                          session.timers[def.id].status === "cancelled",
+                      )
+                      .map((def) => (
+                        <TimerChip
+                          key={def.id}
+                          def={def}
+                          state={session.timers[def.id]}
+                          now={now}
+                          onChange={changeTimer}
+                        />
+                      ))}
                   </div>
                   <p className="small muted">
-                    Timers update while open. iPadOS may pause the app in the
-                    background; no background sound is guaranteed.
+                    No background timer alerts are guaranteed.
                   </p>
                 </div>
               )}
-              <button
-                className="secondary mobile-ingredients"
-                onClick={() => setDialog("ingredients")}
-              >
-                Ingredients
-                <Icon name="book" />
-              </button>
             </main>
-            <aside className="cooking-aside">
-              <div className="aside-heading">
-                <h3>At your fingertips</h3>
-                <span>{r.yield.baseServings} servings · base quantities</span>
-              </div>
-              <div className="aside-scroll">
-                <IngredientList recipe={r} />
-                <AllTimers
-                  session={session}
-                  now={now}
-                  onChange={changeTimer}
-                  exclude={stage.timers.map((t) => t.id)}
-                />
-              </div>
-              <p className="aside-note">Your place is saved as you go.</p>
-            </aside>
+            <CookingSidebar
+              recipe={r}
+              session={session}
+              now={now}
+              onNavigate={(id) => editSession((s) => navigateStage(s, id))}
+              onTimer={changeTimer}
+            />
           </div>
           <footer className="cooking-controls">
             <button
               className="secondary"
               onClick={() =>
-                editSession((s) => ({
-                  ...s,
-                  phase: index === 0 ? "preparation" : "cooking",
-                  currentStepId: r.cooking[Math.max(0, index - 1)].id,
-                }))
+                editSession((s) =>
+                  index === 0
+                    ? { ...s, phase: "preparation" }
+                    : navigateStage(s, r.cooking[index - 1].id),
+                )
               }
             >
               <Icon name="back" /> {index === 0 ? "Preparation" : "Previous"}
             </button>
             <div className="next-preview">
               <span className="eyebrow">
-                {index === r.cooking.length - 1 ? "ONE LAST THING" : "NEXT UP"}
+                {index === r.cooking.length - 1 ? "FINISH" : "NEXT"}
               </span>
-              <p>
-                {r.cooking[index + 1]?.title ??
-                  "Plate up, take a breath, enjoy."}
-              </p>
+              <p>{r.cooking[index + 1]?.title ?? "Serve"}</p>
             </div>
             <button
               className="primary"
@@ -1041,7 +994,10 @@ export function App() {
                 editSession((s) =>
                   index === r.cooking.length - 1
                     ? finishSession(s)
-                    : { ...s, currentStepId: r.cooking[index + 1].id },
+                    : navigateStage(
+                        completeCurrentStep(s),
+                        r.cooking[index + 1].id,
+                      ),
                 )
               }
             >
@@ -1216,7 +1172,7 @@ export function App() {
           </Modal>
         )}
       {dialog === "ingredients" && r && (
-        <Modal title="Everything you’ll need" onClose={() => setDialog(null)}>
+        <Modal title="Ingredients" onClose={() => setDialog(null)}>
           <RecipeMeta recipe={r} />
           <p className="small muted">
             Base quantities as authored. Optional ingredients and approximate

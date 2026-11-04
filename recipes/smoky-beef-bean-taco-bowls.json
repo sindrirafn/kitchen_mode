@@ -495,7 +495,9 @@
           ]
         }
       ],
-      "longLead": false
+      "longLead": false,
+      "earlyTitle": "Start rice",
+      "continuationTitle": "Prepare vegetables and beans"
     },
     {
       "id": "prep-spices",

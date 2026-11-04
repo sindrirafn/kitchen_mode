@@ -4,12 +4,14 @@ import {
   clockTime,
   quantity,
   timerAction,
+  timerRemaining,
   type Ingredient,
   type Recipe,
   type Session,
   type TimerDefinition,
   type TimerState,
 } from "./model";
+import { productName } from "./gathering";
 export function Icon({ name, size = 20 }: { name: string; size?: number }) {
   const paths: Record<string, ReactNode> = {
     book: (
@@ -148,13 +150,16 @@ export function IngredientList({ recipe }: { recipe: Recipe }) {
 export function InlineIngredient({
   ingredient,
   amount,
+  concise = false,
 }: {
   ingredient: Ingredient;
   amount?: string;
+  concise?: boolean;
 }) {
   return (
     <strong className="quantity-ref">
-      {amount ?? quantity(ingredient.quantity)} {ingredient.name}
+      {amount ?? quantity(ingredient.quantity)}{" "}
+      {concise ? productName(ingredient.name) : ingredient.name}
       {ingredient.optional ? " (optional)" : ""}
     </strong>
   );
@@ -229,10 +234,9 @@ export function TimerChip({
   const running = state?.status === "running";
   const paused = state?.status === "paused";
   const done = running && state.endAt !== null && state.endAt <= now;
-  const remaining = running
-    ? Math.max(0, (state.endAt ?? now) - now)
-    : paused
-      ? state.remainingMs
+  const remaining =
+    state && state.status !== "cancelled"
+      ? timerRemaining(state, now)
       : def.durationSeconds * 1000;
   return (
     <div

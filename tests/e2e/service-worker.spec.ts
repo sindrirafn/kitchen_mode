@@ -122,7 +122,7 @@ async function seed(page: Page) {
     .first()
     .click();
   await page.getByRole("checkbox").first().check();
-  await page.getByRole("button", { name: "Let’s start cooking" }).click();
+  await page.getByRole("button", { name: "Start cooking" }).click();
   await page
     .getByRole("button", { name: /Start .* timer/ })
     .first()

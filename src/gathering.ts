@@ -45,8 +45,25 @@ export interface GatherItem {
     detail: string;
   }[];
 }
-function productName(name: string) {
+export function productName(name: string) {
   return name.replace(/\s+(?:for|to finish)\b.*$/i, "").trim();
+}
+export function ingredientDisplayName(ingredient: Ingredient): string {
+  return ingredient.gathering?.name ?? productName(ingredient.name);
+}
+export function gatherQuantity(q: Quantity): string {
+  if ("text" in q) return q.text === "a little, to taste" ? "to taste" : q.text;
+  if (q.unit === "whole") return quantity(q).replace(/ whole$/, "");
+  if (
+    q.unit === "g" &&
+    !("package" in q) &&
+    ("value" in q ? q.value : q.min) >= 1000
+  ) {
+    return "value" in q
+      ? `${q.value / 1000} kg`
+      : `${q.min / 1000}–${q.max / 1000} kg`;
+  }
+  return quantity(q);
 }
 function category(ingredient: Ingredient): GatherCategory {
   if (ingredient.gathering?.category) return ingredient.gathering.category;
@@ -154,7 +171,7 @@ export function gatherAmount(ingredients: Ingredient[]): string {
   return buckets
     .map(
       (bucket) =>
-        `${quantity(bucket.quantity)}${mixedOptional && bucket.optional ? " optional" : ""}`,
+        `${gatherQuantity(bucket.quantity)}${mixedOptional && bucket.optional ? " optional" : ""}`,
     )
     .join(" + ");
 }
@@ -177,13 +194,16 @@ export function gatheringGroups(
         return {
           id: sourceIds[0],
           sourceIds,
-          name: first.gathering?.name ?? productName(first.name),
+          name: ingredientDisplayName(first),
           amount: gatherAmount(ingredients),
           optional: ingredients.every((i) => i.optional),
-          detail:
-            ingredients.length === 1
-              ? [first.preparation, first.notes].filter(Boolean).join(" · ")
-              : "",
+          detail: [
+            ...new Set(
+              ingredients
+                .flatMap((i) => [i.gathering?.detail, i.notes])
+                .filter(Boolean),
+            ),
+          ].join(" · "),
           allocations: ingredients.map((i) => ({
             name: i.name,
             amount: quantity(i.quantity),
@@ -195,30 +215,37 @@ export function gatheringGroups(
         };
       }),
   }));
+  const equipment = new Map<string, GatherItem>();
+  for (const [index, tool] of (recipe.equipment ?? []).entries()) {
+    if (!tool.name) continue;
+    const id =
+      tool.id === undefined
+        ? `equipment:index:${index}`
+        : `equipment:id:${tool.id}`;
+    // Default only to exact names (ignoring case/spacing). Authors can explicitly
+    // identify aliases, or give same-named but separate tools different keys.
+    const key =
+      tool.gathering?.key ??
+      tool.name.trim().replace(/\s+/g, " ").toLowerCase();
+    const existing = equipment.get(key);
+    if (existing) existing.sourceIds.push(id);
+    else
+      equipment.set(key, {
+        id,
+        sourceIds: [id],
+        name: tool.gathering?.name ?? tool.name,
+        amount: "",
+        optional: false,
+        detail: "",
+        allocations: [],
+      });
+  }
   return [
     ...groups,
     {
       id: "equipment",
       title: "Tools & equipment",
-      items: (recipe.equipment ?? []).flatMap((e, index): GatherItem[] => {
-        const id =
-          e.id === undefined
-            ? `equipment:index:${index}`
-            : `equipment:id:${e.id}`;
-        return e.name
-          ? [
-              {
-                id,
-                sourceIds: [id],
-                name: e.name,
-                amount: "",
-                optional: false,
-                detail: "",
-                allocations: [],
-              },
-            ]
-          : [];
-      }),
+      items: [...equipment.values()],
     },
   ].filter((group) => group.items.length);
 }

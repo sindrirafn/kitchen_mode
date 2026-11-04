@@ -9,9 +9,11 @@ import {
 export function ReferencedIngredient({
   recipe,
   reference,
+  concise = false,
 }: {
   recipe: Recipe;
   reference: IngredientReference;
+  concise?: boolean;
 }) {
   const ingredient = recipe.ingredients.find(
     (i) => i.id === reference.ingredientId,
@@ -23,6 +25,7 @@ export function ReferencedIngredient({
     <>
       <InlineIngredient
         ingredient={ingredient}
+        concise={concise}
         amount={usage?.quantity ? quantity(usage.quantity) : undefined}
       />
       {reference.note && (
@@ -79,7 +82,11 @@ export function StructuredContent({
             <span role="list">
               {block.items.map((reference, i) => (
                 <span role="listitem" key={i}>
-                  <ReferencedIngredient recipe={recipe} reference={reference} />
+                  <ReferencedIngredient
+                    recipe={recipe}
+                    reference={reference}
+                    concise
+                  />
                 </span>
               ))}
             </span>

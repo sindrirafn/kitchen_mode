@@ -1,6 +1,7 @@
 import { CheckRow, Icon } from "./components";
 import { isLongLeadPreparation, type Recipe, type Session } from "./model";
 import { StructuredContent } from "./recipe-content";
+import { Accordion } from "./Accordion";
 
 export function preparationSections(recipe: Recipe) {
   const groups = recipe.preparation.map((group, index) => ({
@@ -33,89 +34,80 @@ export function PreparationGroups({
   recipe,
   session,
   onCheck,
+  onToggle,
 }: {
   recipe: Recipe;
   session: Session;
   onCheck: (id: string) => void;
+  onToggle: (id: string) => void;
 }) {
   const sections = preparationSections(recipe);
   function cards(groups: typeof sections.ordinary, early = false) {
     return (
-      <div className={`prep-grid ${early ? "prep-early-grid" : ""}`}>
-        {groups.map((group) => (
-          <section
-            className={`prep-card ${early ? "long-lead" : ""}`}
-            key={group.id}
-            data-source-order={group.index}
-          >
-            <div className="prep-card-title">
-              <span>{String(group.index + 1).padStart(2, "0")}</span>
-              <h2>{group.title}</h2>
-            </div>
-            <div className="prep-tasks">
-              {group.items.map((item) => (
-                <CheckRow
-                  key={item.id}
-                  id={item.id}
-                  text={
-                    item.content ? (
-                      <StructuredContent
-                        recipe={recipe}
-                        blocks={item.content}
-                      />
-                    ) : (
-                      item.text
-                    )
-                  }
-                  checkable={item.checkable}
-                  checked={session.checkedIds.includes(item.id)}
-                  onChange={() => onCheck(item.id)}
-                />
-              ))}
-            </div>
-            <p className="prep-group-progress small">
-              {
-                group.items.filter(
-                  (item) =>
-                    item.checkable !== false &&
-                    session.checkedIds.includes(item.id),
-                ).length
-              }{" "}
-              of {group.items.filter((item) => item.checkable !== false).length}{" "}
-              tasks checked
-            </p>
-            {group.tip && (
-              <p className="prep-tip">
-                <Icon name="leaf" size={17} />
-                {group.tip}
-              </p>
-            )}
-          </section>
-        ))}
+      <div className="prep-grid">
+        {groups.map((group) => {
+          const key = `prep:${group.id}:${early ? "early" : "ordinary"}`;
+          const tasks = group.items.filter((item) => item.checkable !== false);
+          const title = early
+            ? (group.earlyTitle ?? group.title)
+            : (group.continuationTitle ?? group.title);
+          return (
+            <Accordion
+              key={key}
+              title={title}
+              completed={
+                tasks.filter((item) => session.checkedIds.includes(item.id))
+                  .length
+              }
+              total={tasks.length}
+              collapsed={!!session.collapsedSectionIds?.includes(key)}
+              onToggle={() => onToggle(key)}
+              className={`prep-section ${early ? "long-lead" : ""}`}
+            >
+              <ol className="prep-tasks" data-source-order={group.index}>
+                {group.items.map((item) => (
+                  <li key={item.id}>
+                    <CheckRow
+                      id={item.id}
+                      text={
+                        item.content ? (
+                          <StructuredContent
+                            recipe={recipe}
+                            blocks={item.content}
+                          />
+                        ) : (
+                          item.text
+                        )
+                      }
+                      checkable={item.checkable}
+                      checked={session.checkedIds.includes(item.id)}
+                      onChange={() => onCheck(item.id)}
+                    />
+                  </li>
+                ))}
+              </ol>
+              {group.tip && (
+                <p className="prep-tip">
+                  <Icon name="leaf" size={17} />
+                  {group.tip}
+                </p>
+              )}
+            </Accordion>
+          );
+        })}
       </div>
     );
   }
   return (
     <>
       {!!sections.early.length && (
-        <section className="prep-early" aria-label="Start these first">
-          <div className="prep-section-heading">
-            <p className="eyebrow">
-              <Icon name="clock" size={16} /> Allow time
-            </p>
-            <h2>Start these first.</h2>
-            <p>Get the longer jobs underway before the rest.</p>
-          </div>
+        <section className="prep-early" aria-label="Start early">
+          <h2 className="start-early-heading">Start early</h2>
           {cards(sections.early, true)}
         </section>
       )}
       {!!sections.ordinary.length && (
         <section aria-label="Preparation tasks">
-          <div className="prep-section-heading">
-            <p className="eyebrow">READY FOR THE PAN</p>
-            <h2>A little mise en place.</h2>
-            <p>Work through each group, keeping its ingredients as directed.</p>
-          </div>
           {cards(sections.ordinary)}
         </section>
       )}
